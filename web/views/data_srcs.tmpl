@@ -1,0 +1,24 @@
+<div class="header">
+    <h1><a href="/">Suricate</a></h1>
+    <ul class="menu">
+        <li class="bgyellow"><a href="/process">Processing</a></li>
+        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgblue"><a href="/data">Data Sources</a></li>
+    </ul>
+</div>
+<h3>Objects</h3>
+<ul>
+% for obj in data_objs:
+    <li><a href="/data/{{obj}}">{{obj}}</a></li>
+% end
+</ul>
+<p>
+    <form action="/data/upload" method="post" enctype="multipart/form-data">
+        Select a file: <input type="file" name="upload" />
+        <input type="submit" value="Start upload" />
+    </form>
+</p>
+<h3>Streams</h3>
+<p>AMQP streams coming soon</p>
+<p><small>Welcome user: {{uid}}</small></p>
+%rebase base.tmpl title='Suricate - Data Source'

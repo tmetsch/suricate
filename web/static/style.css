@@ -1,0 +1,131 @@
+body {
+    font-family: source-sans-pro, sans-serif;
+    font-size: 1em;
+    color: #444;
+}
+.centercontent {
+    width: 100%;
+    height: 100%;
+    clear: both;
+    position: relative;
+}
+.abscenter {
+    height: 50%;
+    width: 60%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.divboxes {
+    display: table;
+}
+.cell {
+    display: table-cell;
+    padding: 1em;
+    width: 300px;
+}
+.sep {
+    display: table-cell;
+    width: 1em;
+}
+.header {
+    height: 2.4em;
+    border-bottom: 1px solid #444;
+}
+/* menu */
+.menu ul {
+    margin: 0px;
+    padding: 0px;
+}
+.menu li {
+    list-style-type: none;
+    float: right;
+    padding: 0.3em;
+    margin-right: 0.5em;
+}
+.menu li a {
+    color: #fff;
+    text-decoration: none;
+}
+/* code entries */
+.entry {
+    margin: 5px;
+}
+.right {
+    margin-left: 60px;
+    border-left: 1px solid #ccc;
+}
+.right>.code {
+    background: #eee;
+    padding: 0.5em;
+    white-space: pre-wrap;
+}
+.right>p {
+    padding: 0.5em;
+}
+.right>.output {
+    padding: 0.5em;
+    font-size: 1em;
+    color: #d00;
+    white-space: pre-wrap;
+}
+.right>form {
+    padding: 0.5em;
+}
+.left {
+    width: 60px;
+}
+.left>form>input {
+    float: left;
+    border: none;
+    background: none;
+    text-decoration: underline;
+    font-size: 0.7em;
+}
+/* fonts */
+h1, h2 {
+    line-height: 0.5em;
+    font-weight: normal;
+}
+h1 {
+    font-size: 4em;
+    color: #60c52d;
+}
+h2 {
+    font-size: 4em;
+    color: #00bfff;
+}
+.header h1 {
+    color: #60c52d;
+    float: left;
+    font-size: 2em;
+    margin: 0.3em;
+}
+.header a {
+    color: #60c52d;
+    text-decoration: none;
+}
+.cell a {
+    font-size: 2em;
+    color: #fff;
+    text-decoration: none;
+}.cell a:hover {
+    color: #444;
+}
+.cell p {
+    color: #fff;
+}
+/* colors */
+.bggreen {
+    background: #60c52d;
+}
+.bgblue {
+    background: #00bfff;
+}
+.bgyellow {
+    background: #ffb400;
+}

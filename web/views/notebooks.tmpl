@@ -1,0 +1,23 @@
+<div class="header">
+    <h1><a href="/">Suricate</a></h1>
+    <ul class="menu">
+        <li class="bgyellow"><a href="/process">Processing</a></li>
+        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgblue"><a href="/data">Data Sources</a></li>
+    </ul>
+</div>
+<h3>Analytics</h3>
+<ul>
+% for ntb in notebooks:
+  <li><a href="/analysis/{{ntb}}">{{ntb}}</a></li>
+% end
+</ul>
+<p>
+    <form action="/analysis/upload" method="post" enctype="multipart/form-data">
+        Name: <input type="text" name="iden" />
+        (Optional) Select a file: <input type="file" name="upload" />
+        <input type="submit" value="New" />
+    </form>
+</p>
+<p><small>Welcome user: {{uid}}</small></p>
+%rebase base.tmpl title='Suricate - Analysis'

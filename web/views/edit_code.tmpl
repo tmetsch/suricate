@@ -1,0 +1,18 @@
+<div class="header">
+    <h1><a href="/">Suricate</a></h1>
+    <ul class="menu">
+        <li class="bgyellow"><a href="/process">Processing</a></li>
+        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgblue"><a href="/data">Data Sources</a></li>
+    </ul>
+</div>
+<h3>Edit</h3>
+<p>
+    <form action="/analysis/{{url}}/edit/{{line_id}}" method="get">
+        <textarea name="cmd" rows="5" cols="100">{{old[0]}}</textarea>
+        <br/>
+        <input type="submit" name="save" value="save">
+    </form>
+</p>
+<p><small>Welcome user: {{uid}}</small></p>
+%rebase base.tmpl title='Suricate - Data Source'
