@@ -1,10 +1,9 @@
-
 # Analytics as a Service
 
 Suricate is a very simple Analytics as a Service originally designed to
 analyze data streams coming from [DTrace](http://www.dtrace.org). Based
-the data models could be created and finally actions taken based on the
-model and new incoming data via AMQP.
+on that models could be created and finally actions taken based on the
+models and new incoming data via AMQP.
 
 With this first release this has become more a general purpose tool. The
 AMQP and DTrace part are stripped out for now.
