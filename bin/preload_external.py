@@ -13,6 +13,7 @@ params = {'legend.fontsize': 11,
 
 fig = pyplot.figure(1, figsize=(3, 3))
 pyplot.rcParams.update(params)
+pyplot.clf()
 
 
 def plot():

@@ -36,6 +36,13 @@ body {
     height: 2.4em;
     border-bottom: 1px solid #444;
 }
+.code {
+    background: #eee;
+    padding: 0.5em;
+}
+code {
+    white-space: pre-wrap;
+}
 /* menu */
 .menu ul {
     margin: 0px;
@@ -74,6 +81,7 @@ body {
     white-space: pre-wrap;
 }
 .right>form {
+    background: #eee;
     padding: 0.5em;
 }
 .left {
@@ -92,11 +100,11 @@ h1, h2 {
     font-weight: normal;
 }
 h1 {
-    font-size: 4em;
+    font-size: 4vw;
     color: #60c52d;
 }
 h2 {
-    font-size: 4em;
+    font-size: 4vw;
     color: #00bfff;
 }
 .header h1 {
@@ -110,7 +118,7 @@ h2 {
     text-decoration: none;
 }
 .cell a {
-    font-size: 2em;
+    font-size: 2vw;
     color: #fff;
     text-decoration: none;
 }.cell a:hover {

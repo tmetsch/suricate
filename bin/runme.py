@@ -8,6 +8,8 @@ __author__ = 'tmetsch'
 
 import bottle
 
+import ConfigParser
+
 from web import wsgi_app
 
 
@@ -23,8 +25,13 @@ class SessionMiddleWare(object):
         environ['HTTP_X_UID'] = '123'
         return self.wrap_app(environ, start_response)
 
+config = ConfigParser.RawConfigParser()
+config.read('app.conf')
+# MongoDB connection
+host = config.get('mongo', 'host')
+port = config.getint('mongo', 'port')
 
-app = wsgi_app.application
+app = wsgi_app.AnalyticsApp(host, port).get_wsgi_app()
 app = SessionMiddleWare(app)
 
 bottle.TEMPLATE_PATH.insert(0, '../web/views')

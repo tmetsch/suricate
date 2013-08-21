@@ -103,6 +103,8 @@ class ConsoleWrapper(object):
         '''
         Add multiple lines of source code.
 
+        TODO: check necessity.
+
         :param code_lines: List of lines of code.
         '''
         for line in code_lines:

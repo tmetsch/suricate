@@ -3,7 +3,6 @@
 '''
 Unittest for the notebooks part.
 '''
-from pymongo.cursor import Cursor
 
 __author__ = 'tmetsch'
 
@@ -169,7 +168,6 @@ class NotebookStoreCase(unittest.TestCase):
         self.mocker.VerifyAll()
 
         self.assertListEqual(tmp, ['foo', 'bar'])
-
 
     def test_get_notebooks_for_sanity(self):
         '''

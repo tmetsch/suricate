@@ -11,11 +11,10 @@ from data import object_store
 import mox
 import unittest
 
-from bson import ObjectId
-
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
+
 
 class ObjecStoreTest(unittest.TestCase):
     '''
