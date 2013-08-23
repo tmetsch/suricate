@@ -30,7 +30,8 @@ class ConsoleWrapperCase(unittest.TestCase):
         '''
         super(ConsoleWrapperCase, self).setUp()
         coll = self.mocker.CreateMock(Collection)
-        self.cut = notebooks.ConsoleWrapper('123', coll, {}, '123')
+        self.cut = notebooks.ConsoleWrapper('123', coll, {}, '123', 'abc',
+                                            'localhost', '27017')
 
     def test_add_lines_for_success(self):
         '''
@@ -124,6 +125,7 @@ class NotebookStoreCase(unittest.TestCase):
         Test retrieval of notebooks.
         '''
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
         # is non existent so will call 'insert'!
         self.mongo_coll.find_one({'iden': '123'},
@@ -135,7 +137,7 @@ class NotebookStoreCase(unittest.TestCase):
             .AndReturn({'_id': 'foobar', 'iden': 'nb1', 'code': {}})
 
         self.mocker.ReplayAll()
-        self.cut.get_notebook('nb1', '123')
+        self.cut.get_notebook('nb1', 'abc', '123')
         self.mocker.VerifyAll()
 
     def test_delete_notebook_for_success(self):
@@ -143,11 +145,12 @@ class NotebookStoreCase(unittest.TestCase):
         Test removal.
         '''
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
         self.mongo_coll.remove({'iden': '123'})
 
         self.mocker.ReplayAll()
-        self.cut.delete_notebook('nb1', '123')
+        self.cut.delete_notebook('nb1', 'abc', '123')
         self.mocker.VerifyAll()
 
     def test_list_notebooks_for_sanity(self):
@@ -159,12 +162,13 @@ class NotebookStoreCase(unittest.TestCase):
             {'iden': 'bar'}
         ]
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
         self.mongo_coll.find(fields={'iden': True, '_id': False}).AndReturn(
             res)
 
         self.mocker.ReplayAll()
-        tmp = self.cut.list_notebooks('nb1')
+        tmp = self.cut.list_notebooks('nb1', 'abc')
         self.mocker.VerifyAll()
 
         self.assertListEqual(tmp, ['foo', 'bar'])
@@ -174,6 +178,7 @@ class NotebookStoreCase(unittest.TestCase):
         Test retrieval of notebooks.
         '''
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
         # is non existent so will call 'insert'!
         self.mongo_coll.find_one({'iden': '123'},
@@ -188,8 +193,8 @@ class NotebookStoreCase(unittest.TestCase):
         self.mongo_coll.update(mox.IsA(dict), mox.IsA(dict), upsert=False)
 
         self.mocker.ReplayAll()
-        self.cut.get_notebook('nb1', '123', ['for i in range(0,10):',
-                                             'print i', '\n'])
+        self.cut.get_notebook('nb1', 'abc', '123', ['for i in range(0,10):',
+                                                    'print i', '\n'])
         self.mocker.VerifyAll()
 
 

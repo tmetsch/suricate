@@ -63,14 +63,18 @@ class ConsoleWrapper(object):
     Wraps around a single python console interpreter.
     '''
 
-    def __init__(self, iden, collection, init_src, uid):
+    def __init__(self, iden, collection, init_src, uid, token, host, port):
         self.iden = iden
         self.collection = collection
         # Needs to be ordered!!!
         self.src = OrderedDict(init_src)
         self.console = code.InteractiveConsole()
-        # set User identifier!
-        self.console.push('suricate_uid = ' + str(uid))
+        # set User identifier and tell where object store is.
+        self.console.push('UID = \'' + str(uid) + '\'')
+        self.console.push('TOKEN = \'' + str(token) + '\'')
+        # str(uid) + ':' + str(token) + '@' +
+        uri = 'mongodb://' + str(host) + ':' + str(port) + '/' + str(uid)
+        self.console.push('OBJECT_STORE_URI = \'' + str(uri) + '\'')
         self.console.runcode(PRELOAD)
         self.console.runcode(PRELOAD2)
         self.white_space = ''
@@ -184,16 +188,18 @@ class NotebookStore(object):
     # XXX: Problem there is that there is no guarantee the order of the
     # OrderedDict coming from MongoDB. The as_class helps prevent this!
 
-    def __init__(self, host, port):
-        self.client = pymongo.MongoClient(host, port)
+    def __init__(self, uri):
+        self.uri = uri
         self.cache = {}
+        self.client = pymongo.MongoClient(uri)
 
-    def get_notebook(self, uid, iden, init_code=None):
+    def get_notebook(self, uid, token, iden, init_code=None):
         '''
         Retrieve a notebook if existing - otherwise creates new one.
 
-        :param iden: Identifier of the notebook.
         :param uid: User id.
+        :param token: token for the user.
+        :param iden: Identifier of the notebook.
         :param init_code: (Optional) List of lines of code.
         '''
         if not init_code:
@@ -202,6 +208,7 @@ class NotebookStore(object):
             return self.cache[iden + uid]
         else:
             db = self.client[uid]
+            db.authenticate(uid, token)
             collection = db['notebooks']
             # XXX: the as_class is important - see note above!
             content = collection.find_one({'iden': iden}, as_class=OrderedDict)
@@ -210,7 +217,8 @@ class NotebookStore(object):
                 content = collection.find_one({'iden': iden},
                                               as_class=OrderedDict)
             wrapper = ConsoleWrapper(content['_id'], collection,
-                                     content['code'], uid)
+                                     content['code'], uid, token,
+                                     self.client.HOST, self.client.PORT)
 
             # uploaded code...
             to_add = []
@@ -227,24 +235,28 @@ class NotebookStore(object):
             self.cache[iden+uid] = wrapper
             return wrapper
 
-    def delete_notebook(self, uid, iden):
+    def delete_notebook(self, uid, token, iden):
         '''
         Deletes a notebook from the storage.
 
         :param uid: User id.
+        :param token: token for the user.
         :param iden: Idnetifier for the notebook.
         '''
         db = self.client[uid]
+        db.authenticate(uid, token)
         collection = db['notebooks']
         collection.remove({'iden': iden})
 
-    def list_notebooks(self, uid):
+    def list_notebooks(self, uid, token):
         '''
         Lists all notebook names.
 
         :param uid: User id.
+        :param token: token for the user.
         '''
         db = self.client[uid]
+        db.authenticate(uid, token)
         collection = db['notebooks']
         tmp = collection.find(fields={'iden': True, '_id': False})
         res = []

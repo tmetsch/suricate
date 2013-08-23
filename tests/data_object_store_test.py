@@ -26,15 +26,15 @@ class ObjecStoreTest(unittest.TestCase):
         Test if all throw no impl errors.
         '''
         self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .list_objects, '123')
+            .list_objects, '123', 'abc')
         self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .create_object, '123', 'foo')
+            .create_object, '123', 'abc', 'foo')
         self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .retrieve_object, '123', 'abc')
+            .retrieve_object, '123', 'abc', 'abc')
         self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .update_object, '123', 'abc', 'bar')
+            .update_object, '123', 'abc', 'abc', 'bar')
         self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .delete_object, '123', 'abc')
+            .delete_object, '123', 'abc', 'abc')
 
 
 class MongoStoreTest(unittest.TestCase):
@@ -59,11 +59,12 @@ class MongoStoreTest(unittest.TestCase):
         Test listing.
         '''
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.find().AndReturn([{'_id': 'foo', 'content': 'bar'}])
 
         self.mocker.ReplayAll()
-        tmp = self.cut.list_objects('123')
+        tmp = self.cut.list_objects('123', 'abc')
         self.mocker.VerifyAll()
 
         self.assertListEqual(tmp, ['foo'])
@@ -73,11 +74,12 @@ class MongoStoreTest(unittest.TestCase):
         Test creation.
         '''
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.insert({'value': {'foo': 'bar'}}).AndReturn('foo123')
 
         self.mocker.ReplayAll()
-        tmp = self.cut.create_object('123', {'foo': 'bar'})
+        tmp = self.cut.create_object('123', 'abc', {'foo': 'bar'})
         self.mocker.VerifyAll()
 
         self.assertEquals(tmp, 'foo123')
@@ -87,12 +89,14 @@ class MongoStoreTest(unittest.TestCase):
         Test retrieval.
         '''
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.find_one(mox.IsA(dict)).AndReturn({'value':
                                                            {'foo': 'bar'}})
 
         self.mocker.ReplayAll()
-        tmp = self.cut.retrieve_object('123', '520f896217b168455c7d5fb9')
+        tmp = self.cut.retrieve_object('123', 'abc',
+                                       '520f896217b168455c7d5fb9')
         self.mocker.VerifyAll()
 
         self.assertEquals(tmp, {'foo': 'bar'})
@@ -102,11 +106,13 @@ class MongoStoreTest(unittest.TestCase):
         Test retrieval.
         '''
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.update(mox.IsA(dict), mox.IsA(dict), upsert=False)
 
         self.mocker.ReplayAll()
-        self.cut.update_object('123', '520f896217b168455c7d5fb9', {'a': 123})
+        self.cut.update_object('123', 'abc', '520f896217b168455c7d5fb9',
+                               {'a': 123})
         self.mocker.VerifyAll()
 
     def test_delete_object_for_sanity(self):
@@ -114,11 +120,12 @@ class MongoStoreTest(unittest.TestCase):
         Test removeal.
         '''
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
+        self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.remove(mox.IsA(dict))
 
         self.mocker.ReplayAll()
-        self.cut.delete_object('123', '520f896217b168455c7d5fb9')
+        self.cut.delete_object('123', 'abc', '520f896217b168455c7d5fb9')
         self.mocker.VerifyAll()
 
 

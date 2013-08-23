@@ -3,13 +3,15 @@
 '''
 Main WSGI based app.
 
-Assumes that there is an 'UID' key in the environ. Please make sure that the
-WSGI middleware adds this.
+Assumes that there is an 'UID' & TOKEN key in the environ. Please make sure
+that
+the WSGI middleware adds this.
 '''
 
 __author__ = 'tmetsch'
 
 import bottle
+import inspect
 import os
 
 from StringIO import StringIO
@@ -24,17 +26,20 @@ class AnalyticsApp(object):
     'get_wsgi_app'.
     '''
 
-    def __init__(self, host, port):
+    def __init__(self, uri):
         '''
         Initialize the Web Application
 
-        :param host: Hostname of a MongoDB server.
-        :param port: Port of a MongoDB server.
+        :param uri: Connection details for MongoDB.
         '''
         self.app = bottle.Bottle()
+
+        self.pth = os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
+
         # TODO: look into supporting other store types.
-        self.obj_str = data.object_store.MongoStore(host, port)
-        self.ntb_str = analytics.notebooks.NotebookStore(host, port)
+        self.obj_str = data.object_store.MongoStore(uri)
+        self.ntb_str = analytics.notebooks.NotebookStore(uri)
         self._setup_routing()
 
     def _setup_routing(self):
@@ -86,7 +91,7 @@ class AnalyticsApp(object):
         '''
         Initial view.
         '''
-        uid = bottle.request.get_header('X-Uid')
+        uid, _ = self._get_cred()
         return {'uid': uid}
 
     def static(self, filepath):
@@ -94,7 +99,7 @@ class AnalyticsApp(object):
         Serve static files.
         :param filepath:
         '''
-        return bottle.static_file('web/static/' + filepath, root='..')
+        return bottle.static_file('/static/' + filepath, root=self.pth)
 
     # Data
 
@@ -103,21 +108,21 @@ class AnalyticsApp(object):
         '''
         List all data sources.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        tmp = self.obj_str.list_objects(uid)
+        uid, token = self._get_cred()
+        tmp = self.obj_str.list_objects(uid, token)
         return {'data_objs': tmp, 'streams': None, 'uid': uid}
 
     def create_data_source(self):
         '''
         Create a new data source.
         '''
-        uid = bottle.request.get_header('X-Uid')
+        uid, token = self._get_cred()
         upload = bottle.request.files.get('upload')
         name, ext = os.path.splitext(upload.filename)
         if ext not in '.json':
             return 'File extension not supported.'
 
-        self.obj_str.create_object(uid, upload.file.getvalue())
+        self.obj_str.create_object(uid, token, upload.file.getvalue())
         bottle.redirect('/data')
 
     @bottle.view('data_src.tmpl')
@@ -127,8 +132,8 @@ class AnalyticsApp(object):
 
         :param iden: Data source identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        tmp = self.obj_str.retrieve_object(uid, iden)
+        uid, token = self._get_cred()
+        tmp = self.obj_str.retrieve_object(uid, token, iden)
         return {'iden': iden, 'content': tmp, 'uid': uid}
 
     def delete_data_source(self, iden):
@@ -137,8 +142,8 @@ class AnalyticsApp(object):
 
         :param iden: Data source identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        self.obj_str.delete_object(uid, iden)
+        uid, token = self._get_cred()
+        self.obj_str.delete_object(uid, token, iden)
         bottle.redirect('/data')
 
     # Analysis part
@@ -148,8 +153,8 @@ class AnalyticsApp(object):
         '''
         Lists all notebooks.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        tmp = self.ntb_str.list_notebooks(uid)
+        uid, token = self._get_cred()
+        tmp = self.ntb_str.list_notebooks(uid, token)
         return {'notebooks': tmp, 'uid': uid}
 
     def create_notebook(self):
@@ -158,7 +163,7 @@ class AnalyticsApp(object):
 
         When code is uploaded add it to the notebook.
         '''
-        uid = bottle.request.get_header('X-Uid')
+        uid, token = self._get_cred()
         iden = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
         code = []
@@ -169,7 +174,7 @@ class AnalyticsApp(object):
 
             code = upload.file.getvalue().split('\n')
 
-        self.ntb_str.get_notebook(uid, iden, init_code=code)
+        self.ntb_str.get_notebook(uid, token, iden, init_code=code)
         bottle.redirect('/analysis')
 
     @bottle.view('notebook.tmpl')
@@ -179,8 +184,8 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        ntb = self.ntb_str.get_notebook(uid, iden)
+        uid, token = self._get_cred()
+        ntb = self.ntb_str.get_notebook(uid, token, iden)
         res = ntb.get_results()
         return {'iden': iden, 'uid': uid, 'output': res,
                 'default': ntb.white_space}
@@ -191,8 +196,8 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        self.ntb_str.delete_notebook(uid, iden)
+        uid, token = self._get_cred()
+        self.ntb_str.delete_notebook(uid, token, iden)
         bottle.redirect('/analysis')
 
     def add_item_to_notebook(self, iden, old_id):
@@ -203,8 +208,8 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         cmd = bottle.request.forms['cmd']
-        uid = bottle.request.get_header('X-Uid')
-        ntb = self.ntb_str.get_notebook(uid, iden)
+        uid, token = self._get_cred()
+        ntb = self.ntb_str.get_notebook(uid, token, iden)
         if cmd == '':
             ntb.update_line(old_id, '\n', replace=False)
         elif len(ntb.white_space) != 0:
@@ -221,8 +226,8 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         :param iden: Notebook identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        ntb = self.ntb_str.get_notebook(uid, iden)
+        uid, token = self._get_cred()
+        ntb = self.ntb_str.get_notebook(uid, token, iden)
         if bottle.request.GET.get('save', '').strip():
             line = bottle.request.GET.get('cmd', '').strip()
             ntb.update_line(line_id, line)
@@ -238,8 +243,8 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         :param iden: Notebook identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        ntb = self.ntb_str.get_notebook(uid, iden)
+        uid, token = self._get_cred()
+        ntb = self.ntb_str.get_notebook(uid, token, iden)
         ntb.remove_line(line_id)
         bottle.redirect('/analysis/' + iden)
 
@@ -249,8 +254,8 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid = bottle.request.get_header('X-Uid')
-        tmp = self.ntb_str.get_notebook(uid, iden)
+        uid, token = self._get_cred()
+        tmp = self.ntb_str.get_notebook(uid, token, iden)
         tmp_file = StringIO()
         for item in analytics.notebooks.PRELOAD.split('\n'):
             tmp_file.write(item + '\n')
@@ -273,5 +278,17 @@ class AnalyticsApp(object):
         '''
         Processing part.
         '''
-        uid = bottle.request.get_header('X-Uid')
+        uid, _ = self._get_cred()
         return {'uid': uid}
+
+    # Misc
+
+    def _get_cred(self):
+        '''
+        Retrieve user credentials.
+
+        :return: Set of credentials for this request.
+        '''
+        uid = bottle.request.get_header('X-Uid')
+        pw = bottle.request.get_header('X-Token')
+        return uid, pw

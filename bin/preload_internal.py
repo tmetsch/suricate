@@ -20,14 +20,16 @@ Will be preloaded and only run internally.
 
 import base64
 import json
+import os
 import urllib
 
 from StringIO import StringIO
 
 from data import object_store
 
-
-obj_str = object_store.MongoStore('localhost', 27017)
+obj_str = object_store.MongoStore(OBJECT_STORE_URI)
+# To hide some stuff from the user.
+os.environ = []
 
 
 def plot():
@@ -47,7 +49,7 @@ def list_objects():
     '''
     List available object ids.
     '''
-    print obj_str.list_objects(str(suricate_uid))
+    print obj_str.list_objects(str(UID), str(TOKEN))
 
 
 def get_object(iden):
@@ -56,4 +58,4 @@ def get_object(iden):
 
     :param iden: Identifier of the object.
     '''
-    return json.loads(obj_str.retrieve_object(str(suricate_uid), iden))
+    return json.loads(obj_str.retrieve_object(str(UID), str(TOKEN), iden))
