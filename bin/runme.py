@@ -18,8 +18,8 @@ config.read('app.conf')
 # MongoDB connection
 host = config.get('mongo', 'host')
 port = config.get('mongo', 'port')
-adm = config.get('admin', 'host')
-pwd = config.get('pwd', 'port')
+adm = config.get('mongo', 'admin')
+pwd = config.get('mongo', 'pwd')
 
 # dict with <username>:<token>
 USERS = {'foo': 'bar'}
@@ -33,8 +33,7 @@ def check_database(user, pw):
     :param user: username.
     '''
     # authenticate as user admin...
-    uri = 'mongodb://' + adm + ':' + pwd + '@' + host + ':' + port + ' \
-                                                            ''/admin'
+    uri = 'mongodb://' + adm + ':' + pwd + '@' + host + ':' + port + '/admin'
     client = pymongo.MongoClient(uri)
 
     # if user doesn't exist create new DB!
@@ -54,7 +53,8 @@ def authorize(user):
     if user in USERS.keys():
         check_database(user, USERS[user])
         return True
-    return False
+    else:
+        return False
 
 
 class SessionMiddleWare(object):
@@ -66,7 +66,7 @@ class SessionMiddleWare(object):
         self.wrap_app = app_to_wrap
 
     def __call__(self, environ, start_response):
-        user = '123'
+        user = 'foo'
         if authorize(user):
             environ['HTTP_X_UID'] = user
             environ['HTTP_X_TOKEN'] = USERS[user]

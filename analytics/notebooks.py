@@ -218,7 +218,7 @@ class NotebookStore(object):
                                               as_class=OrderedDict)
             wrapper = ConsoleWrapper(content['_id'], collection,
                                      content['code'], uid, token,
-                                     self.client.HOST, self.client.PORT)
+                                     self.client.host, self.client.port)
 
             # uploaded code...
             to_add = []

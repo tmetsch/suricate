@@ -49,7 +49,7 @@ def list_objects():
     '''
     List available object ids.
     '''
-    print obj_str.list_objects(str(UID), str(TOKEN))
+    return obj_str.list_objects(str(UID), str(TOKEN))
 
 
 def get_object(iden):
