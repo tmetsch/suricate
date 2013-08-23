@@ -13,4 +13,6 @@
 * Processing:
     * include external compute capacities?
     * Hadoop support?
+* web ui
+    * responsive layout
 * package to be runable in OpenShift or similar
