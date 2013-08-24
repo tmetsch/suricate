@@ -29,7 +29,7 @@ from data import object_store
 
 obj_str = object_store.MongoStore(OBJECT_STORE_URI)
 # To hide some stuff from the user.
-os.environ = []
+os.environ = {}
 
 
 def plot():

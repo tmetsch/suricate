@@ -40,7 +40,7 @@ To list the objects and then retrieve the just created one add:
 
 Now we can plot it:
 
-    pyplot.bar(range(0,8, tmp['server1'])
+    pyplot.bar(range(0,8), tmp['server1'])
     plot()
 
 Now we will do sth very simple! You can add
@@ -139,6 +139,15 @@ The configuration file supports some simple configuration settings:
     which will be exported when the notebook is downloaded.
     * The *preload_int* script which will be loaded for each notebook to
     offer some convenience routines.
+
+## OpenShift
+
+Installing numpy and matplotlib
+
+    $ rhc ssh suricate
+    $ cd $OPENSHIFT_DATA_DIR
+    $ source ~/python/bin/activate_virtenv
+    $ pip install numpy
 
 # Security considerations
 
