@@ -72,7 +72,7 @@ class ConsoleWrapper(object):
         # set User identifier and tell where object store is.
         self.console.push('UID = \'' + str(uid) + '\'')
         self.console.push('TOKEN = \'' + str(token) + '\'')
-        # str(uid) + ':' + str(token) + '@' +
+        # TODO: figure out better way to do this.
         uri = 'mongodb://' + str(host) + ':' + str(port) + '/' + str(uid)
         self.console.push('OBJECT_STORE_URI = \'' + str(uri) + '\'')
         self.console.runcode(PRELOAD)

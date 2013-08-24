@@ -11,6 +11,18 @@ import pymongo
 from bson import ObjectId
 
 
+def get_object_stor(uri):
+    '''
+    Returns the right instance of a object storage interface object for an
+    given URI.
+
+    :param uri: The URI of the object storage.
+    :return: Instance of ObjectStore.
+    '''
+    # TODO: implement
+    pass
+
+
 class ObjectStore(object):
     '''
     Stores need to derive from this one.

@@ -30,6 +30,7 @@ class AnalyticsApp(object):
         '''
         Initialize the Web Application
 
+        # TODO: uri for obj and notebook str.
         :param uri: Connection details for MongoDB.
         '''
         self.app = bottle.Bottle()
