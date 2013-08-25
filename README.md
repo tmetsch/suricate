@@ -85,7 +85,15 @@ externally via an API (by a cron job?). The clean split of learning
 
 # Running it
 
-Currently only a [MongoDB](http://www.mongodb.org) is needed.
+Currently only a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
+
+    db = db.getSiblingDB('admin')
+    db.addUser( { user: "admin", pwd: "secret",
+                  roles: [ "clusterAdmin", "userAdminAnyDatabase" ] } )
+
+Then run mongod:
+
+    mongod --dbapth <path> --auth
 
 ## For Development & local
 
@@ -115,17 +123,9 @@ To get the app do the following:
     from web import wsgi_app
     app = wsgi_app.AnalyticsApp(<Mongo URI>).get_wsgi_app()
 
-Please note that the usage of TLS is highly recommend! Add a admin user:
+Please note that the usage of TLS is highly recommend!
 
-	db = db.getSiblingDB('admin')
-	db.addUser( { user: "admin", pwd: "secret",
-	              roles: [ "clusterAdmin", "userAdminAnyDatabase" ] } )
-
-Then run mongod:
-
-	mongod --dbapth <path> --auth
-
-Authorization can be done in the WSGI Middlware.
+Authentication/Authorization can be done in the WSGI Middlware.
 
 ## Configuration
 
