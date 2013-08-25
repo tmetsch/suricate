@@ -21,17 +21,19 @@ port = config.get('mongo', 'port')
 adm = config.get('mongo', 'admin')
 pwd = config.get('mongo', 'pwd')
 
-# dict with <username>:<token>
-USERS = {'foo': 'bar'}
+# dict with <username>:(<token>,<db_exists>)
+USERS = {'foo': ('bar', False)}
 
 
-def check_database(user, pw):
+def check_database(user):
     '''
     Checks if database for a user exists, if not creates it.
 
-    :param pw: pw of ther user.
     :param user: username.
     '''
+    if USERS[user][1]:
+        return
+
     # authenticate as user admin...
     uri = 'mongodb://' + adm + ':' + pwd + '@' + host + ':' + port + '/admin'
     client = pymongo.MongoClient(uri)
@@ -39,7 +41,10 @@ def check_database(user, pw):
     # if user doesn't exist create new DB!
     if user not in client.database_names():
         db = client[user]
-        db.add_user(user, pw, roles=['readWrite'])
+        db.add_user(user, USERS[user][0], roles=['readWrite'])
+        USERS[user] = (USERS[user][0], True)
+    else:
+        USERS[user] = (USERS[user][0], True)
     client.disconnect()
 
 
@@ -51,7 +56,7 @@ def authorize(user):
     :return: True or False.
     """
     if user in USERS.keys():
-        check_database(user, USERS[user])
+        check_database(user)
         return True
     else:
         return False
@@ -69,7 +74,7 @@ class SessionMiddleWare(object):
         user = 'foo'
         if authorize(user):
             environ['HTTP_X_UID'] = user
-            environ['HTTP_X_TOKEN'] = USERS[user]
+            environ['HTTP_X_TOKEN'] = USERS[user][0]
             return self.wrap_app(environ, start_response)
 
 app = wsgi_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()

@@ -43,9 +43,8 @@
     </div>
 </div>
 <p>
-    <form
-        action="/analysis/delete/{{iden}}" method="post"><input type="submit"
-        value="Delete" />
+    <form action="/analysis/delete/{{iden}}" method="post">
+        <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
     </form>
     <form action="/analysis/download/{{iden}}" method="GET">
         <input type="submit" value="Download">
