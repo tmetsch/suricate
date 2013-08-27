@@ -1,54 +1,56 @@
 <div class="header">
-    <h1><a href="/">Suricate</a></h1>
     <ul class="menu">
-        <li class="bgyellow"><a href="/process">Processing</a></li>
-        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgred"><a href="/">Home</a></li>
         <li class="bgblue"><a href="/data">Data Sources</a></li>
+        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgyellow"><a href="/process">Processing</a></li>
     </ul>
 </div>
-<h3>Analytic: {{iden}}</h3>
-% for k in output:
-<div class="entry">
-    <div class="left">
-        <form action="/analysis/{{iden}}/remove/{{k}}" method="post">
-            <input type="submit" value="remove">
-        </form>
-        <form action="/analysis/{{iden}}/edit/{{k}}" method="get">
-            <input type="submit" value="edit">
-        </form>
+<div class="content">
+    <h3>Analytic: {{iden}}</h3>
+    % for k in output:
+    <div class="entry">
+        <div class="left">
+            <form action="/analysis/{{iden}}/remove/{{k}}" method="post">
+                <input type="submit" value="remove">
+            </form>
+            <form action="/analysis/{{iden}}/edit/{{k}}" method="get">
+                <input type="submit" value="edit">
+            </form>
+        </div>
+        <div class="right">
+            % if output[k][0].lstrip()[:1] == '#':
+            <p>{{output[k][0].lstrip()[1:]}}</p>
+            % else:
+            <div class="code">{{output[k][0].lstrip()}}</div>
+            % end
+            % if output[k][1][:4] == 'data':
+            <img src="{{output[k][1]}}"/>
+            % elif output[k][1].strip() != '':
+            <div class="output">{{output[k][1].rstrip()}}</div>
+            % end
+        </div>
     </div>
-    <div class="right">
-        % if output[k][0].lstrip()[:1] == '#':
-        <p>{{output[k][0].lstrip()[1:]}}</p>
-        % else:
-        <div class="code">{{output[k][0].lstrip()}}</div>
-        % end
-        % if output[k][1][:4] == 'data':
-        <img src="{{output[k][1]}}"/>
-        % elif output[k][1].strip() != '':
-        <div class="output">{{output[k][1].rstrip()}}</div>
-        % end
+    % end
+    <div class="entry">
+        <div class="right">
+            % if len(output) > 0:
+            <form action="/analysis/{{iden}}/add/{{k}}" method="post">
+            % else:
+            <form action="/analysis/{{iden}}/add/1" method="post">
+            % end
+                <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
+            </form>
+        </div>
     </div>
+    <p>
+        <form action="/analysis/delete/{{iden}}" method="post">
+            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+        </form>
+        <form action="/analysis/download/{{iden}}" method="GET">
+            <input type="submit" value="Download">
+        </form>
+    </p>
+    <p><small>Welcome user: {{uid}}</small></p>
 </div>
-% end
-<div class="entry">
-    <div class="right">
-        % if len(output) > 0:
-        <form action="/analysis/{{iden}}/add/{{k}}" method="post">
-        % else:
-        <form action="/analysis/{{iden}}/add/1" method="post">
-        % end
-            <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
-        </form>
-    </div>
-</div>
-<p>
-    <form action="/analysis/delete/{{iden}}" method="post">
-        <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-    </form>
-    <form action="/analysis/download/{{iden}}" method="GET">
-        <input type="submit" value="Download">
-    </form>
-</p>
-<p><small>Welcome user: {{uid}}</small></p>
 %rebase base.tmpl title='Suricate - Analysis'

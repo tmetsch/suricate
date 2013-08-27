@@ -2,6 +2,11 @@ body {
     font-family: source-sans-pro, sans-serif;
     font-size: 1em;
     color: #444;
+    background: #fefefe;
+    margin: 0;
+}
+.content {
+    padding: 0.7em;
 }
 .centercontent {
     width: 100%;
@@ -27,14 +32,16 @@ body {
     display: table-cell;
     padding: 1em;
     width: 300px;
+    box-shadow: 10px 10px 20px #ccc;
 }
 .sep {
     display: table-cell;
     width: 1em;
 }
 .header {
-    height: 2.4em;
-    border-bottom: 1px solid #444;
+    background: #444;
+    overflow: auto;
+    box-shadow: 0 10px 20px -2px #ccc;
 }
 .code {
     background: #eee;
@@ -44,15 +51,15 @@ code {
     white-space: pre-wrap;
 }
 /* menu */
+.menu {
+    padding-left: 0.7em;
+}
 .menu ul {
-    margin: 0px;
-    padding: 0px;
+    list-style-type: none;
 }
 .menu li {
-    list-style-type: none;
-    float: right;
+    display: inline;
     padding: 0.3em;
-    margin-right: 0.5em;
 }
 .menu li a {
     color: #fff;
@@ -107,12 +114,6 @@ h2 {
     font-size: 4vw;
     color: #00bfff;
 }
-.header h1 {
-    color: #60c52d;
-    float: left;
-    font-size: 2em;
-    margin: 0.3em;
-}
 .header a {
     color: #60c52d;
     text-decoration: none;
@@ -136,4 +137,7 @@ h2 {
 }
 .bgyellow {
     background: #ffb400;
+}
+.bgred {
+    background: #d00;
 }
