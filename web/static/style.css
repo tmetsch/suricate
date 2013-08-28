@@ -1,8 +1,8 @@
 body {
     font-family: source-sans-pro, sans-serif;
     font-size: 1em;
-    color: #444;
     background: #fefefe;
+    color: #444;
     margin: 0;
 }
 .content {
@@ -13,6 +13,8 @@ body {
     height: 100%;
     clear: both;
     position: relative;
+    background: #444;
+    color: #fefefe;
 }
 .abscenter {
     height: 50%;
@@ -32,11 +34,11 @@ body {
     display: table-cell;
     padding: 1em;
     width: 300px;
-    box-shadow: 10px 10px 20px #ccc;
+    box-shadow: 10px 10px 20px #222;
 }
 .sep {
     display: table-cell;
-    width: 1em;
+    width: 1.5em;
 }
 .header {
     background: #444;
