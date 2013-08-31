@@ -16,5 +16,6 @@ setup(name='suricate',
       author_email='tmetsch@engjoy.eu',
       url='http://www.engjoy.eu',
       packages=['analytics', 'data', 'web'],
-      requires=['bottle', 'pymongo', 'matplotlib'],
+      # for prod also requires whatever you put in prelaods.
+      requires=['bottle', 'pymongo', 'matplotlib', 'pika'],
      )

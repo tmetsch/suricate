@@ -9,18 +9,29 @@
 <div class="content">
     <h3>Objects</h3>
     <ul>
-    % for obj in data_objs:
-        <li><a href="/data/{{obj}}">{{obj}}</a></li>
+    % for iden in data_objs:
+        <li><a href="/data/object/{{iden}}">{{iden}}</a></li>
     % end
     </ul>
     <p>
-        <form action="/data/upload" method="post" enctype="multipart/form-data">
+        <form action="/data/object/new" method="post" enctype="multipart/form-data">
             Select a file: <input type="file" name="upload" />
             <input type="submit" value="Start upload" />
         </form>
     </p>
     <h3>Streams</h3>
-    <p>AMQP streams coming soon</p>
+    <ul>
+    % for iden in data_streams:
+        <li><a href="/data/stream/{{iden}}">{{iden}}</a></li>
+    % end
+    </ul>
+    <p>
+        <form action="/data/stream/new" method="post" enctype="multipart/form-data">
+            URI: <input type="text" size="70" name="uri">
+            Queue: <input type="text" size="10" name="queue">
+            <input type="submit" value="New" />
+        </form>
+    </p>
     <p><small>Welcome user: {{uid}}</small></p>
 </div>
 %rebase base.tmpl title='Suricate - Data'

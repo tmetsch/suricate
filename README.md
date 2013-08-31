@@ -36,7 +36,7 @@ created notebook. From here on it is just some Python coding.
 To list the objects and then retrieve the just created one add:
 
     list_objects()
-    tmp = get_object('<id>')
+    tmp = retrieve_object('<id>')
 
 Now we can plot it:
 
@@ -54,7 +54,7 @@ those.
 
 Now we will store that value:
 
-    create_object({'mean_server1': mean})
+    create_object({'meanserver': mean})
 
 Note the edit and remove capabilities of the notebooks as well.
 
@@ -63,12 +63,13 @@ Note the edit and remove capabilities of the notebooks as well.
 Just like the analytics part the processing is done in Python. Lets load the
 model we just learned:
 
-    mean = get_object('<id_of_mean_obj>')['mean_server1']
+    mean = retrieve_object('<id_of_mean_obj>')['meanserver']
 
 Let's use the streaming data sources to get latest usage percentage from
 **server1**:
 
-*Note*: This is still work in progress
+    list_streams()
+    new_val = get_from_stream('52225c4d17b1684044f86353')[0]['body']
 
 Compare them and run an action when needed:
 

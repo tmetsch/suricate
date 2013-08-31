@@ -3,7 +3,6 @@
 * General
     * Better error handling needed.
 * Data:
-    * Add back the streaming support via AMQP messages
     * Include object storage through CDMI?
 * Setup RESTful interface which supports:
     * Uploading data & notebooks

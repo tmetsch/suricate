@@ -18,6 +18,7 @@ from StringIO import StringIO
 
 import analytics.notebooks
 import data.object_store
+import data.streaming
 
 
 class AnalyticsApp(object):
@@ -40,6 +41,7 @@ class AnalyticsApp(object):
 
         # TODO: look into supporting other store types.
         self.obj_str = data.object_store.MongoStore(uri)
+        self.stream = data.streaming.AMQPClient(uri)
         self.ntb_str = analytics.notebooks.NotebookStore(uri)
         self._setup_routing()
 
@@ -52,12 +54,18 @@ class AnalyticsApp(object):
         # # data
         self.app.route('/data', ['GET'],
                        self.list_data_sources)
-        self.app.route('/data/<iden>', ['GET'],
-                       self.retrieve_data_source)
-        self.app.route('/data/upload', ['POST'],
-                       self.create_data_source)
-        self.app.route('/data/delete/<iden>', ['POST'],
-                       self.delete_data_source)
+        self.app.route('/data/object/<iden>', ['GET'],
+                       self.retrieve_data_obj)
+        self.app.route('/data/object/new', ['POST'],
+                       self.create_data_obj)
+        self.app.route('/data/object/delete/<iden>', ['POST'],
+                       self.delete_data_obj)
+        self.app.route('/data/stream/<iden>', ['GET'],
+                       self.retrieve_data_stream)
+        self.app.route('/data/stream/new', ['POST'],
+                       self.create_data_stream)
+        self.app.route('/data/stream/delete/<iden>', ['POST'],
+                       self.delete_data_stream)
         # analytics
         self.app.route('/analytics', ['GET'],
                        self.list_notebooks)
@@ -111,9 +119,10 @@ class AnalyticsApp(object):
         '''
         uid, token = self._get_cred()
         tmp = self.obj_str.list_objects(uid, token)
-        return {'data_objs': tmp, 'streams': None, 'uid': uid}
+        tmp2 = self.stream.list_streams(uid, token)
+        return {'data_objs': tmp, 'data_streams': tmp2, 'uid': uid}
 
-    def create_data_source(self):
+    def create_data_obj(self):
         '''
         Create a new data source.
         '''
@@ -127,7 +136,7 @@ class AnalyticsApp(object):
         bottle.redirect('/data')
 
     @bottle.view('data_object.tmpl')
-    def retrieve_data_source(self, iden):
+    def retrieve_data_obj(self, iden):
         '''
         Retrieve single data source.
 
@@ -137,7 +146,7 @@ class AnalyticsApp(object):
         tmp = self.obj_str.retrieve_object(uid, token, iden)
         return {'iden': iden, 'content': tmp, 'uid': uid}
 
-    def delete_data_source(self, iden):
+    def delete_data_obj(self, iden):
         '''
         Delete data source.
 
@@ -145,6 +154,38 @@ class AnalyticsApp(object):
         '''
         uid, token = self._get_cred()
         self.obj_str.delete_object(uid, token, iden)
+        bottle.redirect('/data')
+
+    def create_data_stream(self):
+        '''
+        Setup a new data stream.
+        '''
+        uid, token = self._get_cred()
+        uri = bottle.request.forms.get('uri')
+        queue = bottle.request.forms.get('queue')
+        self.stream.create(uid, token, uri, queue)
+        bottle.redirect('/data')
+
+    @bottle.view('data_stream.tmpl')
+    def retrieve_data_stream(self, iden):
+        '''
+        Retrieve stream details.
+
+        :param iden: Identifier of the stream.
+        '''
+        uid, token = self._get_cred()
+        uri, queue, msgs = self.stream.retrieve(uid, token, iden)
+        return {'iden': iden, 'uri': uri, 'queue': queue, 'msgs': msgs,
+                'val': len(msgs), 'uid': uid}
+
+    def delete_data_stream(self, iden):
+        '''
+        Remove a data stream.
+
+        :param iden: Identifier of the stream.
+        '''
+        uid, token = self._get_cred()
+        self.stream.delete(uid, token, iden)
         bottle.redirect('/data')
 
     # Analytics part

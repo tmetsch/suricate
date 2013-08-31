@@ -7,12 +7,22 @@
     </ul>
 </div>
 <div class="content">
-    <h3>Object: {{iden}}</h3>
-    <div class="code">
-        <code>{{content}}</code>
-    </div>
+    <h3>Stream: {{iden}}</h3>
     <p>
-        <form action="/data/object/delete/{{iden}}" method="post">
+        <strong>Connected:</strong> {{uri}}
+        <br />
+        <strong>Queue:</strong> {{queue}}
+    </p>
+    <p>
+        Number of messages received in the last minute: {{val}}
+    </p>
+    % for item in msgs:
+    <div class="code">
+        <code>{{item}}</code>
+    </div>
+    % end
+    <p>
+        <form action="/data/stream/delete/{{iden}}" method="post">
             <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
         </form>
     </p>
