@@ -22,7 +22,7 @@ Create a simple file json file:
       "server3": [80, 80, 80, 80, 90, 85, 80, 80]
     }
 
-Open the browser navigate to http://localhost:8080 and click 'Data Sources'.
+Open the browser navigate to http://localhost:8080 and click 'Data'.
  Select the file an upload it.
 
 *Note*: Support for AMQP data streams will be added soon.

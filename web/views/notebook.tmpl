@@ -1,8 +1,8 @@
 <div class="header">
     <ul class="menu">
         <li class="bgred"><a href="/">Home</a></li>
-        <li class="bgblue"><a href="/data">Data Sources</a></li>
-        <li class="bggreen"><a href="/analysis">Analysis</a></li>
+        <li class="bgblue"><a href="/data">Data</a></li>
+        <li class="bggreen"><a href="/analytics">Analytics</a></li>
         <li class="bgyellow"><a href="/process">Processing</a></li>
     </ul>
 </div>
@@ -11,10 +11,10 @@
     % for k in output:
     <div class="entry">
         <div class="left">
-            <form action="/analysis/{{iden}}/remove/{{k}}" method="post">
+            <form action="/analytics/{{iden}}/remove/{{k}}" method="post">
                 <input type="submit" value="remove">
             </form>
-            <form action="/analysis/{{iden}}/edit/{{k}}" method="get">
+            <form action="/analytics/{{iden}}/edit/{{k}}" method="get">
                 <input type="submit" value="edit">
             </form>
         </div>
@@ -35,22 +35,22 @@
     <div class="entry">
         <div class="right">
             % if len(output) > 0:
-            <form action="/analysis/{{iden}}/add/{{k}}" method="post">
+            <form action="/analytics/{{iden}}/add/{{k}}" method="post">
             % else:
-            <form action="/analysis/{{iden}}/add/1" method="post">
+            <form action="/analytics/{{iden}}/add/1" method="post">
             % end
                 <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
             </form>
         </div>
     </div>
     <p>
-        <form action="/analysis/delete/{{iden}}" method="post">
+        <form action="/analytics/delete/{{iden}}" method="post">
             <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
         </form>
-        <form action="/analysis/download/{{iden}}" method="GET">
+        <form action="/analytics/download/{{iden}}" method="GET">
             <input type="submit" value="Download">
         </form>
     </p>
     <p><small>Welcome user: {{uid}}</small></p>
 </div>
-%rebase base.tmpl title='Suricate - Analysis'
+%rebase base.tmpl title='Suricate - Analytics'

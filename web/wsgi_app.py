@@ -58,22 +58,22 @@ class AnalyticsApp(object):
                        self.create_data_source)
         self.app.route('/data/delete/<iden>', ['POST'],
                        self.delete_data_source)
-        # analysis
-        self.app.route('/analysis', ['GET'],
+        # analytics
+        self.app.route('/analytics', ['GET'],
                        self.list_notebooks)
-        self.app.route('/analysis/<iden>', ['GET'],
+        self.app.route('/analytics/<iden>', ['GET'],
                        self.retrieve_notebook)
-        self.app.route('/analysis/<iden>/add/<old_id>', ['POST'],
+        self.app.route('/analytics/<iden>/add/<old_id>', ['POST'],
                        self.add_item_to_notebook)
-        self.app.route('/analysis/<iden>/edit/<line_id>', ['GET'],
+        self.app.route('/analytics/<iden>/edit/<line_id>', ['GET'],
                        self.edit_item_in_notebook)
-        self.app.route('/analysis/<iden>/remove/<line_id>', ['POST'],
+        self.app.route('/analytics/<iden>/remove/<line_id>', ['POST'],
                        self.remove_item_from_notebook)
-        self.app.route('/analysis/upload', ['POST'],
+        self.app.route('/analytics/upload', ['POST'],
                        self.create_notebook)
-        self.app.route('/analysis/download/<iden>', ['GET'],
+        self.app.route('/analytics/download/<iden>', ['GET'],
                        self.download_notebook)
-        self.app.route('/analysis/delete/<iden>', ['POST'],
+        self.app.route('/analytics/delete/<iden>', ['POST'],
                        self.delete_notebook)
         # processing
         self.app.route('/process', ['GET'],
@@ -126,7 +126,7 @@ class AnalyticsApp(object):
         self.obj_str.create_object(uid, token, upload.file.getvalue())
         bottle.redirect('/data')
 
-    @bottle.view('data_src.tmpl')
+    @bottle.view('data_object.tmpl')
     def retrieve_data_source(self, iden):
         '''
         Retrieve single data source.
@@ -147,7 +147,7 @@ class AnalyticsApp(object):
         self.obj_str.delete_object(uid, token, iden)
         bottle.redirect('/data')
 
-    # Analysis part
+    # Analytics part
 
     @bottle.view('notebooks.tmpl')
     def list_notebooks(self):
@@ -176,7 +176,7 @@ class AnalyticsApp(object):
             code = upload.file.getvalue().split('\n')
 
         self.ntb_str.get_notebook(uid, token, iden, init_code=code)
-        bottle.redirect('/analysis')
+        bottle.redirect('/analytics')
 
     @bottle.view('notebook.tmpl')
     def retrieve_notebook(self, iden):
@@ -199,7 +199,7 @@ class AnalyticsApp(object):
         '''
         uid, token = self._get_cred()
         self.ntb_str.delete_notebook(uid, token, iden)
-        bottle.redirect('/analysis')
+        bottle.redirect('/analytics')
 
     def add_item_to_notebook(self, iden, old_id):
         '''
@@ -217,7 +217,7 @@ class AnalyticsApp(object):
             ntb.update_line(old_id, '\n' + cmd, replace=False)
         else:
             ntb.add_line(cmd)
-        bottle.redirect('/analysis/' + iden)
+        bottle.redirect('/analytics/' + iden)
 
     @bottle.view('edit_code.tmpl')
     def edit_item_in_notebook(self, iden, line_id):
@@ -232,7 +232,7 @@ class AnalyticsApp(object):
         if bottle.request.GET.get('save', '').strip():
             line = bottle.request.GET.get('cmd', '').strip()
             ntb.update_line(line_id, line)
-            bottle.redirect("/analysis/" + iden)
+            bottle.redirect("/analytics/" + iden)
         else:
             code = ntb.src[line_id]
             return {'uid': uid, 'url': iden, 'old': code, 'line_id': line_id}
@@ -247,7 +247,7 @@ class AnalyticsApp(object):
         uid, token = self._get_cred()
         ntb = self.ntb_str.get_notebook(uid, token, iden)
         ntb.remove_line(line_id)
-        bottle.redirect('/analysis/' + iden)
+        bottle.redirect('/analytics/' + iden)
 
     def download_notebook(self, iden):
         '''
