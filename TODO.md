@@ -3,13 +3,14 @@
 * General
     * Better error handling needed.
 * Data:
+    * in memory DB support...
     * Include object storage through CDMI?
 * Setup RESTful interface which supports:
     * Uploading data & notebooks
     * Add new streaming sources
     * trigger processing & analytics external
         * so you can write cron jobs :-)
-* Processing:
+* Analytics/Processing:
     * include external compute capacities?
     * Hadoop support?
 * web ui

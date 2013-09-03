@@ -77,8 +77,9 @@ class SessionMiddleWare(object):
             environ['HTTP_X_TOKEN'] = USERS[user][0]
             return self.wrap_app(environ, start_response)
 
-app = wsgi_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()
-app = SessionMiddleWare(app)
+if __name__ == '__main__':
+    app = wsgi_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()
+    app = SessionMiddleWare(app)
 
-bottle.TEMPLATE_PATH.insert(0, '../web/views')
-bottle.run(app=app, host='localhost')
+    bottle.TEMPLATE_PATH.insert(0, '../web/views')
+    bottle.run(app=app, host='localhost')

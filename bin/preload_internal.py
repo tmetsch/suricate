@@ -70,7 +70,6 @@ def retrieve_object(iden):
     :param iden: Identifier of the object.
     '''
     tmp = obj_str.retrieve_object(str(UID), str(TOKEN), iden)
-    print tmp
     return json.loads(tmp)
 
 

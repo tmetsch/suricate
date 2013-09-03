@@ -42,7 +42,11 @@ class AnalyticsApp(object):
         # TODO: look into supporting other store types.
         self.obj_str = data.object_store.MongoStore(uri)
         self.stream = data.streaming.AMQPClient(uri)
-        self.ntb_str = analytics.notebooks.NotebookStore(uri)
+        self.analytics_ntbs = analytics.notebooks.NotebookStore(uri,
+                                                                'analytics')
+        self.processing_ntbs = analytics.notebooks.NotebookStore(uri,
+                                                                 'processing')
+
         self._setup_routing()
 
     def _setup_routing(self):
@@ -84,8 +88,22 @@ class AnalyticsApp(object):
         self.app.route('/analytics/delete/<iden>', ['POST'],
                        self.delete_notebook)
         # processing
-        self.app.route('/process', ['GET'],
-                       self.list_processings)
+        self.app.route('/processing', ['GET'],
+                       self.list_notebooks)
+        self.app.route('/processing/<iden>', ['GET'],
+                       self.retrieve_notebook)
+        self.app.route('/processing/<iden>/add/<old_id>', ['POST'],
+                       self.add_item_to_notebook)
+        self.app.route('/processing/<iden>/edit/<line_id>', ['GET'],
+                       self.edit_item_in_notebook)
+        self.app.route('/processing/<iden>/remove/<line_id>', ['POST'],
+                       self.remove_item_from_notebook)
+        self.app.route('/processing/upload', ['POST'],
+                       self.create_notebook)
+        self.app.route('/processing/download/<iden>', ['GET'],
+                       self.download_notebook)
+        self.app.route('/processing/delete/<iden>', ['POST'],
+                       self.delete_notebook)
 
     def get_wsgi_app(self):
         '''
@@ -188,7 +206,7 @@ class AnalyticsApp(object):
         self.stream.delete(uid, token, iden)
         bottle.redirect('/data')
 
-    # Analytics part
+    # Analytics/Processing part
 
     @bottle.view('notebooks.tmpl')
     def list_notebooks(self):
@@ -196,8 +214,9 @@ class AnalyticsApp(object):
         Lists all notebooks.
         '''
         uid, token = self._get_cred()
-        tmp = self.ntb_str.list_notebooks(uid, token)
-        return {'notebooks': tmp, 'uid': uid}
+        name, ntbs = self._get_ntb_backend()
+        tmp = ntbs.list_notebooks(uid, token)
+        return {'notebooks': tmp, 'name': name, 'uid': uid}
 
     def create_notebook(self):
         '''
@@ -206,18 +225,19 @@ class AnalyticsApp(object):
         When code is uploaded add it to the notebook.
         '''
         uid, token = self._get_cred()
+        name, ntbs = self._get_ntb_backend()
         iden = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
         code = []
         if upload is not None:
-            name, ext = os.path.splitext(upload.filename)
+            _, ext = os.path.splitext(upload.filename)
             if ext not in '.py':
                 return 'File extension not supported.'
 
             code = upload.file.getvalue().split('\n')
 
-        self.ntb_str.get_notebook(uid, token, iden, init_code=code)
-        bottle.redirect('/analytics')
+        ntbs.get_notebook(uid, token, iden, init_code=code)
+        bottle.redirect('/' + name)
 
     @bottle.view('notebook.tmpl')
     def retrieve_notebook(self, iden):
@@ -227,10 +247,11 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         uid, token = self._get_cred()
-        ntb = self.ntb_str.get_notebook(uid, token, iden)
+        name, ntbs = self._get_ntb_backend()
+        ntb = ntbs.get_notebook(uid, token, iden)
         res = ntb.get_results()
-        return {'iden': iden, 'uid': uid, 'output': res,
-                'default': ntb.white_space}
+        return {'iden': iden, 'output': res, 'default': ntb.white_space,
+                'name': name, 'uid': uid}
 
     def delete_notebook(self, iden):
         '''
@@ -239,8 +260,9 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         uid, token = self._get_cred()
-        self.ntb_str.delete_notebook(uid, token, iden)
-        bottle.redirect('/analytics')
+        name, ntbs = self._get_ntb_backend()
+        ntbs.delete_notebook(uid, token, iden)
+        bottle.redirect('/' + name)
 
     def add_item_to_notebook(self, iden, old_id):
         '''
@@ -251,14 +273,15 @@ class AnalyticsApp(object):
         '''
         cmd = bottle.request.forms['cmd']
         uid, token = self._get_cred()
-        ntb = self.ntb_str.get_notebook(uid, token, iden)
+        name, ntbs = self._get_ntb_backend()
+        ntb = ntbs.get_notebook(uid, token, iden)
         if cmd == '':
             ntb.update_line(old_id, '\n', replace=False)
         elif len(ntb.white_space) != 0:
             ntb.update_line(old_id, '\n' + cmd, replace=False)
         else:
             ntb.add_line(cmd)
-        bottle.redirect('/analytics/' + iden)
+        bottle.redirect('/' + name + '/' + iden)
 
     @bottle.view('edit_code.tmpl')
     def edit_item_in_notebook(self, iden, line_id):
@@ -269,14 +292,16 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         uid, token = self._get_cred()
-        ntb = self.ntb_str.get_notebook(uid, token, iden)
+        name, ntbs = self._get_ntb_backend()
+        ntb = ntbs.get_notebook(uid, token, iden)
         if bottle.request.GET.get('save', '').strip():
             line = bottle.request.GET.get('cmd', '').strip()
             ntb.update_line(line_id, line)
-            bottle.redirect("/analytics/" + iden)
+            bottle.redirect('/' + name + '/' + iden)
         else:
             code = ntb.src[line_id]
-            return {'uid': uid, 'url': iden, 'old': code, 'line_id': line_id}
+            return {'url': iden, 'old': code, 'line_id': line_id,
+                    'name': name, 'uid': uid}
 
     def remove_item_from_notebook(self, iden, line_id):
         '''
@@ -286,9 +311,10 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         uid, token = self._get_cred()
-        ntb = self.ntb_str.get_notebook(uid, token, iden)
+        name, ntbs = self._get_ntb_backend()
+        ntb = ntbs.get_notebook(uid, token, iden)
         ntb.remove_line(line_id)
-        bottle.redirect('/analytics/' + iden)
+        bottle.redirect('/' + name + '/' + iden)
 
     def download_notebook(self, iden):
         '''
@@ -297,7 +323,8 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         uid, token = self._get_cred()
-        tmp = self.ntb_str.get_notebook(uid, token, iden)
+        name, ntbs = self._get_ntb_backend()
+        tmp = ntbs.get_notebook(uid, token, iden)
         tmp_file = StringIO()
         for item in analytics.notebooks.PRELOAD.split('\n'):
             tmp_file.write(item + '\n')
@@ -313,16 +340,6 @@ class AnalyticsApp(object):
                                    'inline; filename=notebook.py')
         return tmp_file.getvalue()
 
-    # Processing
-
-    @bottle.view('processing.tmpl')
-    def list_processings(self):
-        '''
-        Processing part.
-        '''
-        uid, _ = self._get_cred()
-        return {'uid': uid}
-
     # Misc
 
     def _get_cred(self):
@@ -334,3 +351,15 @@ class AnalyticsApp(object):
         uid = bottle.request.get_header('X-Uid')
         pw = bottle.request.get_header('X-Token')
         return uid, pw
+
+    def _get_ntb_backend(self):
+        '''
+        Return the notebook backend - either analytics or processing.
+
+        :return: Returns a notebook store.
+        '''
+        path = bottle.request.path.lstrip('/')
+        if path.find('analytics') == 0:
+            return 'analytics', self.analytics_ntbs
+        elif path.find('processing') == 0:
+            return 'processing', self.processing_ntbs

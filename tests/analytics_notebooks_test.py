@@ -114,8 +114,9 @@ class NotebookStoreCase(unittest.TestCase):
         '''
         Setup test case.
         '''
-        self.cut = Wrapper('haiku', 1234)
+        self.cut = Wrapper('haiku', 'notebooks')
         self.mongo_client = self.mocker.CreateMock(MongoClient)
+        self.mongo_client._CreateMockMethod('host', None)
         self.mongo_db = self.mocker.CreateMock(Database)
         self.mongo_coll = self.mocker.CreateMock(Collection)
         self.cut.client = self.mongo_client
@@ -177,6 +178,7 @@ class NotebookStoreCase(unittest.TestCase):
         '''
         Test retrieval of notebooks.
         '''
+        self.mongo_client._CreateMockMethod('host', None)
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
         self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
@@ -203,5 +205,6 @@ class Wrapper(notebooks.NotebookStore):
     Simple Wrapper.
     '''
 
-    def __init__(self, host, port):
+    def __init__(self, uri, coll_name):
         self.cache = {}
+        self.coll_name = coll_name

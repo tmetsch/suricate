@@ -1,8 +1,8 @@
 # Analytics as a Service
 
-Suricate is a very simple Analytics as a Service originally designed to
-analyze data streams coming from [DTrace](http://www.dtrace.org). Based
-on that models could be created and finally actions taken based on the
+Suricate is a very simple Python based Analytics as a Service originally
+designed to analyze data streams coming from [DTrace](http://www.dtrace.org)
+. Based on that models could be created and finally actions taken based on the
 models and new incoming data via AMQP.
 
 With this first release this has become more a general purpose tool. The
@@ -25,7 +25,8 @@ Create a simple file json file:
 Open the browser navigate to http://localhost:8080 and click 'Data'.
  Select the file an upload it.
 
-*Note*: Support for AMQP data streams will be added soon.
+Other options are to stream data in using AMQP or to just connect to a
+Database as a Service.
 
 ## Step 2 - analyse it
 
@@ -84,6 +85,23 @@ The scripts for the analytics and or processing part can be triggered
 externally via an API (by a cron job?). The clean split of learning
 (analytics) and acting (processing) makes the idea of when to trigger what.
 
+## API
+
+Currently the following features are available when coding notebooks:
+
+* *plot()* - show matplotlib output
+* *list_stream()* - list all streams
+* *get_from_stream(**id**, interval=60)* - retrieve messages from a stream
+* *list_objects()* - list all data objects
+* *create_object(<content>)* - create a new data object
+* *retrieve_object(**id**)* - retrieve a data object
+
+Those features can easily extended/altered by editing the preload scripts.
+
+## REST API
+
+TBD.
+
 # Running it
 
 Currently only a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
@@ -94,7 +112,7 @@ Currently only a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
 
 Then run mongod:
 
-    mongod --dbapth <path> --auth
+    mongod --dbpath <path> --auth
 
 ## For Development & local
 
@@ -128,6 +146,15 @@ Please note that the usage of TLS is highly recommend!
 
 Authentication/Authorization can be done in the WSGI Middlware.
 
+### OpenShift
+
+Installing numpy and matplotlib dependencies for the preload scripts:
+
+    $ rhc ssh suricate
+    $ cd $OPENSHIFT_DATA_DIR
+    $ source ~/python/bin/activate_virtenv
+    $ pip install numpy
+
 ## Configuration
 
 The configuration file supports some simple configuration settings:
@@ -135,20 +162,13 @@ The configuration file supports some simple configuration settings:
 * Mongo
     * The *host* for the MongoDB Server.
     * The *port* for the MongoDB Server.
+    * The *admin* for the MongoDB Server.
+    * The *pwd* for the MongoDB Server.
 * Suricate
     * The *preload_ext* script which will be loaded for each notebook and
     which will be exported when the notebook is downloaded.
     * The *preload_int* script which will be loaded for each notebook to
-    offer some convenience routines.
-
-## OpenShift
-
-Installing numpy and matplotlib
-
-    $ rhc ssh suricate
-    $ cd $OPENSHIFT_DATA_DIR
-    $ source ~/python/bin/activate_virtenv
-    $ pip install numpy
+    offer some convenience routines. Will not be exported once downloaded.
 
 # Security considerations
 

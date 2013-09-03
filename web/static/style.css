@@ -17,7 +17,7 @@ body {
     color: #fefefe;
 }
 .abscenter {
-    height: 50%;
+    height: 55%;
     width: 60%;
     overflow: auto;
     margin: auto;
@@ -116,6 +116,9 @@ h1 {
 h2 {
     font-size: 4vw;
     color: #00bfff;
+}
+h3 {
+    text-transform: capitalize;
 }
 .header a {
     color: #60c52d;

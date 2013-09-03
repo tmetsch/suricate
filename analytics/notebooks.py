@@ -188,8 +188,9 @@ class NotebookStore(object):
     # XXX: Problem there is that there is no guarantee the order of the
     # OrderedDict coming from MongoDB. The as_class helps prevent this!
 
-    def __init__(self, uri):
+    def __init__(self, uri, coll_name):
         self.uri = uri
+        self.coll_name = coll_name
         self.cache = {}
         self.client = pymongo.MongoClient(uri)
 
@@ -209,7 +210,7 @@ class NotebookStore(object):
         else:
             db = self.client[uid]
             db.authenticate(uid, token)
-            collection = db['notebooks']
+            collection = db[self.coll_name]
             # XXX: the as_class is important - see note above!
             content = collection.find_one({'iden': iden}, as_class=OrderedDict)
             if content is None:
@@ -245,7 +246,7 @@ class NotebookStore(object):
         '''
         db = self.client[uid]
         db.authenticate(uid, token)
-        collection = db['notebooks']
+        collection = db[self.coll_name]
         collection.remove({'iden': iden})
 
     def list_notebooks(self, uid, token):
@@ -257,7 +258,7 @@ class NotebookStore(object):
         '''
         db = self.client[uid]
         db.authenticate(uid, token)
-        collection = db['notebooks']
+        collection = db[self.coll_name]
         tmp = collection.find(fields={'iden': True, '_id': False})
         res = []
         for item in tmp:
