@@ -11,9 +11,11 @@
     * trigger processing & analytics external
         * so you can write cron jobs :-)
 * Analytics/Processing:
-    * versioning of analytics/processing notebooks.  
+    * versioning of analytics/processing notebooks - maybe link with gihub?
     * include external compute capacities?
     * Hadoop support?
 * web ui
     * responsive layout
-* package to be runable in OpenShift or similar
+* packaging
+    * pypi/conda
+    * package runnable in OpenShift or similar
