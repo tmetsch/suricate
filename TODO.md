@@ -11,6 +11,7 @@
     * trigger processing & analytics external
         * so you can write cron jobs :-)
 * Analytics/Processing:
+    * versioning of analytics/processing notebooks.  
     * include external compute capacities?
     * Hadoop support?
 * web ui

@@ -87,7 +87,7 @@ externally via an API (by a cron job?). The clean split of learning
 
 ## API
 
-Currently the following features are available when coding notebooks:
+Currently the following features are available when coding notebooks (through *preload_internal.py*):
 
 * *plot()* - show matplotlib output
 * *list_stream()* - list all streams
