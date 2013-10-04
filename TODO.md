@@ -5,6 +5,7 @@
 * Data:
     * in memory DB support...
     * Include object storage through CDMI?
+    * Let Suricate download data
 * Setup RESTful interface which supports:
     * Uploading data & notebooks
     * Add new streaming sources
