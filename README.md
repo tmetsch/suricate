@@ -2,11 +2,12 @@
 
 Suricate is a very simple Python based Analytics as a Service originally
 designed to analyze data streams coming from [DTrace](http://www.dtrace.org)
-. Based on that models could be created and finally actions taken based on the
-models and new incoming data via AMQP.
+to learn application/service behaviour in a data center/cloud. Based on 
+that models could be created and finally actions taken (optimization, 
+fault detection) based on the models and new incoming data via AMQP.
 
 With this first release this has become more a general purpose tool. The
-AMQP and DTrace part are stripped out for now.
+DTrace part is stripped out for now.
 
 # Usage
 
