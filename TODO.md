@@ -17,4 +17,5 @@
     * Hadoop support?
 * web ui
     * responsive layout
+    * D3 / Vega integration (via vincent?)
 * package to be runable in OpenShift or similar
