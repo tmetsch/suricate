@@ -2,6 +2,7 @@
 
 * General
     * Better error handling needed.
+    * move this all to a trello board :-)
 * Data:
     * in memory DB support (for caching)
     * Include object storage through CDMI?
@@ -15,6 +16,7 @@
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
     * Hadoop support?
+    * support for inport/export ipython notebooks.
 * web ui
     * responsive layout
     * D3 / Vega integration (via vincent?)
