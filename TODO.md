@@ -3,16 +3,16 @@
 * General
     * Better error handling needed.
 * Data:
-    * in memory DB support...
+    * in memory DB support (for caching)
     * Include object storage through CDMI?
-    * Let Suricate download data
+    * Let Suricate download data (could be done by processing scripts now)
 * Setup RESTful interface which supports:
     * Uploading data & notebooks
     * Add new streaming sources
     * trigger processing & analytics external
         * so you can write cron jobs :-)
 * Analytics/Processing:
-    * versioning of analytics/processing notebooks.  
+    * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
     * Hadoop support?
 * web ui
