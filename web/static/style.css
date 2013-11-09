@@ -13,7 +13,7 @@ body {
     height: 100%;
     clear: both;
     position: relative;
-    background: #444;
+    background: #e6e6e6;
     color: #fefefe;
 }
 .abscenter {
@@ -133,6 +133,9 @@ h3 {
 }
 .cell p {
     color: #fff;
+}
+p {
+    color: #444;
 }
 /* colors */
 .bggreen {

@@ -11,7 +11,9 @@ the WSGI middleware adds this.
 __author__ = 'tmetsch'
 
 import bottle
+import csv
 import inspect
+import json
 import os
 
 from StringIO import StringIO
@@ -147,10 +149,18 @@ class AnalyticsApp(object):
         uid, token = self._get_cred()
         upload = bottle.request.files.get('upload')
         name, ext = os.path.splitext(upload.filename)
-        if ext not in '.json':
+
+        if ext == '.json':
+            tmp = upload.file.getvalue()
+        elif ext == '.csv':
+            reader = csv.reader(upload.file, delimiter=',', quotechar='"')
+            keys = next(reader)
+            out = [{key: val for key, val in zip(keys, prop)} for prop in reader]
+            tmp = json.dumps(out)
+        else:
             return 'File extension not supported.'
 
-        self.obj_str.create_object(uid, token, upload.file.getvalue())
+        self.obj_str.create_object(uid, token, tmp)
         bottle.redirect('/data')
 
     @bottle.view('data_object.tmpl')
