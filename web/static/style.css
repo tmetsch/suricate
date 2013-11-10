@@ -34,7 +34,7 @@ body {
     display: table-cell;
     padding: 1em;
     width: 300px;
-    box-shadow: 10px 10px 20px #222;
+    box-shadow: 10px 10px 20px #ccc;
 }
 .sep {
     display: table-cell;
