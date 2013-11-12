@@ -84,7 +84,8 @@ class ConsoleWrapper(object):
         '''
         Run single line of python code.
         '''
-        cont = self.console.push(line)
+        for item in line.split('\r'):
+            cont = self.console.push(item.rstrip('\r'))
         if cont and line.lstrip()[:3] in ['for', 'if ']:
             self.white_space += '    '
         else:
@@ -165,7 +166,7 @@ class ConsoleWrapper(object):
             # the + '\n' is so that interpreter execute the code block!
             self.src[iden] = (line + '\n', None)
         else:
-            self.src[iden] = (self.src[iden][0] + '\n' + line, None)
+            self.src[iden] = (self.src[iden][0] + line, None)
         # now we need to rerun all :-( could have been important line...
         self._rerun()
         # store it
@@ -229,7 +230,7 @@ class NotebookStore(object):
                 if line[:4] != '    ':
                     to_add.append(line)
                 else:
-                    to_add.append(to_add.pop() + '\n' + line)
+                    to_add.append(to_add.pop() + line)
             for line in to_add:
                 wrapper.add_line(line)
 

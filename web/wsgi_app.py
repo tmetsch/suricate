@@ -286,9 +286,9 @@ class AnalyticsApp(object):
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         if cmd == '':
-            ntb.update_line(old_id, '\n', replace=False)
+            ntb.update_line(old_id, '\r\n', replace=False)
         elif len(ntb.white_space) != 0:
-            ntb.update_line(old_id, '\n' + cmd, replace=False)
+            ntb.update_line(old_id, '\r\n' + cmd.rstrip('\n'), replace=False)
         else:
             ntb.add_line(cmd)
         bottle.redirect('/' + name + '/' + iden)
