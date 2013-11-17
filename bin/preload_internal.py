@@ -39,12 +39,12 @@ def plot():
     Plots a matploglib fig and stores it to be displayed as inline image.
     '''
     tmp = StringIO()
-    axes = pyplot.axes()
-    axes.spines['top'].set_color('none')
-    axes.spines['right'].set_color('none')
-    axes.tick_params(direction='out', pad=5)
-    axes.xaxis.set_ticks_position('bottom')
-    axes.yaxis.set_ticks_position('left')
+    #axes = pyplot.axes()
+    #axes.spines['top'].set_color('none')
+    #axes.spines['right'].set_color('none')
+    #axes.tick_params(direction='out', pad=5)
+    #axes.xaxis.set_ticks_position('bottom')
+    #axes.yaxis.set_ticks_position('left')
     pyplot.savefig(tmp, format='png')
     uri = 'data:image/png;base64,' + \
           urllib.quote(base64.b64encode(tmp.getvalue()))
