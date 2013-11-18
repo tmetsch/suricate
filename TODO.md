@@ -15,7 +15,7 @@
 * Analytics/Processing:
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
-    * Hadoop support?
+    * Hadoop support? - Connect to OpenStack Savanna
     * support for inport/export ipython notebooks.
 * web ui
     * responsive layout
