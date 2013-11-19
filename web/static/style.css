@@ -150,3 +150,6 @@ p {
 .bgred {
     background: #d00;
 }
+form {
+    margin: 0.3em;
+}

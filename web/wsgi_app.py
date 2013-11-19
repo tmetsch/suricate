@@ -85,6 +85,8 @@ class AnalyticsApp(object):
                        self.remove_item_from_notebook)
         self.app.route('/analytics/upload', ['POST'],
                        self.create_notebook)
+        self.app.route('/analytics/rerun/<iden>', ['POST'],
+                       self.rerun_notebook)
         self.app.route('/analytics/download/<iden>', ['GET'],
                        self.download_notebook)
         self.app.route('/analytics/delete/<iden>', ['POST'],
@@ -102,6 +104,8 @@ class AnalyticsApp(object):
                        self.remove_item_from_notebook)
         self.app.route('/processing/upload', ['POST'],
                        self.create_notebook)
+        self.app.route('/processing/rerun/<iden>', ['POST'],
+                       self.rerun_notebook)
         self.app.route('/processing/download/<iden>', ['GET'],
                        self.download_notebook)
         self.app.route('/processing/delete/<iden>', ['POST'],
@@ -324,6 +328,18 @@ class AnalyticsApp(object):
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         ntb.remove_line(line_id)
+        bottle.redirect('/' + name + '/' + iden)
+
+    def rerun_notebook(self, iden):
+        '''
+        Rerun a notebook.json
+
+        :param iden: Notebook identifier.
+        '''
+        uid, token = self._get_cred()
+        name, ntbs = self._get_ntb_backend()
+        tmp = ntbs.get_notebook(uid, token, iden)
+        tmp._rerun()
         bottle.redirect('/' + name + '/' + iden)
 
     def download_notebook(self, iden):

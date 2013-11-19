@@ -44,11 +44,14 @@
         </div>
     </div>
     <p>
-        <form action="/{{name}}/delete/{{iden}}" method="post">
-            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+        <form action="/{{name}}/rerun/{{iden}}" method="POST">
+            <input type="submit" value="Rerun">
         </form>
         <form action="/{{name}}/download/{{iden}}" method="GET">
             <input type="submit" value="Download">
+        </form>
+        <form action="/{{name}}/delete/{{iden}}" method="POST">
+            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
         </form>
     </p>
     <p><small>Welcome user: {{uid}}</small></p>
