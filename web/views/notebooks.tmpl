@@ -7,10 +7,10 @@
     </ul>
 </div>
 <div class="content">
-    <h3>{{name}}</h3>
+    <h3>{{name}} - Notebooks</h3>
     <ul>
     % for ntb in notebooks:
-      <li><a href="/{{name}}/{{ntb}}">{{ntb}}</a></li>
+      <li class="{{name}}"><a href="/{{name}}/{{ntb}}">{{ntb}}</a></li>
     % end
     </ul>
     <p>

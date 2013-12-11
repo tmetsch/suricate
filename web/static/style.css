@@ -104,6 +104,15 @@ code {
     text-decoration: underline;
     font-size: 0.7em;
 }
+.content ul {
+    list-style: none;
+}
+.content ul>li {
+    background: #eee;
+    box-shadow: 3px 3px #ccc;
+    padding: 0.2em;
+    margin: 0px 0px 5px -40px;
+}
 /* fonts */
 h1, h2 {
     line-height: 0.5em;
@@ -137,7 +146,20 @@ h3 {
 p {
     color: #444;
 }
+.content ul>li>a {
+    color: #444;
+    text-decoration: none;
+}
 /* colors */
+.analytics {
+    border-left: 2px solid #60c52d;
+}
+.processing {
+    border-left: 2px solid #ffb400;
+}
+.data {
+    border-left: 2px solid #00bfff;
+}
 .bggreen {
     background: #60c52d;
 }
