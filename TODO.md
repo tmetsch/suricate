@@ -17,9 +17,10 @@
     * include external compute capacities?
     * Hadoop support? - Connect to OpenStack Savanna
     * support for inport/export ipython notebooks.
+    * tagging of notebooks (example tags: Production, experimental,under development)
 * web ui
     * responsive layout
-    * D3 / Vega integration (via vincent?)
+    * D3 / Vega integration (via vincent, bokeh)
 * packaging
     * pypi/conda
     * package runnable in OpenShift or similar
