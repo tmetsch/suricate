@@ -13,11 +13,12 @@
     * trigger processing & analytics external
         * so you can write cron jobs :-)
 * Analytics/Processing:
+    * Rename processing to 'actionable analytics'?
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
     * Hadoop support? - Connect to OpenStack Savanna
     * support for inport/export ipython notebooks.
-    * tagging of notebooks (example tags: Production, experimental,under development)
+    * tagging of notebooks (example tags: Production, experimental, explorational, under development)
 * web ui
     * responsive layout
     * D3 / Vega integration (via vincent, bokeh)
