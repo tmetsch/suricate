@@ -12,6 +12,7 @@
     * Add new streaming sources
     * trigger processing & analytics external
         * so you can write cron jobs :-)
+        * support continuously running scripts.
 * Analytics/Processing:
     * Rename processing to 'actionable analytics'?
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
