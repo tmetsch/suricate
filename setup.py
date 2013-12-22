@@ -11,7 +11,7 @@ from distutils.core import setup
 
 setup(name='suricate',
       version='1.0',
-      description='Analytics as a Service',
+      description='Analytics Service',
       author='Thijs Metsch',
       author_email='tmetsch@engjoy.eu',
       url='http://www.engjoy.eu',

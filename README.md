@@ -1,6 +1,6 @@
-# Analytics as a Service
+# Analytics Service
 
-Suricate is a very simple Python based Analytics as a Service originally
+Suricate is a very simple Python based Analytics Service originally
 designed to analyze data streams coming from [DTrace](http://www.dtrace.org)
 to learn application/service behaviour in a data center/cloud. Based on 
 that models could be created and finally actions taken (optimization, 
