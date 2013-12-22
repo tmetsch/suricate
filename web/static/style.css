@@ -65,6 +65,7 @@ input {
     box-shadow: 1px 1px 3px #ccc;
 }
 code {
+    font-size: 0.9em;
     white-space: pre-wrap;
 }
 .left {
