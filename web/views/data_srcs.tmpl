@@ -1,37 +1,23 @@
-<div class="header">
-    <ul class="menu">
-        <li class="bgred"><a href="/">Home</a></li>
-        <li class="bgblue"><a href="/data">Data</a></li>
-        <li class="bggreen"><a href="/analytics">Analytics</a></li>
-        <li class="bgyellow"><a href="/processing">Processing</a></li>
-    </ul>
-</div>
-<div class="content">
-    <h3>Objects</h3>
-    <ul>
-    % for iden in data_objs:
-        <li class="data"><a href="/data/object/{{iden}}">{{iden}}</a></li>
-    % end
-    </ul>
-    <p>
-        <form action="/data/object/new" method="post" enctype="multipart/form-data">
-            Select a file: <input type="file" name="upload" />
-            <input type="submit" value="Start upload" />
-        </form>
-    </p>
-    <h3>Streams</h3>
-    <ul>
-    % for iden in data_streams:
-        <li class="data"><a href="/data/stream/{{iden}}">{{iden}}</a></li>
-    % end
-    </ul>
-    <p>
-        <form action="/data/stream/new" method="post" enctype="multipart/form-data">
-            URI: <input type="text" size="70" name="uri">
-            Queue: <input type="text" size="10" name="queue">
-            <input type="submit" value="New" />
-        </form>
-    </p>
-    <p><small>Welcome user: {{uid}}</small></p>
-</div>
+<h1 class="data">Objects</h1>
+<ul>
+% for iden in data_objs:
+    <li class="data"><a href="/data/object/{{iden}}">{{iden}}</a></li>
+% end
+</ul>
+<form action="/data/object/new" method="post" enctype="multipart/form-data">
+    Select a file: <input type="file" name="upload" />
+    <input type="submit" value="Start upload" />
+</form>
+<h1 class="data">Streams</h1>
+<ul>
+% for iden in data_streams:
+    <li class="data"><a href="/data/stream/{{iden}}">{{iden}}</a></li>
+% end
+</ul>
+<form action="/data/stream/new" method="post" enctype="multipart/form-data">
+    URI: <input type="text" name="uri">
+    Queue: <input type="text" name="queue">
+    <input type="submit" value="New" />
+</form>
+<p><small>Welcome user: {{uid}}</small></p>
 %rebase base.tmpl title='Suricate - Data'

@@ -1,21 +1,11 @@
-<div class="header">
-    <ul class="menu">
-        <li class="bgred"><a href="/">Home</a></li>
-        <li class="bgblue"><a href="/data">Data</a></li>
-        <li class="bggreen"><a href="/analytics">Analytics</a></li>
-        <li class="bgyellow"><a href="/processing">Processing</a></li>
-    </ul>
+<h1 class="data">Object: {{iden}}</h1>
+<div class="code">
+    <code>{{content}}</code>
 </div>
-<div class="content">
-    <h3>Object: {{iden}}</h3>
-    <div class="code">
-        <code>{{content}}</code>
-    </div>
-    <p>
-        <form action="/data/object/delete/{{iden}}" method="post">
-            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-        </form>
-    </p>
-    <p><small>Welcome user: {{uid}}</small></p>
-</div>
+<p>
+    <form action="/data/object/delete/{{iden}}" method="post">
+        <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+    </form>
+</p>
+<p><small>Welcome user: {{uid}}</small></p>
 %rebase base.tmpl title='Suricate - Data Object'

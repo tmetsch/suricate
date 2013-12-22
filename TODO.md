@@ -14,6 +14,7 @@
         * so you can write cron jobs :-)
         * support continuously running scripts.
 * Analytics/Processing:
+    * use of cgroups
     * Rename processing to 'actionable analytics'?
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
@@ -21,8 +22,12 @@
     * support for inport/export ipython notebooks.
     * tagging of notebooks (example tags: Production, experimental, explorational, under development)
 * web ui
-    * responsive layout
     * D3 / Vega integration (via vincent, bokeh)
 * packaging
     * pypi/conda
     * package runnable in OpenShift or similar
+
+# Done
+
+* web ui
+    * responsive layout

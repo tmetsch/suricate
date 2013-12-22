@@ -1,59 +1,49 @@
-<div class="header">
-    <ul class="menu">
-        <li class="bgred"><a href="/">Home</a></li>
-        <li class="bgblue"><a href="/data">Data</a></li>
-        <li class="bggreen"><a href="/analytics">Analytics</a></li>
-        <li class="bgyellow"><a href="/processing">Processing</a></li>
-    </ul>
-</div>
-<div class="content">
-    <h3>Notebook: {{iden}}</h3>
-    % for k in output:
-    <div class="entry">
-        <div class="left">
-            <form action="/{{name}}/{{iden}}/remove/{{k}}" method="post">
-                <input type="submit" value="remove">
-            </form>
-            <form action="/{{name}}/{{iden}}/edit/{{k}}" method="get">
-                <input type="submit" value="edit">
-            </form>
-        </div>
-        <div class="right">
-            % if output[k][0].lstrip()[:1] == '#':
-            <p>{{output[k][0].lstrip()[1:]}}</p>
-            % else:
-            <div class="code">{{output[k][0].lstrip()}}</div>
-            % end
-            % if output[k][1][:4] == 'data':
-            <img src="{{output[k][1]}}"/>
-            % elif output[k][1].strip() != '':
-            <div class="output">{{output[k][1].rstrip()}}</div>
-            % end
-        </div>
+<h1 class="{{name}}">Notebook: {{iden}}</h1>
+% for k in output:
+<div class="pure-g-r">
+    <div class="pure-u-1-12 left">
+        <form action="/{{name}}/{{iden}}/remove/{{k}}" method="post">
+            <input type="submit" value="remove">
+        </form>
+        <form action="/{{name}}/{{iden}}/edit/{{k}}" method="get">
+            <input type="submit" value="edit">
+        </form>
     </div>
-    % end
-    <div class="entry">
-        <div class="right">
-            % if len(output) > 0:
-            <form action="/{{name}}/{{iden}}/add/{{k}}" method="post">
-            % else:
-            <form action="/{{name}}/{{iden}}/add/1" method="post">
-            % end
-                <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
-            </form>
-        </div>
+    <div class="pure-u-11-12 right">
+        % if output[k][0].lstrip()[:1] == '#':
+        <p>{{output[k][0].lstrip()[1:]}}</p>
+        % else:
+        <div class="code">{{output[k][0].lstrip()}}</div>
+        % end
+        % if output[k][1][:4] == 'data':
+        <img src="{{output[k][1]}}"/>
+        % elif output[k][1].strip() != '':
+        <div class="output">{{output[k][1].rstrip()}}</div>
+        % end
     </div>
-    <p>
-        <form action="/{{name}}/rerun/{{iden}}" method="POST">
-            <input type="submit" value="Rerun">
-        </form>
-        <form action="/{{name}}/download/{{iden}}" method="GET">
-            <input type="submit" value="Download">
-        </form>
-        <form action="/{{name}}/delete/{{iden}}" method="POST">
-            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-        </form>
-    </p>
-    <p><small>Welcome user: {{uid}}</small></p>
 </div>
+% end
+<div class="pure-g-r">
+    <div class="pure-u-1-12 left">
+    </div>
+    <div class="pure-u-11-12 right">
+        % if len(output) > 0:
+        <form action="/{{name}}/{{iden}}/add/{{k}}" method="post">
+        % else:
+        <form action="/{{name}}/{{iden}}/add/1" method="post">
+        % end
+            <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
+        </form>
+    </div>
+</div>
+<form action="/{{name}}/rerun/{{iden}}" method="POST">
+    <input type="submit" value="Rerun">
+</form>
+<form action="/{{name}}/download/{{iden}}" method="GET">
+    <input type="submit" value="Download">
+</form>
+<form action="/{{name}}/delete/{{iden}}" method="POST">
+    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+</form>
+<p><small>Welcome user: {{uid}}</small></p>
 %rebase base.tmpl title='Suricate - Notebook'

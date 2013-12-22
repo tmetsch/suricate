@@ -1,25 +1,13 @@
-<div class="header">
-    <ul class="menu">
-        <li class="bgred"><a href="/">Home</a></li>
-        <li class="bgblue"><a href="/data">Data</a></li>
-        <li class="bggreen"><a href="/analytics">Analytics</a></li>
-        <li class="bgyellow"><a href="/processing">Processing</a></li>
-    </ul>
-</div>
-<div class="content">
-    <h3>{{name}} - Notebooks</h3>
-    <ul>
-    % for ntb in notebooks:
-      <li class="{{name}}"><a href="/{{name}}/{{ntb}}">{{ntb}}</a></li>
-    % end
-    </ul>
-    <p>
-        <form action="/{{name}}/upload" method="post" enctype="multipart/form-data">
-            Name: <input type="text" name="iden" />
-            (Optional) Select a file: <input type="file" name="upload" />
-            <input type="submit" value="New" />
-        </form>
-    </p>
-    <p><small>Welcome user: {{uid}}</small></p>
-</div>
+<h1 class="{{name}}">{{name}} - Notebooks</h1>
+<ul>
+% for ntb in notebooks:
+    <li class="{{name}}"><a href="/{{name}}/{{ntb}}">{{ntb}}</a></li>
+% end
+</ul>
+<form action="/{{name}}/upload" method="post" enctype="multipart/form-data">
+    Name: <input type="text" name="iden" />
+    (Optional) Select a file: <input type="file" name="upload" />
+    <input type="submit" value="New" />
+</form>
+<p><small>Welcome user: {{uid}}</small></p>
 %rebase base.tmpl title='Suricate - Notebooks'

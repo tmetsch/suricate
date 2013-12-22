@@ -1,11 +1,35 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{title or 'No title'}}</title>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/menus-min.css">
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/grids-min.css">
+        <link rel="stylesheet" href="http://purecss.io/css/layouts/side-menu.css">
         <link rel="stylesheet" href="/static/style.css" />
         <script src="https://use.edgefonts.net/source-sans-pro.js"></script>
     </head>
     <body>
-        %include
+        <div id="layout">
+            <!-- Menu toggle -->
+            <a href="#menu" id="menuLink" class="menu-link">
+                <!-- Hamburger icon -->
+                <span></span>
+            </a>
+            <div id="menu">
+                <div class="pure-menu pure-menu-open">
+                    <ul>
+                        <li><a href="/"><span class="home">Home</span></a></li>
+                        <li><a href="/data"><span class="data">Data</span></a></li>
+                        <li><a href="/analytics"><span class="analytics">Analytics</span></a></li>
+                        <li><a href="/processing"><span class="processing">Processing</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="content">
+                %include
+            </div>
+        </div>
+        <script src="http://purecss.io/js/ui.js"></script>
     </body>
 </html>
