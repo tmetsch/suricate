@@ -43,7 +43,7 @@ To list the objects and then retrieve the just created one add:
 Now we can plot it:
 
     pyplot.bar(range(0,8), tmp['server1'])
-    plot()
+    show()
 
 Now we will do sth very simple! You can add
 [scikit-learn](http://scikit-learn.org/stable/) or
@@ -90,7 +90,7 @@ externally via an API (by a cron job?). The clean split of learning
 
 Currently the following features are available when coding notebooks (through *preload_internal.py*):
 
-* *plot()* - show matplotlib output
+* *show()* - show matplotlib output
 * *list_stream()* - list all streams
 * *get_from_stream(**id**, interval=60)* - retrieve messages from a stream
 * *list_objects()* - list all data objects
