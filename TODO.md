@@ -33,4 +33,4 @@
 # Done
 
 * web ui
-    * responsive layout
+    * responsive layout (See: http://purecss.io/layouts/side-menu/)
