@@ -10,6 +10,7 @@
     * in memory DB support (for caching)
     * Include object storage through CDMI?
     * Let Suricate download data (could be done by processing scripts now)
+    * FIX: do not cache data coming from stream...
 * Setup RESTful interface which supports:
     * Uploading data & notebooks
     * Add new streaming sources
