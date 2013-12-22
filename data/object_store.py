@@ -104,7 +104,7 @@ class MongoStore(ObjectStore):
         collection = db['data_objects']
         res = []
         for obj in collection.find():
-            res.append(obj['_id'])
+            res.append(str(obj['_id']))
         return res
 
     def create_object(self, uid, token, content):

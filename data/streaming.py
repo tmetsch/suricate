@@ -38,7 +38,7 @@ class StreamClient(object):
         collection = db['data_streams']
         res = []
         for obj in collection.find():
-            res.append(obj['_id'])
+            res.append(str(obj['_id']))
         return res
 
     def get_messages(self, uid, token, interval, iden):
