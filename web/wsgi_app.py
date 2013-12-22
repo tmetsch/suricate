@@ -124,7 +124,7 @@ class AnalyticsApp(object):
         '''
         Initial view.
         '''
-        uid, _ = self._get_cred()
+        uid, _ = _get_cred()
         return {'uid': uid}
 
     def static(self, filepath):
@@ -141,7 +141,7 @@ class AnalyticsApp(object):
         '''
         List all data sources.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         tmp = self.obj_str.list_objects(uid, token)
         tmp2 = self.stream.list_streams(uid, token)
         return {'data_objs': tmp, 'data_streams': tmp2, 'uid': uid}
@@ -150,7 +150,7 @@ class AnalyticsApp(object):
         '''
         Create a new data source.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         upload = bottle.request.files.get('upload')
         name, ext = os.path.splitext(upload.filename)
 
@@ -174,7 +174,7 @@ class AnalyticsApp(object):
 
         :param iden: Data source identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         tmp = self.obj_str.retrieve_object(uid, token, iden)
         return {'iden': iden, 'content': tmp, 'uid': uid}
 
@@ -184,7 +184,7 @@ class AnalyticsApp(object):
 
         :param iden: Data source identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         self.obj_str.delete_object(uid, token, iden)
         bottle.redirect('/data')
 
@@ -192,7 +192,7 @@ class AnalyticsApp(object):
         '''
         Setup a new data stream.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         uri = bottle.request.forms.get('uri')
         queue = bottle.request.forms.get('queue')
         self.stream.create(uid, token, uri, queue)
@@ -205,7 +205,7 @@ class AnalyticsApp(object):
 
         :param iden: Identifier of the stream.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         uri, queue, msgs = self.stream.retrieve(uid, token, iden)
         return {'iden': iden, 'uri': uri, 'queue': queue, 'msgs': msgs,
                 'val': len(msgs), 'uid': uid}
@@ -216,7 +216,7 @@ class AnalyticsApp(object):
 
         :param iden: Identifier of the stream.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         self.stream.delete(uid, token, iden)
         bottle.redirect('/data')
 
@@ -227,7 +227,7 @@ class AnalyticsApp(object):
         '''
         Lists all notebooks.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         tmp = ntbs.list_notebooks(uid, token)
         return {'notebooks': tmp, 'name': name, 'uid': uid}
@@ -238,7 +238,7 @@ class AnalyticsApp(object):
 
         When code is uploaded add it to the notebook.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         iden = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
@@ -260,7 +260,7 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         res = ntb.get_results()
@@ -273,7 +273,7 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         ntbs.delete_notebook(uid, token, iden)
         bottle.redirect('/' + name)
@@ -286,7 +286,7 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         '''
         cmd = bottle.request.forms['cmd']
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         if cmd == '':
@@ -305,7 +305,7 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         if bottle.request.GET.get('save', '').strip():
@@ -324,7 +324,7 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         ntb = ntbs.get_notebook(uid, token, iden)
         ntb.remove_line(line_id)
@@ -336,10 +336,10 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         tmp = ntbs.get_notebook(uid, token, iden)
-        tmp._rerun()
+        tmp.rerun()
         bottle.redirect('/' + name + '/' + iden)
 
     def download_notebook(self, iden):
@@ -348,7 +348,7 @@ class AnalyticsApp(object):
 
         :param iden: Notebook identifier.
         '''
-        uid, token = self._get_cred()
+        uid, token = _get_cred()
         name, ntbs = self._get_ntb_backend()
         tmp = ntbs.get_notebook(uid, token, iden)
         tmp_file = StringIO()
@@ -368,16 +368,6 @@ class AnalyticsApp(object):
 
     # Misc
 
-    def _get_cred(self):
-        '''
-        Retrieve user credentials.
-
-        :return: Set of credentials for this request.
-        '''
-        uid = bottle.request.get_header('X-Uid')
-        pw = bottle.request.get_header('X-Token')
-        return uid, pw
-
     def _get_ntb_backend(self):
         '''
         Return the notebook backend - either analytics or processing.
@@ -389,3 +379,14 @@ class AnalyticsApp(object):
             return 'analytics', self.analytics_ntbs
         elif path.find('processing') == 0:
             return 'processing', self.processing_ntbs
+
+
+def _get_cred():
+    '''
+    Retrieve user credentials.
+
+    :return: Set of credentials for this request.
+    '''
+    uid = bottle.request.get_header('X-Uid')
+    pw = bottle.request.get_header('X-Token')
+    return uid, pw

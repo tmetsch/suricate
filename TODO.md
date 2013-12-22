@@ -3,6 +3,9 @@
 * General
     * Better error handling needed.
     * move this all to a trello board :-)
+    * General restructering of architecture/code:
+        * backends for handling notebooks execution (isolate with cgroups & subprocess?)
+        * simple flows fo data through program: frontend (UI) - backends - final execution
 * Data:
     * in memory DB support (for caching)
     * Include object storage through CDMI?
@@ -14,7 +17,7 @@
         * so you can write cron jobs :-)
         * support continuously running scripts.
 * Analytics/Processing:
-    * use of cgroups
+    * richer SDK in preload internal.
     * Rename processing to 'actionable analytics'?
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?

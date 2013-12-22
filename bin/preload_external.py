@@ -8,6 +8,9 @@ __author__ = 'tmetsch'
 
 from matplotlib import pyplot
 
+import numpy as np
+import pandas as pd
+
 params = {'legend.fontsize': 9.0,
           'legend.linewidth': 0.5,
           'font.size': 9.0,
@@ -20,7 +23,7 @@ pyplot.rcParams.update(params)
 pyplot.clf()
 
 
-def plot():
+def show():
     '''
     Shows a matplotlib figure.
     '''

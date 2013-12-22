@@ -24,10 +24,10 @@ preload_int = config.get('suricate', 'preload_int')
 preload_ext = config.get('suricate', 'preload_ext')
 
 # This preload will be downloaded with the notebook.
-PRELOAD = file(preload_ext, 'r').read()
+PRELOAD = file(preload_ext).read()
 
 # Preload 2 will not be download with the notebook!
-PRELOAD2 = file(preload_int, 'r').read()
+PRELOAD2 = file(preload_int).read()
 
 
 def grep_stdout(func):
@@ -91,7 +91,7 @@ class ConsoleWrapper(object):
         else:
             self.white_space = ''
 
-    def _rerun(self):
+    def rerun(self):
         '''
         Reset buffer and rerun all.
         '''
@@ -147,7 +147,7 @@ class ConsoleWrapper(object):
         '''
         self.src.pop(iden)
         # now we need to rerun all :-( could have been important line...
-        self._rerun()
+        self.rerun()
         # store it
         self.collection.update({'_id': self.iden},
                                {"$set": {'code': son.SON(self.src)}},
@@ -168,7 +168,7 @@ class ConsoleWrapper(object):
         else:
             self.src[iden] = (self.src[iden][0] + line, None)
         # now we need to rerun all :-( could have been important line...
-        self._rerun()
+        self.rerun()
         # store it
         self.collection.update({'_id': self.iden},
                                {"$set": {'code': son.SON(self.src)}},

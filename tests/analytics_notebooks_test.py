@@ -126,6 +126,10 @@ class NotebookStoreCase(unittest.TestCase):
         Test retrieval of notebooks.
         '''
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
+        # bit of a hack to get around property getter methods
+        self.mongo_client._known_methods.add('host')
+        self.mongo_client._known_methods.add('port')
+
         self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
         # is non existent so will call 'insert'!
@@ -179,6 +183,10 @@ class NotebookStoreCase(unittest.TestCase):
         Test retrieval of notebooks.
         '''
         self.mongo_client._CreateMockMethod('host', None)
+        # bit of a hack to get around property getter methods
+        self.mongo_client._known_methods.add('host')
+        self.mongo_client._known_methods.add('port')
+
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
         self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)

@@ -34,9 +34,9 @@ stm_str = streaming.StreamClient(OBJECT_STORE_URI)
 os.environ = {}
 
 
-def plot():
+def show():
     '''
-    Plots a matploglib fig and stores it to be displayed as inline image.
+    Show a matploglib fig and stores it to be displayed as inline image.
     '''
     tmp = StringIO()
     #axes = pyplot.axes()
@@ -51,6 +51,8 @@ def plot():
     print uri
     tmp.close()
     # pyplot.clf()
+
+# Everything below this line is basically an SDK...
 
 
 def list_objects():
@@ -77,6 +79,16 @@ def retrieve_object(iden):
     '''
     tmp = obj_str.retrieve_object(str(UID), str(TOKEN), iden)
     return json.loads(tmp)
+
+
+def update_object(iden, data):
+    '''
+    update an previously sotred data obj.
+
+    :param iden: Identifier of the object.
+    :param data: new contents.
+    '''
+    obj_str.update_object(str(UID), str(TOKEN), iden, data)
 
 
 def list_streams():
