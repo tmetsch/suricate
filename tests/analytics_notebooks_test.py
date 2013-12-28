@@ -1,8 +1,8 @@
 # coding=utf-8
 
-'''
+"""
 Unittest for the notebooks part.
-'''
+"""
 
 __author__ = 'tmetsch'
 
@@ -17,103 +17,75 @@ from pymongo.database import Database
 from analytics import notebooks
 
 
-class ConsoleWrapperCase(unittest.TestCase):
-    '''
+class ConsoleWrapperTest(unittest.TestCase):
+    """
     Tests the Python console wrapper.
-    '''
+    """
 
     mocker = mox.Mox()
 
     def setUp(self):
-        '''
+        """
         Setup the tests.
-        '''
-        super(ConsoleWrapperCase, self).setUp()
+        """
+        super(ConsoleWrapperTest, self).setUp()
         coll = self.mocker.CreateMock(Collection)
         self.cut = notebooks.ConsoleWrapper('123', coll, {}, '123', 'abc',
                                             'localhost', '27017')
 
-    def test_add_lines_for_success(self):
-        '''
-        test addition of lines.
-        '''
-        code = ['i = 10', 'print i']
-        self.cut.add_lines(code)
-
     # Sanity checks.
 
-    def test_add_lines_for_sanity(self):
-        '''
-        test addition of lines for sanity.
-        '''
-        code = ['i = 10', 'print i']
-        self.cut.add_lines(code)
-        tmp = self.cut.get_results().values()
-        self.assertEquals(tmp[0][0].strip(), 'i = 10')
-        self.assertEquals(tmp[0][1].strip(), '')
-        self.assertEquals(tmp[1][0].strip(), 'print i')
-        self.assertEquals(tmp[1][1].strip(), '10')
-
-    def test_get_lines_for_sanity(self):
-        '''
-        test retrieval of lines.
-        '''
-        code = ['i = 10', 'print i']
-        self.cut.add_lines(code)
-        tmp = self.cut.get_lines()
-        self.assertListEqual(tmp, code)
-
     def test_add_line_for_sanity(self):
-        '''
+        """
         Tests the addition of a single line.
-        '''
+        """
         self.cut.add_line('print "Hello"')
-        tmp = self.cut.get_results().values()
+        tmp = self.cut.src.values()
         self.assertEquals(tmp[0][1].strip(), 'Hello')
 
     def test_remove_line_for_sanity(self):
-        '''
+        """
         Add some lines and remove it afterwards.
-        '''
+        """
         self.cut.add_line('i = 10')
         iden = self.cut.add_line('i = 5')
         self.cut.add_line('print i')
         self.cut.remove_line(iden)
-        tmp = self.cut.get_results().values()
+        tmp = self.cut.src.values()
         self.assertEquals(tmp[1][1].strip(), '10')
 
     def test_update_line_for_sanity(self):
-        '''
+        """
         Add some lines and replace it afterwards.
-        '''
+        """
         iden = self.cut.add_line('i = 10')
         self.cut.add_line('print i')
         self.cut.update_line(iden, 'i = 5')
-        tmp = self.cut.get_results().values()
+        tmp = self.cut.src.values()
         self.assertEquals(tmp[1][1].strip(), '5')
 
     def test_update_line_for_sanity2(self):
-        '''
+        """
         Add some lines and update it afterwards.
-        '''
+        """
         iden = self.cut.add_line('for i in range(0,1):\r\n\tprint i')
         self.cut.add_line('\n')
         self.cut.update_line(iden, '\r\n\tprint \"hello\"', replace=False)
-        tmp = self.cut.get_results().values()
+        tmp = self.cut.src.values()
         self.assertEquals(tmp[1][1].strip(), '0\nhello')
 
 
-class NotebookStoreCase(unittest.TestCase):
-    '''
+class NotebookStoreTest(unittest.TestCase):
+    """
     Test the notebook storage.
-    '''
+    """
 
     mocker = mox.Mox()
 
     def setUp(self):
-        '''
+        """
         Setup test case.
-        '''
+        """
         self.cut = Wrapper('haiku', 'notebooks')
         self.mongo_client = self.mocker.CreateMock(MongoClient)
         self.mongo_client._CreateMockMethod('host', None)
@@ -122,9 +94,9 @@ class NotebookStoreCase(unittest.TestCase):
         self.cut.client = self.mongo_client
 
     def test_get_notebooks_for_success(self):
-        '''
+        """
         Test retrieval of notebooks.
-        '''
+        """
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
         # bit of a hack to get around property getter methods
         self.mongo_client._known_methods.add('host')
@@ -146,9 +118,9 @@ class NotebookStoreCase(unittest.TestCase):
         self.mocker.VerifyAll()
 
     def test_delete_notebook_for_success(self):
-        '''
+        """
         Test removal.
-        '''
+        """
         self.mongo_client.__getitem__('nb1').AndReturn(self.mongo_db)
         self.mongo_db.authenticate('nb1', 'abc')
         self.mongo_db.__getitem__('notebooks').AndReturn(self.mongo_coll)
@@ -159,9 +131,9 @@ class NotebookStoreCase(unittest.TestCase):
         self.mocker.VerifyAll()
 
     def test_list_notebooks_for_sanity(self):
-        '''
+        """
         Test listing of names (!not _id from mongo!).
-        '''
+        """
         res = [
             {'iden': 'foo'},
             {'iden': 'bar'}
@@ -179,9 +151,9 @@ class NotebookStoreCase(unittest.TestCase):
         self.assertListEqual(tmp, ['foo', 'bar'])
 
     def test_get_notebooks_for_sanity(self):
-        '''
+        """
         Test retrieval of notebooks.
-        '''
+        """
         self.mongo_client._CreateMockMethod('host', None)
         # bit of a hack to get around property getter methods
         self.mongo_client._known_methods.add('host')
@@ -209,9 +181,9 @@ class NotebookStoreCase(unittest.TestCase):
 
 
 class Wrapper(notebooks.NotebookStore):
-    '''
+    """
     Simple Wrapper.
-    '''
+    """
 
     def __init__(self, uri, coll_name):
         self.cache = {}

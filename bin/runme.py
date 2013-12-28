@@ -1,17 +1,20 @@
 # coding=utf-8
 
-'''
-Runs the AaaS in a development environment.
-'''
+"""
+Runs the analytics service in a development environment.
+"""
 
 __author__ = 'tmetsch'
 
 import bottle
+import os
 import pymongo
+import subprocess
+import sys
 
 import ConfigParser
 
-from web import wsgi_app
+from web import ui_app
 
 config = ConfigParser.RawConfigParser()
 config.read('app.conf')
@@ -26,11 +29,11 @@ USERS = {'foo': ('bar', False)}
 
 
 def check_database(user):
-    '''
+    """
     Checks if database for a user exists, if not creates it.
 
     :param user: username.
-    '''
+    """
     if USERS[user][1]:
         return
 
@@ -63,9 +66,9 @@ def authorize(user):
 
 
 class SessionMiddleWare(object):
-    '''
+    """
     Demo Session middleware adding the required environment id.
-    '''
+    """
 
     def __init__(self, app_to_wrap):
         self.wrap_app = app_to_wrap
@@ -78,8 +81,21 @@ class SessionMiddleWare(object):
             return self.wrap_app(environ, start_response)
 
 if __name__ == '__main__':
-    app = wsgi_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()
+    # start execution node for each user.
+    processes = []
+    for user in USERS.keys():
+        p = subprocess.Popen([sys.executable,
+                              os.sep.join(['..', 'analytics', 'exec_node.py']),
+                              user, USERS[user][0]])
+        processes.append(p)
+
+    # launch web app
+    app = ui_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()
     app = SessionMiddleWare(app)
 
     bottle.TEMPLATE_PATH.insert(0, '../web/views')
-    bottle.run(app=app, host='localhost')
+    bottle.run(app=app, host='0.0.0.0')
+
+    # let's cleanup shall we?
+    for process in processes:
+        process.kill()

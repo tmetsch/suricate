@@ -1,8 +1,8 @@
 # coding=utf-8
 
-'''
+"""
 Will be preloaded and exported.
-'''
+"""
 
 __author__ = 'tmetsch'
 
@@ -24,8 +24,8 @@ pyplot.clf()
 
 
 def show():
-    '''
+    """
     Shows a matplotlib figure.
-    '''
+    """
     pyplot.show()
     pyplot.clf()

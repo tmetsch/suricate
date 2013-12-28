@@ -1,11 +1,11 @@
-<h1 class="{{name}}">Notebook: {{iden}}</h1>
+<h1 class="{{type}}">Notebook: {{iden}}</h1>
 % for k in output:
 <div class="pure-g-r">
     <div class="pure-u-1-12 left">
-        <form action="/{{name}}/{{iden}}/remove/{{k}}" method="post">
+        <form action="/{{type}}/{{iden}}/remove/{{k}}" method="post">
             <input type="submit" value="remove">
         </form>
-        <form action="/{{name}}/{{iden}}/edit/{{k}}" method="get">
+        <form action="/{{type}}/{{iden}}/edit/{{k}}" method="get">
             <input type="submit" value="edit">
         </form>
     </div>
@@ -28,21 +28,22 @@
     </div>
     <div class="pure-u-11-12 right">
         % if len(output) > 0:
-        <form action="/{{name}}/{{iden}}/add/{{k}}" method="post">
+        <form action="/{{type}}/{{iden}}/add/{{k}}" method="post">
         % else:
-        <form action="/{{name}}/{{iden}}/add/1" method="post">
+        <form action="/{{type}}/{{iden}}/add/1" method="post">
         % end
-            <input id="cmd" autofocus="autofocus" type="text" size="100%" name="cmd" value="{{default}}">
+            <input type="hidden" name="indent" value="{{indent}}">
+            <input id="cmd" value="{{indent}}" autofocus="autofocus" type="text" size="100%" name="cmd">
         </form>
     </div>
 </div>
-<form action="/{{name}}/rerun/{{iden}}" method="POST">
+<form action="/{{type}}/rerun/{{iden}}" method="POST">
     <input type="submit" value="Rerun">
 </form>
-<form action="/{{name}}/download/{{iden}}" method="GET">
+<form action="/{{type}}/download/{{iden}}" method="GET">
     <input type="submit" value="Download">
 </form>
-<form action="/{{name}}/delete/{{iden}}" method="POST">
+<form action="/{{type}}/delete/{{iden}}" method="POST">
     <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
 </form>
 <p><small>Welcome user: {{uid}}</small></p>

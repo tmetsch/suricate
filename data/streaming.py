@@ -1,8 +1,8 @@
 # coding=utf-8
 
-'''
+"""
 Supports Data streams through services like AMQP.
-'''
+"""
 
 __author__ = 'tmetsch'
 
@@ -15,24 +15,24 @@ from bson import ObjectId
 
 
 class StreamClient(object):
-    '''
+    """
     Simple streaming client.
-    '''
+    """
 
     def __init__(self, uri):
-        '''
+        """
         Initialize StreamingClient.
-        '''
+        """
         self.client = pymongo.MongoClient(uri)
 
     def list_streams(self, uid, token):
-        '''
+        """
         Retrieve list of available streams.
 
         :param uid: User's uid.
         :param token: Token of the user.
         :return: List of identifiers.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db['data_streams']
@@ -42,7 +42,7 @@ class StreamClient(object):
         return res
 
     def get_messages(self, uid, token, interval, iden):
-        '''
+        """
         Retrieve list of messages.
 
         :param uid: User's uid.
@@ -50,7 +50,7 @@ class StreamClient(object):
         :param interval: Intervall to get messages from.
         :param iden: Identifier for the stream
         :return: List of messages.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         begin = time.time() - interval
@@ -67,9 +67,9 @@ class StreamClient(object):
 
 
 class AMQPClient(object):
-    '''
+    """
     Stream client for Suricate.
-    '''
+    """
 
     def __init__(self, uri):
         self.client = pymongo.MongoClient(uri)
@@ -77,13 +77,13 @@ class AMQPClient(object):
         self.uri = uri
 
     def list_streams(self, uid, token):
-        '''
+        """
         List available streams. Make sure AMQP clients are up & running.
 
         :param uid: User's uid.
         :param token: Token of the user.
         :return: List of ids.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db['data_streams']
@@ -102,7 +102,7 @@ class AMQPClient(object):
         return res
 
     def create(self, uid, token, uri, queue):
-        '''
+        """
         Create a new stream.
 
         :param uid: User's uid.
@@ -110,7 +110,7 @@ class AMQPClient(object):
         :param uri: URI of the RabbitMQ server.
         :param queue: Queue name
         :return: Identifier.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db['data_streams']
@@ -119,14 +119,14 @@ class AMQPClient(object):
         return obj_id
 
     def retrieve(self, uid, token, iden):
-        '''
+        """
         Retrieve a stream.
 
         :param uid: User's uid.
         :param token: Token of the user.
         :param iden: Identifier of the stream
         :return: URI, Queue name and msgs from last minute.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db['data_streams']
@@ -149,13 +149,13 @@ class AMQPClient(object):
         return uri, queue, list(items)
 
     def delete(self, uid, token, iden):
-        '''
+        """
         Delete a stream.
 
         :param uid: User's uid.
         :param token: Token of the user.
         :param iden: Identifier of the stream.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db['data_streams']
@@ -168,9 +168,9 @@ class AMQPClient(object):
 
 
 class StreamConsumer(threading.Thread):
-    '''
+    """
     Consumer which extracts messages from a Queue and stores them.
-    '''
+    """
 
     def __init__(self, uid, token, iden, str_uri, amqp_uri, queue):
         super(StreamConsumer, self).__init__()
@@ -187,28 +187,28 @@ class StreamConsumer(threading.Thread):
         self.channel.queue_declare(queue=queue)
 
     def run(self):
-        '''
+        """
         Strat consuming.
-        '''
+        """
         self.channel.basic_consume(self.callback, queue=self.queue,
                                    no_ack=True)
         self.channel.start_consuming()
 
     def stop(self):
-        '''
+        """
         Stop consuming.
-        '''
+        """
         self.channel.stop_consuming()
 
     def callback(self, ch, method, properties, body):
-        '''
+        """
         Callback which stores the messages.
 
         :param body: msg body.
         :param properties: msg props.
         :param method: msg method.
         :param ch: channel.
-        '''
+        """
         tmp = time.time()
         tmp = {'resv': tmp, 'body': body}
         self.collection.insert(tmp)

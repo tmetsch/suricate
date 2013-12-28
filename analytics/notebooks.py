@@ -1,8 +1,8 @@
 # coding=utf-8
 
-'''
+"""
 Module for the handling of notebooks.
-'''
+"""
 
 __author__ = 'tmetsch'
 
@@ -31,17 +31,17 @@ PRELOAD2 = file(preload_int).read()
 
 
 def grep_stdout(func):
-    '''
+    """
     Wrap stderr and stdout to a str return value.
     :param func:
-    '''
+    """
 
     def wrap(*args):
-        '''
+        """
         Wraps a function.
 
         :param args: Bunch of Arguments.
-        '''
+        """
         old_out = sys.stdout
         old_err = sys.stderr
         sys.stdout = StringIO()
@@ -59,9 +59,9 @@ def grep_stdout(func):
 
 
 class ConsoleWrapper(object):
-    '''
+    """
     Wraps around a single python console interpreter.
-    '''
+    """
 
     def __init__(self, iden, collection, init_src, uid, token, host, port):
         self.iden = iden
@@ -81,9 +81,9 @@ class ConsoleWrapper(object):
 
     @grep_stdout
     def _run_line(self, line):
-        '''
+        """
         Run single line of python code.
-        '''
+        """
         for item in line.split('\r'):
             cont = self.console.push(item.rstrip('\r'))
         if cont and line.lstrip()[:3] in ['for', 'if ']:
@@ -92,9 +92,9 @@ class ConsoleWrapper(object):
             self.white_space = ''
 
     def rerun(self):
-        '''
+        """
         Reset buffer and rerun all.
-        '''
+        """
         self.console.resetbuffer()
         nw_src = OrderedDict({})
         for item in self.src:
@@ -104,21 +104,10 @@ class ConsoleWrapper(object):
             nw_src[iden] = (loc, out)
         self.src = nw_src
 
-    def add_lines(self, code_lines):
-        '''
-        Add multiple lines of source code.
-
-        TODO: check necessity.
-
-        :param code_lines: List of lines of code.
-        '''
-        for line in code_lines:
-            self.add_line(line)
-
     def get_lines(self):
-        '''
+        """
         Retrieve the source code.
-        '''
+        """
         # List is ordered!
         res = []
         for line in self.src.values():
@@ -126,11 +115,11 @@ class ConsoleWrapper(object):
         return res
 
     def add_line(self, line):
-        '''
+        """
         Add a single source code line.
 
         :param line: Single line of Python code.
-        '''
+        """
         iden = str(uuid.uuid4())
         out = self._run_line(line)
         self.src[iden] = (line, out)
@@ -140,11 +129,11 @@ class ConsoleWrapper(object):
         return iden
 
     def remove_line(self, iden):
-        '''
+        """
         Remove a line. Means we need to rerun all code :-(
 
         :param iden: Identifier of the line.
-        '''
+        """
         self.src.pop(iden)
         # now we need to rerun all :-( could have been important line...
         self.rerun()
@@ -154,14 +143,14 @@ class ConsoleWrapper(object):
                                upsert=False)
 
     def update_line(self, iden, line, replace=True):
-        '''
+        """
         Update a code passage.
 
         :param line: Line of Python code.
         :param iden: Identifier of the line.
         :param replace: Defaults to True - If True will replace,
         otherwise append.
-        '''
+        """
         if replace:
             # the + '\n' is so that interpreter execute the code block!
             self.src[iden] = (line + '\n', None)
@@ -174,17 +163,11 @@ class ConsoleWrapper(object):
                                {"$set": {'code': son.SON(self.src)}},
                                upsert=False)
 
-    def get_results(self):
-        '''
-        Retrieve the coding results.
-        '''
-        return self.src
-
 
 class NotebookStore(object):
-    '''
+    """
     Stores Notebooks in a MongoDB collection.
-    '''
+    """
 
     # XXX: Problem there is that there is no guarantee the order of the
     # OrderedDict coming from MongoDB. The as_class helps prevent this!
@@ -196,14 +179,14 @@ class NotebookStore(object):
         self.client = pymongo.MongoClient(uri)
 
     def get_notebook(self, uid, token, iden, init_code=None):
-        '''
+        """
         Retrieve a notebook if existing - otherwise creates new one.
 
         :param uid: User id.
         :param token: token for the user.
         :param iden: Identifier of the notebook.
         :param init_code: (Optional) List of lines of code.
-        '''
+        """
         if not init_code:
             init_code = []
         if iden + uid in self.cache:
@@ -230,7 +213,7 @@ class NotebookStore(object):
                 if line[:4] != '    ':
                     to_add.append(line)
                 else:
-                    to_add.append(to_add.pop() + line)
+                    to_add.append(to_add.pop() + '\n' + line)
             for line in to_add:
                 wrapper.add_line(line)
 
@@ -238,25 +221,25 @@ class NotebookStore(object):
             return wrapper
 
     def delete_notebook(self, uid, token, iden):
-        '''
+        """
         Deletes a notebook from the storage.
 
         :param uid: User id.
         :param token: token for the user.
         :param iden: Idnetifier for the notebook.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db[self.coll_name]
         collection.remove({'iden': iden})
 
     def list_notebooks(self, uid, token):
-        '''
+        """
         Lists all notebook names.
 
         :param uid: User id.
         :param token: token for the user.
-        '''
+        """
         db = self.client[uid]
         db.authenticate(uid, token)
         collection = db[self.coll_name]
