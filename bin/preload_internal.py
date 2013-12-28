@@ -106,3 +106,13 @@ def retrieve_from_stream(iden, interval=60):
     :param interval: defaults to messages of last 60 seconds.
     '''
     return stm_str.get_messages(str(UID), str(TOKEN), interval, iden)
+
+
+def run_analytics(iden):
+    '''
+    Run an analytics notebook.
+
+    :param iden: Identifier of the notebook.
+    '''
+    # TODO: implement this one...
+    pass
