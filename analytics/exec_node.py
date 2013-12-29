@@ -7,7 +7,6 @@ Module representing an execution node.
 __author__ = 'tmetsch'
 
 import json
-import sys
 import pika
 
 from analytics import notebooks
@@ -28,11 +27,10 @@ class ExecNode(object):
         self.channel = connection.channel()
         self.channel.queue_declare(queue=uid)
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(self.request, queue=uid)
+        self.channel.basic_consume(self.callback, queue=uid)
         self.channel.start_consuming()
 
-
-    def request(self, channel, method, props, body):
+    def callback(self, channel, method, props, body):
         """
         Handle incoming request for this tenant.
 
@@ -58,12 +56,10 @@ class ExecNode(object):
 
         :param body: The message body.
         """
-        print 'handling', body
-
         call = body['call']
         uid = body['uid']
         token = body['token']
-        store = self._get_store(body['type'])
+        store = self._get_store(body['ntb_type'])
         res = {}
         if call == 'list_notebooks':
             res = {'notebooks': store.list_notebooks(uid, token)}
@@ -107,21 +103,15 @@ class ExecNode(object):
             if event == 'rerun':
                 ntb.rerun()
             res = {}
-        print 'responding', json.dumps(res, indent=2)
         return res
 
     def _get_store(self, ntb_type):
+        """
+        Retrieve type of store.
+
+        :param ntb_type: string representation of str.
+        """
         if ntb_type == 'analytics':
             return self.a_ntb_str
         elif ntb_type == 'processing':
             return self.p_ntb_str
-
-
-if __name__ == '__main__':
-    # TODO: cleanup
-
-    user = sys.argv[1]
-    pwd = sys.argv[2]
-    mongo = 'mongodb://localhost:27017'
-    aqmp = 'amqp://guest:os4all@localhost:5672/%2f'
-    ExecNode(mongo, aqmp, user)

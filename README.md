@@ -71,7 +71,7 @@ Let's use the streaming data sources to get latest usage percentage from
 **server1**:
 
     list_streams()
-    new_val = get_from_stream('52225c4d17b1684044f86353')[0]['body']
+    new_val = retrieve_from_stream('52225c4d17b1684044f86353')[0]['body']
 
 Compare them and run an action when needed:
 
@@ -88,14 +88,16 @@ externally via an API (by a cron job?). The clean split of learning
 
 ## API
 
-Currently the following features are available when coding notebooks (through *preload_internal.py*):
+Currently the following features are available when coding notebooks
+(through *preload_internal.py*):
 
 * *show()* - show matplotlib output
-* *list_stream()* - list all streams
-* *get_from_stream(**id**, interval=60)* - retrieve messages from a stream
+* *list_streams()* - list all streams
+* *retrieve_from_stream(**id**, interval=60)* - retrieve messages from a stream
 * *list_objects()* - list all data objects
 * *create_object(<content>)* - create a new data object
 * *retrieve_object(**id**)* - retrieve a data object
+* *update_object(**id**)* - update a data object
 
 Those features can easily extended/altered by editing the preload scripts.
 
@@ -105,21 +107,23 @@ TBD.
 
 # Running it
 
-Currently only a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
+Currently a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
 
     db = db.getSiblingDB('admin')
     db.addUser( { user: "admin", pwd: "secret",
                   roles: [ "clusterAdmin", "userAdminAnyDatabase" ] } )
 
-Then run mongod:
+Then run mongod with authentication enabled:
 
     mongod --dbpath <path> --auth
 
+Also make sure [RabbitMQ](http://www.rabbitmq.com/) is running and configured.
+
 ## For Development & local
 
-For local environments just run:
+For local environments got to the bin directory and just run:
 
-    $ ./runme
+    $ ./run_me.py
 
 ## In Production
 
@@ -165,13 +169,50 @@ The configuration file supports some simple configuration settings:
     * The *port* for the MongoDB Server.
     * The *admin* for the MongoDB Server.
     * The *pwd* for the MongoDB Server.
+* Rabbit
+    * The *uri* for the AMQP broker.
 * Suricate
     * The *preload_ext* script which will be loaded for each notebook and
     which will be exported when the notebook is downloaded.
     * The *preload_int* script which will be loaded for each notebook to
     offer some convenience routines. Will not be exported once downloaded.
 
+## Architecture
+
+The following ASCII Art shows the rough architecture of Suricate:
+
+            -----Web----                        -------------
+            | -------- |                     -------------  |
+    User -> | |  UI  | | ----AMQP msgs.----> | Execution |  |
+            | -------- |                     |   nodes   |---
+            |          |                     -------------
+            | -------- |                           |
+    Data -> | | REST | |                           |
+            | | API  | |                     -------------
+            | -------- | ------Mongo-------> |    DB     |
+            ------------                     -------------
+
+Some notes on the components:
+
+* *UI* renders a UI which can be displayed in a Web Browser.
+* *REST* is a RESTful interface to the service
+* *Data* can be streamed or bulk uploaded into the service. It will directly
+  be put in the MongoDB.
+* *Execution nodes* are run per tenant and isolate the users and guarantee
+  scalability. The Interfaces talk to the nodes using AMQP messages. For
+  maximum security run a Execution node in a container (LXC, cgroups,
+  Solaris zone, ...). Enforce capping rules on the Execution nodes wherever
+  possible. Execution nodes talk to the MongoDB directly so if you might want
+  to *schedule* them close to the data for maximum performance.
+
 # Security considerations
 
 Run at own risk & please be aware that the users of the service get a full
 Python interpreter at their hands.
+
+The Execution nodes act as isolation container. All messages in the system
+carry a uid and token. So even if a user in an execution nodes figures out how
+to communicate with the AMQP broker he will still need the token of the other
+users to be successful.
+
+**Note**: Use encryption wherever possible!

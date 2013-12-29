@@ -18,16 +18,16 @@ from bson import son
 from StringIO import StringIO
 from collections import OrderedDict
 
-config = ConfigParser.RawConfigParser()
-config.read('app.conf')
-preload_int = config.get('suricate', 'preload_int')
-preload_ext = config.get('suricate', 'preload_ext')
+CONFIG = ConfigParser.RawConfigParser()
+CONFIG.read('app.conf')
+PRELOAD_INT = CONFIG.get('suricate', 'preload_int')
+PRELOAD_EXT = CONFIG.get('suricate', 'preload_ext')
 
 # This preload will be downloaded with the notebook.
-PRELOAD = file(preload_ext).read()
+PRELOAD = file(PRELOAD_EXT).read()
 
 # Preload 2 will not be download with the notebook!
-PRELOAD2 = file(preload_int).read()
+PRELOAD2 = file(PRELOAD_INT).read()
 
 
 def grep_stdout(func):
@@ -103,16 +103,6 @@ class ConsoleWrapper(object):
             out = self._run_line(loc)
             nw_src[iden] = (loc, out)
         self.src = nw_src
-
-    def get_lines(self):
-        """
-        Retrieve the source code.
-        """
-        # List is ordered!
-        res = []
-        for line in self.src.values():
-            res.append(line[0])
-        return res
 
     def add_line(self, line):
         """
@@ -192,9 +182,9 @@ class NotebookStore(object):
         if iden + uid in self.cache:
             return self.cache[iden + uid]
         else:
-            db = self.client[uid]
-            db.authenticate(uid, token)
-            collection = db[self.coll_name]
+            database = self.client[uid]
+            database.authenticate(uid, token)
+            collection = database[self.coll_name]
             # XXX: the as_class is important - see note above!
             content = collection.find_one({'iden': iden}, as_class=OrderedDict)
             if content is None:
@@ -217,7 +207,7 @@ class NotebookStore(object):
             for line in to_add:
                 wrapper.add_line(line)
 
-            self.cache[iden+uid] = wrapper
+            self.cache[iden + uid] = wrapper
             return wrapper
 
     def delete_notebook(self, uid, token, iden):
@@ -228,9 +218,9 @@ class NotebookStore(object):
         :param token: token for the user.
         :param iden: Idnetifier for the notebook.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db[self.coll_name]
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database[self.coll_name]
         collection.remove({'iden': iden})
 
     def list_notebooks(self, uid, token):
@@ -240,9 +230,9 @@ class NotebookStore(object):
         :param uid: User id.
         :param token: token for the user.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db[self.coll_name]
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database[self.coll_name]
         tmp = collection.find(fields={'iden': True, '_id': False})
         res = []
         for item in tmp:

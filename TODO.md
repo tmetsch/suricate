@@ -3,9 +3,6 @@
 * General
     * Better error handling needed.
     * move this all to a trello board :-)
-    * General restructering of architecture/code:
-        * backends for handling notebooks execution (isolate with cgroups & subprocess?)
-        * simple flows fo data through program: frontend (UI) - backends - final execution
 * Data:
     * in memory DB support (for caching)
     * Include object storage through CDMI?
@@ -23,7 +20,7 @@
     * versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
     * include external compute capacities?
     * Hadoop support? - Connect to OpenStack Savanna
-    * support for inport/export ipython notebooks.
+    * support for import/export ipython notebooks.
     * tagging of notebooks (example tags: Production, experimental, explorational, under development)
 * web ui
     * D3 / Vega integration (via vincent, bokeh)
@@ -32,9 +29,11 @@
     * package runnable in OpenShift or similar
 * Fixes
     * firefox just not jump to end in input field
-    * \r\n vs \n?
 
 # Done
 
 * web ui
     * responsive layout (See: http://purecss.io/layouts/side-menu/)
+* General restructering of architecture/code:
+    * backends for handling notebooks execution (isolate with cgroups & subprocess?)
+    * simple flows fo data through program: frontend (UI) - backends - final execution

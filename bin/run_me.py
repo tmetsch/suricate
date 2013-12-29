@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # coding=utf-8
 
 """
@@ -23,6 +25,8 @@ host = config.get('mongo', 'host')
 port = config.get('mongo', 'port')
 adm = config.get('mongo', 'admin')
 pwd = config.get('mongo', 'pwd')
+# Rabbit broker
+broker = config.get('rabbit', 'uri')
 
 # dict with <username>:(<token>,<db_exists>)
 USERS = {'foo': ('bar', False)}
@@ -84,17 +88,16 @@ if __name__ == '__main__':
     # start execution node for each user.
     processes = []
     for user in USERS.keys():
-        p = subprocess.Popen([sys.executable,
-                              os.sep.join(['..', 'analytics', 'exec_node.py']),
-                              user, USERS[user][0]])
+        p = subprocess.Popen([sys.executable, 'run_exec.py', user])
         processes.append(p)
 
     # launch web app
-    app = ui_app.AnalyticsApp('mongodb://' + host + ':' + port).get_wsgi_app()
+    mongo = 'mongodb://' + host + ':' + port
+    app = ui_app.AnalyticsApp(mongo, broker).get_wsgi_app()
     app = SessionMiddleWare(app)
 
     bottle.TEMPLATE_PATH.insert(0, '../web/views')
-    bottle.run(app=app, host='0.0.0.0')
+    bottle.run(app=app, host='localhost')
 
     # let's cleanup shall we?
     for process in processes:

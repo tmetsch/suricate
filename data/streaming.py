@@ -33,9 +33,9 @@ class StreamClient(object):
         :param token: Token of the user.
         :return: List of identifiers.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_streams']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
         res = []
         for obj in collection.find():
             res.append(str(obj['_id']))
@@ -51,12 +51,12 @@ class StreamClient(object):
         :param iden: Identifier for the stream
         :return: List of messages.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
+        database = self.client[uid]
+        database.authenticate(uid, token)
         begin = time.time() - interval
         end = time.time()
 
-        collection = db['data_streams.' + str(iden)]
+        collection = database['data_streams.' + str(iden)]
         items = collection.aggregate([
             {"$match": {"resv": {"$gt": begin, "$lte": end}}},
             {"$project": {"_id": 0, "body": 1}},
@@ -84,9 +84,9 @@ class AMQPClient(object):
         :param token: Token of the user.
         :return: List of ids.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_streams']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
         res = []
         for obj in collection.find():
             if str(obj['_id']) not in self.cache:
@@ -111,9 +111,9 @@ class AMQPClient(object):
         :param queue: Queue name
         :return: Identifier.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_streams']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
         tmp = {'uri': uri, 'queue': queue}
         obj_id = collection.insert(tmp)
         return obj_id
@@ -127,9 +127,9 @@ class AMQPClient(object):
         :param iden: Identifier of the stream
         :return: URI, Queue name and msgs from last minute.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_streams']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
         # get URI
         content = collection.find_one({'_id': ObjectId(iden)})
         uri = content['uri']
@@ -139,7 +139,7 @@ class AMQPClient(object):
         begin = time.time() - 60
         end = time.time()
 
-        collection = db['data_streams.' + str(iden)]
+        collection = database['data_streams.' + str(iden)]
         items = collection.aggregate([
             {"$match": {"resv": {"$gt": begin, "$lte": end}}},
             {"$project": {"_id": 0, "body": 1}},
@@ -156,11 +156,11 @@ class AMQPClient(object):
         :param token: Token of the user.
         :param iden: Identifier of the stream.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_streams']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
         collection.remove({'_id': ObjectId(iden)})
-        collection = db['data_streams.' + str(iden)]
+        collection = database['data_streams.' + str(iden)]
         collection.drop()
 
         self.cache[iden].stop()
@@ -176,9 +176,9 @@ class StreamConsumer(threading.Thread):
         super(StreamConsumer, self).__init__()
         # for storing msgs.
         client = pymongo.MongoClient(str_uri)
-        db = client[uid]
-        db.authenticate(uid, token)
-        self.collection = db['data_streams.' + str(iden)]
+        database = client[uid]
+        database.authenticate(uid, token)
+        self.collection = database['data_streams.' + str(iden)]
 
         # amqp conn.
         self.queue = queue
@@ -200,16 +200,15 @@ class StreamConsumer(threading.Thread):
         """
         self.channel.stop_consuming()
 
-    def callback(self, ch, method, properties, body):
+    def callback(self, channel, method, properties, body):
         """
         Callback which stores the messages.
 
         :param body: msg body.
         :param properties: msg props.
         :param method: msg method.
-        :param ch: channel.
+        :param channel: channel.
         """
         tmp = time.time()
         tmp = {'resv': tmp, 'body': body}
         self.collection.insert(tmp)
-

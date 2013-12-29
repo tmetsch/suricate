@@ -17,10 +17,9 @@ import os
 
 from StringIO import StringIO
 
-import api
-
-import data.object_store
-import data.streaming
+from data import object_store
+from data import streaming
+from web import api
 
 
 class AnalyticsApp(object):
@@ -29,23 +28,23 @@ class AnalyticsApp(object):
     'get_wsgi_app'.
     """
 
-    def __init__(self, uri):
+    def __init__(self, mongo_uri, amqp_uri):
         """
         Initialize the Web Application
 
-        # TODO: uri for obj and notebook str.
-        :param uri: Connection details for MongoDB.
+        :param mongo_uri: Connection details for MongoDB.
         """
+        # configure bottle
         self.app = bottle.Bottle()
-
         self.pth = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 
+        # get obj store up!
         # TODO: look into supporting other store ntb_types.
-        self.obj_str = data.object_store.MongoStore(uri)
-        self.stream = data.streaming.AMQPClient(uri)
+        self.obj_str = object_store.MongoStore(mongo_uri)
+        self.stream = streaming.AMQPClient(mongo_uri)
 
-        self.api = api.API()
+        self.api = api.API(amqp_uri)
         self._setup_routing()
 
     def _setup_routing(self):
@@ -150,14 +149,15 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         upload = bottle.request.files.get('upload')
-        name, ext = os.path.splitext(upload.filename)
+        _, ext = os.path.splitext(upload.filename)
 
         if ext == '.json':
             tmp = upload.file.getvalue()
         elif ext == '.csv':
             reader = csv.reader(upload.file, delimiter=',', quotechar='"')
             keys = next(reader)
-            out = [{key: val for key, val in zip(keys, prop)} for prop in reader]
+            out = [{key: val for key, val in zip(keys, prop)}
+                   for prop in reader]
             tmp = json.dumps(out)
         else:
             return 'File extension not supported.'
@@ -226,7 +226,7 @@ class AnalyticsApp(object):
         Lists all notebooks.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         tmp = self.api.list_notebooks(uid, token, ntb_type)
 
@@ -239,7 +239,7 @@ class AnalyticsApp(object):
         When code is uploaded add it to the notebook.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         iden = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
@@ -263,7 +263,7 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         res, indent = self.api.retrieve_notebook(uid, token, ntb_type, iden)
 
@@ -277,7 +277,7 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         self.api.delete_notebook(uid, token, ntb_type, iden)
 
@@ -291,19 +291,20 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         cmd = bottle.request.forms['cmd']
         indent = bottle.request.forms['indent']
         if cmd == '':
             # finally execute old open block of code
-            self.api.update_item_in_notebook(uid, token, ntb_type, iden, line_id,
-                                        '\r\n', replace=False)
+            self.api.update_item_in_notebook(uid, token, ntb_type, iden,
+                                             line_id, '\r\n', replace=False)
         elif len(indent) != 0:
             # add to open block of code
-            self.api.update_item_in_notebook(uid, token, ntb_type, iden, line_id,
-                                        '\r\n' + cmd.rstrip('\n'),
-                                        replace=False)
+            self.api.update_item_in_notebook(uid, token, ntb_type, iden,
+                                             line_id,
+                                             '\r\n' + cmd.rstrip('\n'),
+                                             replace=False)
         else:
             # or just add
             self.api.add_item_to_notebook(uid, token, ntb_type, iden, cmd)
@@ -319,11 +320,12 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         if bottle.request.GET.get('save', '').strip():
             line = bottle.request.GET.get('cmd', '').strip()
-            self.api.update_item_in_notebook(uid, token, ntb_type, iden, line_id, line)
+            self.api.update_item_in_notebook(uid, token, ntb_type, iden,
+                                             line_id, line)
             bottle.redirect('/' + ntb_type + '/' + iden)
         else:
             src, _ = self.api.retrieve_notebook(uid, token, ntb_type, iden)
@@ -339,7 +341,7 @@ class AnalyticsApp(object):
         :param line_id: Identifier of the loc.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         self.api.delete_item_of_notebook(uid, token, ntb_type, iden, line_id)
 
@@ -352,7 +354,7 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         self.api.notebook_event(uid, token, ntb_type, iden, 'rerun')
 
@@ -365,10 +367,9 @@ class AnalyticsApp(object):
         :param iden: Notebook identifier.
         """
         uid, token = _get_cred()
-        ntb_type = _get_ntb_ntb_type()
+        ntb_type = _get_ntb_type()
 
         src, _ = self.api.retrieve_notebook(uid, token, ntb_type, iden)
-
 
         tmp_file = StringIO()
         # TODO: fix preload
@@ -381,13 +382,13 @@ class AnalyticsApp(object):
             tmp_file.write(line)
 
         # will force browsers to download...
-        bottle.response.set_header('Content-ntb_type', 'ext/x-script.python')
+        bottle.response.set_header('Content-Type', 'ext/x-script.python')
         bottle.response.set_header('content-disposition',
                                    'inline; filename=notebook.py')
         return tmp_file.getvalue()
 
 
-def _get_ntb_ntb_type():
+def _get_ntb_type():
     """
     Return the notebook backend - either analytics or processing.
 
@@ -407,5 +408,5 @@ def _get_cred():
     :return: Set of credentials for this request.
     """
     uid = bottle.request.get_header('X-Uid')
-    pw = bottle.request.get_header('X-Token')
-    return uid, pw
+    pwd = bottle.request.get_header('X-Token')
+    return uid, pwd

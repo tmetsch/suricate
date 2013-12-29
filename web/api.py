@@ -17,13 +17,13 @@ class API(object):
     Little helper class to abstract the REST and UI from.
     """
 
-    def __init__(self):
-        # TODO: configure properly!
-        para = pika.URLParameters('amqp://guest:os4all@localhost:5672/%2f')
+    def __init__(self, amqp_uri):
+        para = pika.URLParameters(amqp_uri)
         self.connection = pika.BlockingConnection(para)
         self.clients = {}
 
     # Data sources...
+    # TODO: deal with the data part here too!
 
     ## Objects
 
@@ -34,7 +34,6 @@ class API(object):
     ####
 
     # Notebooks - can have two types: processing or analytics!
-
 
     def list_notebooks(self, uid, token, ntb_type):
         """
@@ -50,7 +49,6 @@ class API(object):
                    'call': 'list_notebooks'}
         tmp = self._call_rpc(uid, payload)
         return tmp['notebooks']
-
 
     def create_notebook(self, uid, token, ntb_type, iden, init_code):
         """
@@ -71,7 +69,6 @@ class API(object):
         tmp = self._call_rpc(uid, payload)
         return tmp
 
-
     def retrieve_notebook(self, uid, token, ntb_type, iden):
         """
         RPC call to retrieve a notebook.
@@ -89,7 +86,6 @@ class API(object):
         tmp = self._call_rpc(uid, payload)
         return tmp['src'], tmp['indent']
 
-
     def delete_notebook(self, uid, token, ntb_type, iden):
         """
         RPC call to delete a notebook.
@@ -106,7 +102,6 @@ class API(object):
                    'call': 'delete_notebook'}
         tmp = self._call_rpc(uid, payload)
         return tmp
-
 
     def add_item_to_notebook(self, uid, token, ntb_type, iden, cmd):
         """
@@ -126,7 +121,6 @@ class API(object):
                    'call': 'add_item_to_notebook'}
         tmp = self._call_rpc(uid, payload)
         return tmp
-
 
     def update_item_in_notebook(self, uid, token, ntb_type, iden, line_id, cmd,
                                 replace=True):
@@ -152,7 +146,6 @@ class API(object):
         tmp = self._call_rpc(uid, payload)
         return tmp
 
-
     def delete_item_of_notebook(self, uid, token, ntb_type, iden, line_id):
         """
         RPC call to delete a item from a notebook.
@@ -171,7 +164,6 @@ class API(object):
                    'call': 'delete_item_of_notebook'}
         tmp = self._call_rpc(uid, payload)
         return tmp
-
 
     def notebook_event(self, uid, token, ntb_type, iden, event):
         """
@@ -193,6 +185,12 @@ class API(object):
         return tmp
 
     def _call_rpc(self, uid, payload):
+        """
+        Make a lovely RPC (blocking) call.
+
+        :param uid: user's id.
+        :param payload: JSON payload for the message.
+        """
         if uid not in self.clients:
             self.clients[uid] = RPCClient(self.connection)
         return self.clients[uid].call(uid, payload)
@@ -205,23 +203,22 @@ class RPCClient(object):
 
     json_dec = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
 
-
     def __init__(self, connection):
         self.connection = connection
         self.channel = connection.channel()
 
         result = self.channel.queue_declare(exclusive=True)
         self.callback_queue = result.method.queue
-        self.channel.basic_consume(self.response, no_ack=True,
+        self.channel.basic_consume(self.callback, no_ack=True,
                                    queue=self.callback_queue)
         self.corr_id = None
         self.response = None
 
-    def response(self, ch, method, props, body):
+    def callback(self, channel, method, props, body):
         """
         Handle a response call.
 
-        :param ch: The channel.
+        :param channel: The channel.
         :param method: The method.
         :param props: The properties.
         :param body: The body.

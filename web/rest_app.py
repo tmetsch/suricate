@@ -24,6 +24,9 @@ class RestApi(object):
         self._setup_routing()
 
     def _setup_routing(self):
+        """
+        Setup routing.
+        """
         pass
 
     def get_wsgi_app(self):

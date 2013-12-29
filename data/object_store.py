@@ -11,12 +11,11 @@ import pymongo
 from bson import ObjectId
 
 
-def get_object_stor(uri):
+def get_object_stor():
     """
     Returns the right instance of a object storage interface object for an
     given URI.
 
-    :param uri: The URI of the object storage.
     :return: Instance of ObjectStore.
     """
     # TODO: implement
@@ -99,9 +98,9 @@ class MongoStore(ObjectStore):
         :param uid: User id.
         :param token: Access token.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_objects']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
         res = []
         for obj in collection.find():
             res.append(str(obj['_id']))
@@ -115,9 +114,9 @@ class MongoStore(ObjectStore):
         :param uid: User id.
         :param token: Access token.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_objects']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
         tmp = {'value': content}
         obj_id = collection.insert(tmp)
         return obj_id
@@ -130,9 +129,9 @@ class MongoStore(ObjectStore):
         :param uid: User id.
         :param token: Access token.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_objects']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
         content = collection.find_one({'_id': ObjectId(obj_id)})
         return content['value']
 
@@ -145,9 +144,9 @@ class MongoStore(ObjectStore):
         :param uid: User id.
         :param token: Access token.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_objects']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
         collection.update({'_id': ObjectId(obj_id)},
                           {"$set": {'value': content}}, upsert=False)
 
@@ -159,9 +158,9 @@ class MongoStore(ObjectStore):
         :param uid: User id.
         :param token: Access token.
         """
-        db = self.client[uid]
-        db.authenticate(uid, token)
-        collection = db['data_objects']
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
         collection.remove({'_id': ObjectId(obj_id)})
 
 

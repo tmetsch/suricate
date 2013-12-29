@@ -1,10 +1,10 @@
-<h1 class="{{type}}">{{type}} - Notebooks</h1>
+<h1 class="{{ntb_type}}">{{ntb_type}} - Notebooks</h1>
 <ul>
 % for ntb in notebooks:
-    <li class="{{type}}"><a href="/{{type}}/{{ntb}}">{{ntb}}</a></li>
+    <li class="{{ntb_type}}"><a href="/{{ntb_type}}/{{ntb}}">{{ntb}}</a></li>
 % end
 </ul>
-<form action="/{{type}}/upload" method="post" enctype="multipart/form-data">
+<form action="/{{ntb_type}}/upload" method="post" enctype="multipart/form-data">
     Name: <input type="text" name="iden" />
     (Optional) Select a file: <input type="file" name="upload" />
     <input type="submit" value="New" />
