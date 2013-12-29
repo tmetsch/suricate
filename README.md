@@ -218,4 +218,5 @@ carry a uid and token. So even if a user in an execution nodes figures out how
 to communicate with the AMQP broker he will still need the token of the other
 users to be successful.
 
-**Note**: Use encryption wherever possible!
+**Note**: Use encryption wherever possible & change default passwords!
+(AMQP, Mongo, ...)
