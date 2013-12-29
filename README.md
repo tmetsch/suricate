@@ -89,7 +89,7 @@ externally via an API (by a cron job?). The clean split of learning
 ## API
 
 Currently the following features are available when coding notebooks
-(through *preload_internal.py*):
+(through *preload_internal.py* - a mini SDK if you want):
 
 * *show()* - show matplotlib output
 * *list_streams()* - list all streams
@@ -100,6 +100,7 @@ Currently the following features are available when coding notebooks
 * *update_object(**id**)* - update a data object
 
 Those features can easily extended/altered by editing the preload scripts.
+Whatever is preloaded is automatically also available in the notebooks.
 
 ## REST API
 
@@ -183,11 +184,11 @@ The following ASCII Art shows the rough architecture of Suricate:
 
             -----Web----                        -------------
             | -------- |                     -------------  |
-    User -> | |  UI  | | ----AMQP msgs.----> | Execution |  |
-            | -------- |                     |   nodes   |---
+            | |  UI  | | ----AMQP msgs.----> | Execution |  |
+    User -> | -------- |                     |   nodes   |---
             |          |                     -------------
-            | -------- |                           |
-    Data -> | | REST | |                           |
+    Data -> | -------- |                           |
+            | | REST | |                           |
             | | API  | |                     -------------
             | -------- | ------Mongo-------> |    DB     |
             ------------                     -------------
@@ -203,7 +204,9 @@ Some notes on the components:
   maximum security run a Execution node in a container (LXC, cgroups,
   Solaris zone, ...). Enforce capping rules on the Execution nodes wherever
   possible. Execution nodes talk to the MongoDB directly so if you might want
-  to *schedule* them close to the data for maximum performance.
+  to *schedule* them close to the data for maximum performance. You can also
+  execute Execution nodes with different environment (versions of packages
+  etc.). Execution nodes make Suricate a distributed system itself.
 
 # Security considerations
 
