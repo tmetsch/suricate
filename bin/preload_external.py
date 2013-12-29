@@ -18,7 +18,7 @@ params = {'legend.fontsize': 9.0,
           'lines.linewidth': 0.5,
           'grid.linewidth':   0.5}
 
-fig = pyplot.figure(1, figsize=(3, 3))
+fig = pyplot.figure(1, figsize=(6, 4))
 pyplot.rcParams.update(params)
 pyplot.clf()
 
