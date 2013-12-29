@@ -24,7 +24,7 @@ os.environ = {}
 
 def show():
     """
-    Show a matploglib fig and stores it to be displayed as inline image.
+    Show a matplotlib fig and stores it to be displayed as inline image.
     """
     tmp = StringIO()
     #axes = pyplot.axes()
@@ -39,6 +39,16 @@ def show():
     print uri
     tmp.close()
     # pyplot.clf()
+
+
+# def show_d3():
+#     """
+#     Show matplotlib fig using d3.js.
+#     """
+#     img = _objects.D3Figure(fig).html()
+#     dat = 'd3js:'
+#     dat += img
+#     print dat
 
 # Everything below this line is basically an SDK...
 
