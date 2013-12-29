@@ -23,8 +23,6 @@
     * Hadoop support? - Connect to OpenStack Savanna
     * support for import/export ipython notebooks.
     * tagging of notebooks (example tags: Production, experimental, explorational, under development)
-* web ui
-    * D3 / Vega integration (via vincent, bokeh)
 * packaging
     * pypi/conda
     * package runnable in OpenShift or similar
@@ -35,6 +33,7 @@
 
 * web ui
     * responsive layout (See: http://purecss.io/layouts/side-menu/)
+    * D3 / Vega integration (via vincent, bokeh)
 * General restructering of architecture/code:
     * backends for handling notebooks execution (isolate with cgroups & subprocess?)
     * simple flows fo data through program: frontend (UI) - backends - final execution
