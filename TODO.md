@@ -1,8 +1,10 @@
 # Work in Progress
 
-* General
+## General
 -[] Better error handling needed.
 -[] move this all to a trello board :-)
+
+
 * Data:
     * in memory DB support (for caching)
     * Include object storage through CDMI?
