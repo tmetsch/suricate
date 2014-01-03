@@ -1,8 +1,8 @@
 # Work in Progress
 
 ## General
--[] Better error handling needed.
--[] move this all to a trello board :-)
+- [ ] Better error handling needed.
+- [ ] move this all to a trello board :-)
 
 
 * Data:
