@@ -1,11 +1,8 @@
-# Work in Progress
-
-## General
+# General
 - [ ] Better error handling needed.
-- [ ] move this all to a trello board :-)
+- [x] move this all to a trello board :-)
 
-
-* Data:
+## Data:
     * in memory DB support (for caching)
     * Include object storage through CDMI?
     * Let Suricate download data (could be done by processing scripts now)
