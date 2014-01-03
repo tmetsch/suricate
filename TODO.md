@@ -29,7 +29,7 @@
 ## Packaging
 - [ ] pypi/conda
 - [ ] package runnable in OpenShift or similar
-- 
+
 ## Fixes
 - [ ] firefox just not jump to end in input field
 
