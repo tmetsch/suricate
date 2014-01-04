@@ -205,12 +205,7 @@ class RPCClient(object):
 
     def __init__(self, connection):
         self.connection = connection
-        self.channel = connection.channel()
 
-        result = self.channel.queue_declare(exclusive=True)
-        self.callback_queue = result.method.queue
-        self.channel.basic_consume(self.callback, no_ack=True,
-                                   queue=self.callback_queue)
         self.corr_id = None
         self.response = None
 
@@ -235,16 +230,22 @@ class RPCClient(object):
         """
         self.response = None
         self.corr_id = str(uuid.uuid4())
-        prop = pika.BasicProperties(reply_to=self.callback_queue,
+
+        channel = self.connection.channel()
+        result = channel.queue_declare(exclusive=True)
+        callback_queue = result.method.queue
+        channel.basic_consume(self.callback, no_ack=True,
+                              queue=callback_queue)
+        prop = pika.BasicProperties(reply_to=callback_queue,
                                     correlation_id=self.corr_id)
-        self.channel.basic_publish(exchange='',
-                                   routing_key=uid,
-                                   properties=prop,
-                                   body=json.dumps(payload))
+        channel.basic_publish(exchange='',
+                              routing_key=uid,
+                              properties=prop,
+                              body=json.dumps(payload))
         while self.response is None:
             self.connection.process_data_events()
 
-        # making usre order is in place!
+        # making sure order is in place!
         res = self.json_dec.decode(self.response)
         self.response = None
 
