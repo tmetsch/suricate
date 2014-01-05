@@ -19,6 +19,7 @@ class API(object):
 
     def __init__(self, amqp_uri):
         para = pika.URLParameters(amqp_uri)
+        para.heartbeat = 0
         self.connection = pika.BlockingConnection(para)
         self.clients = {}
 
