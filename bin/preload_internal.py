@@ -41,14 +41,17 @@ def show():
     # pyplot.clf()
 
 
-# def show_d3():
-#     """
-#     Show matplotlib fig using d3.js.
-#     """
-#     img = _objects.D3Figure(fig).html()
-#     dat = 'd3js:'
-#     dat += img
-#     print dat
+def show_d3(figure=None):
+    """
+    Show matplotlib fig using d3.js.
+    """
+    if figure:
+        img = _objects.D3Figure(figure).html()
+    else:
+        img = _objects.D3Figure(fig).html()
+    dat = 'd3js:'
+    dat += img
+    print dat
 
 # Everything below this line is basically an SDK...
 

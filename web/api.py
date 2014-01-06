@@ -9,6 +9,7 @@ __author__ = 'tmetsch'
 import collections
 import json
 import pika
+import pika.exceptions as pikaex
 import uuid
 
 
@@ -18,10 +19,8 @@ class API(object):
     """
 
     def __init__(self, amqp_uri):
-        para = pika.URLParameters(amqp_uri)
-        para.heartbeat = 0
-        self.connection = pika.BlockingConnection(para)
         self.clients = {}
+        self.amqp_uri = amqp_uri
 
     # Data sources...
     # TODO: deal with the data part here too!
@@ -193,7 +192,7 @@ class API(object):
         :param payload: JSON payload for the message.
         """
         if uid not in self.clients:
-            self.clients[uid] = RPCClient(self.connection)
+            self.clients[uid] = RPCClient(self.amqp_uri)
         return self.clients[uid].call(uid, payload)
 
 
@@ -204,8 +203,9 @@ class RPCClient(object):
 
     json_dec = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
 
-    def __init__(self, connection):
-        self.connection = connection
+    def __init__(self, uri):
+        self.para = pika.URLParameters(uri)
+        self.connection = pika.BlockingConnection(self.para)
 
         self.corr_id = None
         self.response = None
@@ -232,7 +232,13 @@ class RPCClient(object):
         self.response = None
         self.corr_id = str(uuid.uuid4())
 
-        channel = self.connection.channel()
+        try:
+            channel = self.connection.channel()
+        except pikaex.ChannelClosed:
+            # idle connections are closed...
+            self.connection = pika.BlockingConnection(self.para)
+            channel = self.connection.channel()
+
         result = channel.queue_declare(exclusive=True)
         callback_queue = result.method.queue
         channel.basic_consume(self.callback, no_ack=True,
