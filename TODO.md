@@ -18,7 +18,7 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
-- [ ] richer SDK in preload internal.
+- [ ] richer SDK (Analytics/Processing Development Kit) in preload internal.
 - [ ] Rename processing to 'actionable analytics'?
 - [ ] versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
 - [ ] include external compute capacities?
