@@ -25,6 +25,7 @@
 - [ ] Hadoop support? - Connect to OpenStack Savanna
 - [ ] support for import/export ipython notebooks.
 - [ ] tagging of notebooks (example tags: Production, experimental, explorational, under development)
+- [ ] management of notebooks in project which are then shareable -> exec node per project for better isolation!
 
 ## Packaging
 - [ ] pypi/conda
