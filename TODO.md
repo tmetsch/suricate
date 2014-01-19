@@ -18,13 +18,16 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
-- [ ] richer SDK in preload internal.
+- [ ] richer SDK (Analytics/Processing Development Kit) in preload internal.
 - [ ] Rename processing to 'actionable analytics'?
 - [ ] versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
 - [ ] include external compute capacities?
 - [ ] Hadoop support? - Connect to OpenStack Savanna
 - [ ] support for import/export ipython notebooks.
 - [ ] tagging of notebooks (example tags: Production, experimental, explorational, under development)
+- [ ] management of notebooks in project which are then shareable -> exec node per project for better isolation!
+    - [ ] could be git repositories with the code in it... 
+    - [ ] have samples hosted on github for direct cloning and testing the service.
 
 ## Packaging
 - [ ] pypi/conda
