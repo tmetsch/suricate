@@ -17,8 +17,8 @@
         % end
         % if output[k][1][:4] == 'data':
         <img src="{{output[k][1]}}"/>
-        % elif output[k][1][:4] == 'd3js':
-        <div>{{!output[k][1][5:]}}</div>
+        % elif output[k][1][:5] == 'embed':
+        <div>{{!output[k][1][6:]}}</div>
         % elif output[k][1].strip() != '':
         <div class="output">{{output[k][1].rstrip()}}</div>
         % end

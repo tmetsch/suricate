@@ -49,7 +49,7 @@ def show_d3(figure=None):
         img = _objects.D3Figure(figure).html()
     else:
         img = _objects.D3Figure(fig).html()
-    dat = 'd3js:'
+    dat = 'embed:'
     dat += img
     print dat
 
