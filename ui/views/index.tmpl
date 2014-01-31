@@ -1,0 +1,41 @@
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1 class="home">Welcome to Suricate</h1>
+        <h2 class="data">Open Analytics Service & Data Science Platform</h2>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p>
+            <strong>Suricate</strong> is an analytics service which helps you - a
+            Data Scientist - explore your data, analyse it and create models. Than
+            it allows you to act upon the models/insight you have gained. Suricate
+            is offered to you as a service with support for uploading and streaming
+            data and gives you easy access to compute power for fast data computation
+            and visualization in the cloud.
+        </p>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h3>Getting Started</h3>
+        <ol>
+            <li>Upload some <a href="/data">data</a>.</li>
+            <li>Create a new <a href="/analytics">project</a>.</li>
+            <li>Edit the <em>analytics.py</em> notebook in your project and gain
+            insight from the previously uploaded or streamed in data. Finally store
+            the insights in the object store.</li>
+            <li>Create a <em>processing.py</em> notebook and load your model from the
+            last step through the object store. Compare new data (incoming through a
+            stream maybe) with the stored model. Trigger actions to external systems
+            where necessary.
+            <li>Be happy</li>
+        </ol>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p><small>Welcome user: {{uid}}</small></p>
+    </div>
+</div>
+%rebase base.tmpl title='Suricate - Home'

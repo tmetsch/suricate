@@ -11,6 +11,7 @@ body {
 #layout {
     padding-left: 150px;
 }
+/* menu */
 #menu {
     margin-left: -150px; /* this should be "#menu" width */
     width: 150px;
@@ -39,6 +40,7 @@ body {
 #menu a:hover {
     background: #444;
 }
+/* content */
 #content {
     margin: 2.4em;
 }
@@ -57,10 +59,26 @@ body {
 input {
     margin: 0.3em 0 0.3em 0;
     border: 1px solid #ccc;
+    background: #eee;
+}
+td>form {
+    float: left;
+    margin-right: 0.3em;
+}
+/* output */
+.outputs {
+    padding: 0.3em;
+    border-left: 1px solid #ccc;
+}
+.outputs>div {
+    padding: 0.3em;
+    margin: 0.3em;
+}
+.error {
+    border-left: 2px solid #d00;
 }
 .code {
     padding: 0.3em;
-    margin-bottom: 0.3em;
     background: #eee;
     box-shadow: 1px 1px 3px #ccc;
 }
@@ -68,51 +86,14 @@ code {
     font-size: 0.9em;
     white-space: pre-wrap;
 }
-.left {
-}
-.left>form {
-    float: left;
-}
-.left>form>input {
-    border: none;
-    background: none;
-    text-decoration: underline;
-}
-.right {
-    padding: 0;
-}
-.right>.code {
-    white-space: pre-wrap;
-}
-.right>.output {
-    color: #d00;
-    margin: 0.3em;
-    white-space: pre-wrap;
-}
-form {
-    font-size: 0.8em;
-}
-.box {
-    margin: 0.3em;
-    padding: 1em;
-    color: #fff;
-    min-height: 7em;
-    box-shadow: 1px 1px 3px #ccc;
-}
-.content_box {
-    margin: 0.3em;
-}
 /* colors */
 .analytics {
-    color: #60c52d;
-}
-.processing {
     color: #ffb400;
 }
-.home {
-    color: #d00;
-}
 .data {
+    color: #60c52d;
+}
+.home {
     color: #00bfff;
 }
 .bggreen {
@@ -126,9 +107,9 @@ form {
 }
 /* fonts */
 h1, h2 {
+    margin-top: 0;
     line-height: 1em;
     font-weight: normal;
-    text-transform: capitalize;
 }
 h2>a {
     color: #fff;

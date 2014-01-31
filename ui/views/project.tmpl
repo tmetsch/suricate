@@ -1,0 +1,44 @@
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1 class="analytics">Project: {{proj_name}}</h1>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <table class="pure-table">
+            <thead>
+                <tr><th>Notebook</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                % for iden in notebooks:
+                <tr>
+                    <td><a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a></td>
+                    <td>
+                        <form action="/analytics/{{proj_name}}/{{iden}}/delete" method="post">
+                            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                        </form>
+                        <form action="/analytics/{{proj_name}}/{{iden}}/download" method="post">
+                            <input type="submit" value="Download" />
+                        </form>
+                    </td>
+                </tr>
+                % end
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <form action="/analytics/{{proj_name}}/create" method="post" enctype="multipart/form-data">
+            Name: <input type="text" name="iden" />
+            (Optional) Select a file: <input type="file" name="upload" />
+            <input type="submit" value="New" />
+        </form>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p><small>Welcome user: {{uid}}</small></p>
+    </div>
+</div>
+%rebase base.tmpl title='Suricate - Project'

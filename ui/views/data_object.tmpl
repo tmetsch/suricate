@@ -1,0 +1,21 @@
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1 class="data">Object: {{iden}}</h1>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <form action="/data/object/delete/{{iden}}" method="post">
+            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+        </form>
+        <div class="code">
+            <code>{{content}}</code>
+        </div>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p><small>Welcome user: {{uid}}</small></p>
+    </div>
+</div>
+%rebase base.tmpl title='Suricate - Data Object'

@@ -1,0 +1,44 @@
+<div class="pure-g-r">
+    <div class="pure-u-1-2">
+        <h1 class="analytics">Notebook: {{ntb_id}}</h1>
+        <p>Project: <a href="/analytics/{{proj_name}}">{{proj_name}}</a></p>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1-2">
+        <form action="/analytics/{{proj_name}}/{{ntb_id}}/run" method="POST">
+            <input type="submit" value="Run">
+            <textarea id="source" name="source">{{src}}</textarea>
+        </form>
+    </div>
+    <div class="pure-u-1-2">
+        <div class="outputs">
+            % if len(error.strip()) > 0:
+                <div class="error">{{error}}</div>
+            % end
+            % for item in output:
+                % if item[:6] == 'image:':
+                <div><img src="data:{{item[6:]}}"/></div>
+                % elif item[:6] == 'embed:':
+                <div>{{!item[6:]}}</div>
+                % elif item[:1] == '#':
+                <div>{{item[2:].rstrip()}}</div>
+                % elif item.strip() != '':
+                <div class="code">{{item.rstrip()}}</div>
+                % end
+            % end
+            <div>
+                <form action="/analytics/{{proj_name}}/{{ntb_id}}/interact" method="post">
+                    <input id="interact" name="interact" size="50"/>
+                    <input type="submit" value="Interact">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p><small>Welcome user: {{uid}}</small></p>
+    </div>
+</div>
+%rebase base.tmpl title='Suricate - Notebook'

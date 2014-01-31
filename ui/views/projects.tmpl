@@ -1,0 +1,40 @@
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1 class="analytics">Projects</h1>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <table class="pure-table">
+            <thead>
+                <tr><th>Project</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                % for iden in projects:
+                <tr>
+                    <td><a href="/analytics/{{iden}}">{{iden}}</a></td>
+                    <td>
+                        <form action="/analytics/{{iden}}/delete" method="post">
+                            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                        </form>
+                    </td>
+                </tr>
+                % end
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <form action="/analytics/create" method="post" enctype="multipart/form-data">
+            Name: <input type="text" name="proj_name">
+            <input type="submit" value="New" />
+        </form>
+    </div>
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p><small>Welcome user: {{uid}}</small></p>
+    </div>
+</div>
+%rebase base.tmpl title='Suricate - Projects'
