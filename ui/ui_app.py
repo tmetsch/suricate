@@ -245,7 +245,7 @@ class AnalyticsApp(object):
             if ext not in '.py':
                 return 'File extension not supported.'
 
-            code = upload.file.getvalue()
+            code = upload.file.read()
             ntb['src'] = code
 
         self.api.update_notebook(proj_name, ntb_id, ntb, uid, token)
