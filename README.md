@@ -3,8 +3,9 @@
 Suricate is a very simple Python based Analytics Service originally
 designed to analyze data streams coming from [DTrace](http://www.dtrace.org)
 to learn application/service behaviour in a data center/cloud. Based on 
-that models could be created and finally actions taken (optimization, 
-fault detection) based on the models and new incoming data via AMQP.
+that models could be created. Finally actions could be triggered (for
+optimization, fault detection, ...) based on the models and new incoming data
+via AMQP.
 
 With this first release this has become more a general purpose tool. The
 DTrace part is stripped out for now.
@@ -31,9 +32,9 @@ Database as a Service.
 
 ## Step 2 - analyse it
 
-Navigate to the 'Analytics' part. Enter a new name (Optionally you can also
-write some python code local and upload it) and hit 'New'. Select the newly
-created notebook. From here on it is just some Python coding.
+Navigate to the 'Analytics' part. Create a new project. Navigate to the
+project and open the automatically generated file analytics.py. From here on
+it is just some Python coding.
 
 To list the objects and then retrieve the just created one add:
 
@@ -47,11 +48,10 @@ Now we can plot it:
 
 Now we will do sth very simple! You can add
 [scikit-learn](http://scikit-learn.org/stable/) or
-[pandas](http://pandas.pydata.org/) to the preload scripts to directly use
+[pandas](http://pandas.pydata.org/) to the sdk to directly use
 those.
 
-    import numpy
-    tmp2 = numpy.asarray(tmp['server1'])
+    tmp2 = np.asarray(tmp['server1'])
     mean = tmp2.mean()
 
 Now we will store that value:
@@ -62,8 +62,8 @@ Note the edit and remove capabilities of the notebooks as well.
 
 ## Step 3 - do sth with it
 
-Just like the analytics part the processing is done in Python. Lets load the
-model we just learned:
+Just like the analytics part the processing is done in Python. Create a script
+ called *processing.py*. Lets load the model we just learned:
 
     mean = retrieve_object('<id_of_mean_obj>')['meanserver']
 
@@ -92,6 +92,7 @@ Currently the following features are available when coding notebooks
 (through *preload_internal.py* - a mini SDK if you want):
 
 * *show()* - show matplotlib output
+* *show_d3()* - show matplotlib output interactively using D3
 * *list_streams()* - list all streams
 * *retrieve_from_stream(**id**, interval=60)* - retrieve messages from a stream
 * *list_objects()* - list all data objects
@@ -166,17 +167,14 @@ Installing numpy and matplotlib dependencies for the preload scripts:
 The configuration file supports some simple configuration settings:
 
 * Mongo
-    * The *host* for the MongoDB Server.
-    * The *port* for the MongoDB Server.
+    * The *uri* for the MongoDB Server.
     * The *admin* for the MongoDB Server.
     * The *pwd* for the MongoDB Server.
 * Rabbit
     * The *uri* for the AMQP broker.
 * Suricate
-    * The *preload_ext* script which will be loaded for each notebook and
-    which will be exported when the notebook is downloaded.
-    * The *preload_int* script which will be loaded for each notebook to
-    offer some convenience routines. Will not be exported once downloaded.
+    * The *python_sdk* script which will be preloaded and therefore be
+    available to each notebook.
 
 ## Architecture
 
