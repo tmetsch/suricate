@@ -7,6 +7,7 @@ import code
 import sys
 
 import StringIO
+import urlparse
 
 CONFIG = ConfigParser.RawConfigParser()
 CONFIG.read('app.conf')
@@ -50,8 +51,10 @@ class PythonWrapper(object):
         # set User identifier and tell where object store is.
         self.console.push('UID = \'' + str(uid) + '\'')
         self.console.push('TOKEN = \'' + str(token) + '\'')
-        uri = mongo_uri + str(uid)
-        self.console.push('OBJECT_STORE_URI = \'' + str(uri) + '\'')
+        uri = urlparse(mongo_uri)
+        str_uri = uri.scheme + '://'+ uid + ':' + token + '@' + uri.netloc \
+                  + '/' + uid
+        self.console.push('OBJECT_STORE_URI = \'' + str(str_uri) + '\'')
         # This preload will be downloaded with the notebook.
         preload = file(sdk).read()
         self.console.runcode(preload)
