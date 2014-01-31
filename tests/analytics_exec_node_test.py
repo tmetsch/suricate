@@ -1,112 +1,78 @@
-# coding=utf-8
-
-"""
-Tests for the execution node.
-"""
-
-__author__ = 'tmetsch'
-
-import mox
 import unittest
 
-from analytics import exec_node
-from analytics import notebooks
+from analytics import exec_node, proj_ntb_store
 
 
 class ExecNodeTest(unittest.TestCase):
-    """
-    Test the exec node for processes.
-    """
 
-    mocker = mox.Mox()
+    payload = {'uid': 'foo',
+               'token': 'bar',
+               'project_id': 'qwe'}
+    mongo_uri = 'mongodb://foo:bar@localhost:27017/foo'
+    amqp_uri = 'amqp://guest:guest@localhost:5672/%2f'
 
     def setUp(self):
-        self.cut = Wrapper('', '', 'foo')
-        self.cut.a_ntb_str = self.mocker.CreateMock(notebooks.NotebookStore)
-        self.wrp = self.mocker.CreateMock(notebooks.ConsoleWrapper)
-        self.wrp.__setattr__('white_space', '')
-        self.wrp.__setattr__('src', {})
+        self.store = proj_ntb_store.NotebookStore(self.mongo_uri)
+        self.cut = ClassUnderTestWrapper(self.mongo_uri, self.amqp_uri,
+                                         'foo', 'bar')
+        self.store.update_notebook('qwe', 'abc.py', {'src': 'print "hello"'},
+                                   'foo', 'bar')
+
+    def tearDown(self):
+        self.store.delete_project('qwe', 'foo', 'bar')
 
     def test_handle_for_sanity(self):
-        body = {'uid': 'foo',
-                'token': 'bar',
-                'ntb_type': 'analytics'}
-        # list
-        body['call'] = 'list_notebooks'
-        self.cut.a_ntb_str.list_notebooks('foo', 'bar').AndReturn(None)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # create
-        self.mocker.ResetAll()
-        body['call'] = 'create_notebook'
-        body['iden'] = 'abc'
-        body['init_code'] = []
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc', init_code=[]).AndReturn(None)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # retrieve
-        self.mocker.ResetAll()
-        body['call'] = 'retrieve_notebook'
-        body['iden'] = 'abc'
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc').AndReturn(self.wrp)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # delete
-        self.mocker.ResetAll()
-        body['call'] = 'delete_notebook'
-        body['iden'] = 'abc'
-        self.cut.a_ntb_str.delete_notebook('foo', 'bar', 'abc').AndReturn(None)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # add item
-        self.mocker.ResetAll()
-        body['call'] = 'add_item_to_notebook'
-        body['iden'] = 'abc'
-        body['line_id'] = '1'
-        body['cmd'] = 'a = 10'
-        self.wrp.add_line('a = 10')
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc').AndReturn(self.wrp)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # update item
-        self.mocker.ResetAll()
-        body['call'] = 'update_item_in_notebook'
-        body['iden'] = 'abc'
-        body['line_id'] = '1'
-        body['replace'] = False
-        self.wrp.update_line('1', 'a = 10', replace=False)
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc').AndReturn(self.wrp)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # delete item
-        self.mocker.ResetAll()
-        body['call'] = 'delete_item_of_notebook'
-        body['iden'] = 'abc'
-        body['line_id'] = '1'
-        self.wrp.remove_line('1')
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc').AndReturn(self.wrp)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
-        # rerun!
-        self.mocker.ResetAll()
-        body['call'] = 'notebook_event'
-        body['iden'] = 'abc'
-        body['event'] = 'rerun'
-        self.wrp.rerun()
-        self.cut.a_ntb_str.get_notebook('foo', 'bar', 'abc').AndReturn(self.wrp)
-        self.mocker.ReplayAll()
-        self.cut.handle(body)
-        self.mocker.VerifyAll()
+        # test listing
+        self.payload['call'] = 'list_projects'
+        self.assertTrue('qwe' in self.cut._handle(self.payload)['projects'])
+
+        # retrieve project
+        self.payload['call'] = 'retrieve_project'
+        self.assertEquals(self.cut._handle(self.payload)['project'], ['abc.py'])
+
+        # test retrieving
+        self.payload['call'] = 'retrieve_notebook'
+        self.payload['notebook_id'] = 'abc.py'
+        self.assertEqual(self.cut._handle(self.payload)['notebook']['src'],
+                         'print "hello"')
+
+        # test running code
+        self.payload['call'] = 'run_notebook'
+        self.payload['notebook_id'] = 'abc.py'
+        self.assertEqual(self.cut._handle(self.payload), {})
+
+        # test interacting
+        self.payload['call'] = 'interact'
+        self.payload['loc'] = 'print("foobar")'
+        self.assertEqual(self.cut._handle(self.payload), {})
+
+        # test update
+        self.payload['call'] = 'update_notebook'
+        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook'] = {'src': 'for i in range(0,5):\n\tprint i'}
+        self.cut._handle(self.payload)
+        # run it
+        self.payload['call'] = 'run_notebook'
+        self.assertEqual(self.cut._handle(self.payload), {})
+        # retrieve it
+        self.payload['call'] = 'retrieve_notebook'
+        self.assertEquals(self.cut._handle(self.payload)['notebook']['out'],
+                          ['0', '1', '2', '3', '4'])
+
+        # delete it
+        self.payload['call'] = 'delete_notebook'
+        self.payload['notebook_id'] = 'abc.py'
+        self.cut._handle(self.payload)
 
 
-class Wrapper(exec_node.ExecNode):
+class ClassUnderTestWrapper(exec_node.ExecNode):
+    """
+    Wraps around the ExecNode and disables the listening.
+    """
 
-    def __init__(self, m_uri, a_uri, uid):
-        pass
+    def __init__(self, mongo_uri, amqp_uri, uid, token):
+        self.uid = uid
+        self.token = token
+        self.uri = mongo_uri
+        # store
+        self.stor = proj_ntb_store.NotebookStore(mongo_uri)
