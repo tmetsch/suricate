@@ -50,7 +50,7 @@ class PythonWrapper(object):
         # set User identifier and tell where object store is.
         self.console.push('UID = \'' + str(uid) + '\'')
         self.console.push('TOKEN = \'' + str(token) + '\'')
-        uri = mongo_uri + '/' + str(uid)
+        uri = mongo_uri + str(uid)
         self.console.push('OBJECT_STORE_URI = \'' + str(uri) + '\'')
         # This preload will be downloaded with the notebook.
         preload = file(sdk).read()
