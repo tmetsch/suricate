@@ -9,6 +9,7 @@
 - [ ] Let Suricate download data (could be done by new scripts in project now)
 - [ ] FIX: do not cache data coming from stream...(zmq?)
 - [ ] data tagging & then retrieve objects streams via tag queries
+- [ ] download data objects.
 
 ## Setup RESTful interface which supports:
 - [ ] Uploading data & notebooks
