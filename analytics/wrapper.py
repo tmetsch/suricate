@@ -51,7 +51,7 @@ class PythonWrapper(object):
         # set User identifier and tell where object store is.
         self.console.push('UID = \'' + str(uid) + '\'')
         self.console.push('TOKEN = \'' + str(token) + '\'')
-        uri = urlparse(mongo_uri)
+        uri = urlparse.urlparse(mongo_uri)
         str_uri = uri.scheme + '://'+ uid + ':' + token + '@' + uri.netloc \
                   + '/' + uid
         self.console.push('OBJECT_STORE_URI = \'' + str(str_uri) + '\'')
