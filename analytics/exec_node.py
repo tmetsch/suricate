@@ -1,26 +1,22 @@
-# coding=utf-8
-
-"""
-Module representing an execution node.
-"""
-
-__author__ = 'tmetsch'
-
 import json
 import pika
 
-from analytics import notebooks
+from analytics import wrapper, proj_ntb_store
 
 
 class ExecNode(object):
     """
-    Execution node - will be started per tenant.
+    Implementation of an execution node - run per tenant.
     """
 
-    def __init__(self, mongo_uri, amqp_uri, uid):
-        # have the notebook stores in place
-        self.a_ntb_str = notebooks.NotebookStore(mongo_uri, 'analytics')
-        self.p_ntb_str = notebooks.NotebookStore(mongo_uri, 'processing')
+    wrappers = {}
+
+    def __init__(self, mongo_uri, amqp_uri, uid, token):
+        self.uid = uid
+        self.token = token
+        self.uri = mongo_uri
+        # store
+        self.stor = proj_ntb_store.NotebookStore(mongo_uri)
 
         # connect to AMQP broker
         connection = pika.BlockingConnection(pika.URLParameters(amqp_uri))
@@ -40,7 +36,7 @@ class ExecNode(object):
         :param body: The message body.
         """
         tmp = json.loads(body)
-        response = self.handle(tmp)
+        response = self._handle(tmp)
 
         # set uuid so the right requester get the answer:-)
         prop = pika.BasicProperties(correlation_id=props.correlation_id)
@@ -50,68 +46,72 @@ class ExecNode(object):
                               body=json.dumps(response))
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
-    def handle(self, body):
+    def _handle(self, body):
         """
         Handle the incoming requests.
 
         :param body: The message body.
         """
-        call = body['call']
         uid = body['uid']
         token = body['token']
-        store = self._get_store(body['ntb_type'])
+        call = body['call']
+        try:
+            proj = body['project_id']
+            interpreter = self._get_interpreter(proj)
+        except KeyError:
+            proj = None
+            interpreter = None
         res = {}
-        if call == 'list_notebooks':
-            res = {'notebooks': store.list_notebooks(uid, token)}
-        elif call == 'create_notebook':
-            iden = body['iden']
-            code = body['init_code']
-            store.get_notebook(uid, token, iden, init_code=code)
-            res = {}
+        # interactions with interpreter
+        if call == 'run_notebook':
+            ntb_id = body['notebook_id']
+            src = body['src']
+            ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
+            out, err = interpreter.run(src)
+            ntb['src'] = src
+            ntb['out'] = out
+            ntb['err'] = err
+            self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
+        elif call == 'interact':
+            ntb_id = body['notebook_id']
+            ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
+            loc = body['loc']
+            tmp, err = interpreter.interact(loc)
+            out = ['# ' + loc]
+            out.extend(tmp)
+            if 'out' not in ntb:
+                ntb['out'] = out
+            else:
+                ntb['out'].extend(out)
+            ntb['err'] = err
+            self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
+        # project - from here on interactions with the store not interpreter.
+        elif call == 'list_projects':
+            res['projects'] = self.stor.list_projects(uid, token)
+        elif call == 'retrieve_project':
+            res['project'] = self.stor.retrieve_project(proj, uid, token)
+        elif call == 'delete_project':
+            res['project'] = self.stor.delete_project(proj, uid, token)
+        # notebooks
         elif call == 'retrieve_notebook':
-            iden = body['iden']
-            ntb = store.get_notebook(uid, token, iden)
-            res = {'indent': ntb.white_space, 'src': ntb.src}
+            ntb_id = body['notebook_id']
+            res['notebook'] = self.stor.retrieve_notebook(proj, ntb_id, uid,
+                                                          token)
+        elif call == 'update_notebook':
+            ntb_id = body['notebook_id']
+            ntb = body['notebook']
+            self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
         elif call == 'delete_notebook':
-            iden = body['iden']
-            store.delete_notebook(uid, token, iden)
-            res = {}
-        elif call == 'add_item_to_notebook':
-            iden = body['iden']
-            line = body['cmd']
-            ntb = store.get_notebook(uid, token, iden)
-            ntb.add_line(line)
-            res = {}
-        elif call == 'update_item_in_notebook':
-            iden = body['iden']
-            line = body['cmd']
-            line_id = body['line_id']
-            replace = body['replace']
-            ntb = store.get_notebook(uid, token, iden)
-            ntb.update_line(line_id, line, replace=replace)
-            res = {}
-        elif call == 'delete_item_of_notebook':
-            iden = body['iden']
-            line_id = body['line_id']
-            ntb = store.get_notebook(uid, token, iden)
-            ntb.remove_line(line_id)
-            res = {}
-        elif call == 'notebook_event':
-            iden = body['iden']
-            event = body['event']
-            ntb = store.get_notebook(uid, token, iden)
-            if event == 'rerun':
-                ntb.rerun()
-            res = {}
+            ntb_id = body['notebook_id']
+            self.stor.delete_notebook(proj, ntb_id, uid, token)
+        else:
+            raise AttributeError('Cannot handle this action: ' + call)
         return res
 
-    def _get_store(self, ntb_type):
-        """
-        Retrieve type of store.
-
-        :param ntb_type: string representation of str.
-        """
-        if ntb_type == 'analytics':
-            return self.a_ntb_str
-        elif ntb_type == 'processing':
-            return self.p_ntb_str
+    def _get_interpreter(self, project_id):
+        if project_id not in self.wrappers:
+            # TODO: make type configurable (Python, Julia, R, ...)
+            self.wrappers[project_id] = wrapper.PythonWrapper(self.uid,
+                                                              self.token,
+                                                              self.uri)
+        return self.wrappers[project_id]
