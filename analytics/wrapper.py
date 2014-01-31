@@ -53,8 +53,7 @@ class PythonWrapper(object):
         self.console.push('TOKEN = \'' + str(token) + '\'')
         self.console.push('OBJECT_STORE_URI = \'' + str(mongo_uri) + '\'')
         # This preload will be downloaded with the notebook.
-        preload = file(sdk).read()
-        self.console.runcode(preload)
+        self.preload = file(sdk).read()
 
     @grep_stdout
     def run(self, src):
@@ -62,6 +61,7 @@ class PythonWrapper(object):
         Run some code.
         """
         self.console.resetbuffer()
+        self.console.runcode(self.preload)
         self.console.runcode(src)
 
     @grep_stdout
