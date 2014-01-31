@@ -16,7 +16,7 @@ class ExecNode(object):
         self.token = token
         self.uri = mongo_uri
         # store
-        self.stor = proj_ntb_store.NotebookStore(mongo_uri)
+        self.stor = proj_ntb_store.NotebookStore(self.uri, self.uid)
 
         # connect to AMQP broker
         connection = pika.BlockingConnection(pika.URLParameters(amqp_uri))

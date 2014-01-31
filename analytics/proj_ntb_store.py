@@ -12,9 +12,9 @@ class NotebookStore(object):
     """
     # TODO: export using GIT URL?
 
-    def __init__(self, uri):
+    def __init__(self, uri, uid):
         client = pymongo.MongoClient(uri)
-        self.database = client['foo']
+        self.database = client[uid]
 
     def list_projects(self, uid, token):
         """
