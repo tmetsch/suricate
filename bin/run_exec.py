@@ -28,5 +28,4 @@ if __name__ == '__main__':
                              'node as first argument!')
 
     user = sys.argv[1]
-    pwd = sys.argv[2]
-    exec_node.ExecNode(mongo, broker, user, pwd)
+    exec_node.ExecNode(mongo, broker, user)

@@ -44,4 +44,4 @@
 - [x] responsive layout (See: http://purecss.io/layouts/side-menu/)
 - [x] D3 / Vega integration (via vincent, bokeh)
 - [ ] Consistency on where to place download, delete action buttons
-
+- [ ] messages dov have wrong padding box.

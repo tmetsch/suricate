@@ -89,8 +89,7 @@ if __name__ == '__main__':
     # start execution node for each user.
     processes = []
     for user in USERS.keys():
-        p = subprocess.Popen([sys.executable, 'run_exec.py',
-                              user, USERS[user][0]])
+        p = subprocess.Popen([sys.executable, 'run_exec.py', user])
         processes.append(p)
 
     # launch web app

@@ -11,9 +11,8 @@ class ExecNode(object):
 
     wrappers = {}
 
-    def __init__(self, mongo_uri, amqp_uri, uid, token):
+    def __init__(self, mongo_uri, amqp_uri, uid):
         self.uid = uid
-        self.token = token
         self.uri = mongo_uri
         # store
         self.stor = proj_ntb_store.NotebookStore(self.uri, self.uid)
@@ -57,7 +56,7 @@ class ExecNode(object):
         call = body['call']
         try:
             proj = body['project_id']
-            interpreter = self._get_interpreter(proj)
+            interpreter = self._get_interpreter(proj, uid, token)
         except KeyError:
             proj = None
             interpreter = None
@@ -108,10 +107,9 @@ class ExecNode(object):
             raise AttributeError('Cannot handle this action: ' + call)
         return res
 
-    def _get_interpreter(self, project_id):
+    def _get_interpreter(self, project_id, uid, token):
         if project_id not in self.wrappers:
             # TODO: make type configurable (Python, Julia, R, ...)
-            self.wrappers[project_id] = wrapper.PythonWrapper(self.uid,
-                                                              self.token,
+            self.wrappers[project_id] = wrapper.PythonWrapper(uid, token,
                                                               self.uri)
         return self.wrappers[project_id]
