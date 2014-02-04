@@ -19,6 +19,7 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
+- [ ] run n otebooks as (remote ) jobs , have job lists with states, to support longrunning jobs
 - [x] Interactive command should be presented in output as well - maybe as comment?
 - [ ] richer SDK (Analytics/Processing Development Kit)
 - [ ] Versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
