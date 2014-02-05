@@ -19,7 +19,7 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
-- [ ] run n otebooks as (remote ) jobs , have job lists with states, to support longrunning jobs
+- [ ] run notebooks as (remote) jobs to support longrunning tasks & have job lists with states,
 - [x] Interactive command should be presented in output as well - maybe as comment?
 - [ ] richer SDK (Analytics/Processing Development Kit)
 - [ ] Versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
@@ -45,4 +45,6 @@
 - [x] responsive layout (See: http://purecss.io/layouts/side-menu/)
 - [x] D3 / Vega integration (via vincent, bokeh)
 - [ ] Consistency on where to place download, delete action buttons
-- [ ] messages dov have wrong padding box.
+- [ ] tiles for projects & notebooks & data srcs & create operation (have tags in it etc.)
+- [ ] output code dics & newlines should be fixed (in output and error)
+- [ ] messages div have wrong padding box.
