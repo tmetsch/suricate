@@ -15,6 +15,7 @@
 - [ ] Uploading data & notebooks
 - [ ] Add new streaming sources
 - [ ] trigger processing & analytics external
+   - [ ] Trigger execution of projects/notebooks with parameters (files, attributes, ...) from other apps/web frontends so endusers benefit
    - [ ] so you can write cron jobs :-)
    - [ ] support continuously running scripts.
 
