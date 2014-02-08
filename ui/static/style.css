@@ -111,7 +111,7 @@ code {
     background: #ffb400;
 }
 /* fonts */
-h1, h2 {
+h1, h2, h3 {
     margin-top: 0;
     line-height: 1em;
     font-weight: normal;
