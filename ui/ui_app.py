@@ -62,13 +62,15 @@ class AnalyticsApp(object):
                        self.create_data_obj)
         self.app.route('/data/object/<iden>', ['GET'],
                        self.retrieve_data_obj)
-        self.app.route('/data/object/delete/<iden>', ['POST'],
+        self.app.route('/data/object/<iden>/delete', ['POST'],
                        self.delete_data_obj)
+        self.app.route('/data/object/<iden>/download', ['GET'],
+                       self.download_data_obj)
         self.app.route('/data/stream/new', ['POST'],
                        self.create_data_stream)
         self.app.route('/data/stream/<iden>', ['GET'],
                        self.retrieve_data_stream)
-        self.app.route('/data/stream/delete/<iden>', ['POST'],
+        self.app.route('/data/stream/<iden>/delete', ['POST'],
                        self.delete_data_stream)
         # project mgmt
         self.app.route('/analytics', ['GET'],
@@ -172,6 +174,19 @@ class AnalyticsApp(object):
         uid, token = _get_cred()
         self.obj_str.delete_object(uid, token, iden)
         bottle.redirect('/data')
+
+    def download_data_obj(self, iden):
+        """
+        Download data source.
+
+        :param iden: Data source identifier.
+        """
+        uid, token = _get_cred()
+        tmp = self.obj_str.retrieve_object(uid, token, iden)
+        bottle.response.set_header('Content-Type', 'application/json')
+        bottle.response.set_header('Content-Disposition',
+                                   'inline; filename=data.json')
+        return tmp
 
     def create_data_stream(self):
         """
@@ -285,7 +300,7 @@ class AnalyticsApp(object):
 
         # will force browsers to download...
         bottle.response.set_header('Content-Type', 'ext/x-script.python')
-        bottle.response.set_header('content-disposition',
+        bottle.response.set_header('Content-Disposition',
                                    'inline; filename=notebook.py')
         return tmp_file.getvalue()
 

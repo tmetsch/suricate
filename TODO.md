@@ -9,7 +9,7 @@
 - [ ] Let Suricate download data (could be done by new scripts in project now)
 - [ ] FIX: do not cache data coming from stream...(zmq?)
 - [ ] data tagging & then retrieve objects streams via tag queries
-- [ ] download data objects.
+- [x] download data objects.
 
 ## Setup RESTful interface which supports:
 - [ ] Uploading data & notebooks
@@ -46,6 +46,6 @@
 - [x] responsive layout (See: http://purecss.io/layouts/side-menu/)
 - [x] D3 / Vega integration (via vincent, bokeh)
 - [ ] Consistency on where to place download, delete action buttons
-- [ ] tiles for projects & notebooks & data srcs & create operation (have tags in it etc.)
-- [ ] output code dics & newlines should be fixed (in output and error)
-- [ ] messages div have wrong padding box.
+- [x] tiles for projects & notebooks & data srcs & create operation (have tags in it etc.)
+- [x] output code dics & newlines should be fixed (in output and error)
+- [x] messages div have wrong padding box.
