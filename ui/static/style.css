@@ -40,6 +40,13 @@ body {
 #menu a:hover {
     background: #444;
 }
+/* tiles */
+.tile {
+    padding: 0.5em;
+    margin: 0.3em;
+    background: #eee;
+    box-shadow: 1px 1px 3px #ccc;
+}
 /* content */
 #content {
     margin: 2.4em;
@@ -61,24 +68,22 @@ input {
     border: 1px solid #ccc;
     background: #eee;
 }
-td>form {
-    float: left;
-    margin-right: 0.3em;
+form {
+    font-size: 0.9em;
 }
 /* output */
 .outputs {
     padding: 0.3em;
-    border-left: 1px solid #ccc;
 }
 .outputs>div {
     padding: 0.3em;
     margin: 0.3em;
 }
 .error {
+    white-space: pre-wrap;
     border-left: 2px solid #d00;
 }
 .code {
-    padding: 0.3em;
     background: #eee;
     box-shadow: 1px 1px 3px #ccc;
 }
@@ -120,6 +125,9 @@ h2>a:hover {
 }
 a {
     text-decoration: none;
+}
+a:visited {
+    color: #444;
 }
 /* for small screens */
 @media (max-width: 767px) {
