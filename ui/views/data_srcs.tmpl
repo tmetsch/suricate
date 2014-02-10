@@ -1,30 +1,73 @@
 <div class="pure-g-r">
     <div class="pure-u-1">
         <h1 class="data">Objects</h1>
-        <ul>
-        % for iden in data_objs:
-            <li class="data"><a href="/data/object/{{iden}}">{{iden}}</a></li>
+    </div>
+</div>
+<div class="pure-g-r">
+    % i = 0
+    % for iden in data_objs:
+        <div class="pure-u-1-4">
+            <div class="tile">
+                <h3><a href="/data/object/{{iden}}">{{iden}}</a></h3>
+                <form action="data/object/{{iden}}/delete" method="post">
+                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                </form>
+                <form action="data/object/{{iden}}/download" method="get">
+                    <input type="submit" value="Download"/>
+                </form>
+            </div>
+        </div>
+        % i += 1
+        % if i > 3:
+        % i = 0
+</div>
+<div class="pure-g-r">
         % end
-        </ul>
-        <form action="/data/object/new" method="post" enctype="multipart/form-data">
-            Select a file: <input type="file" name="upload" />
-            <input type="submit" value="Start upload" />
-        </form>
+    % end
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p>
+            <form action="/data/object/new" method="post" enctype="multipart/form-data">
+                Select a file: <input type="file" name="upload" />
+                <input type="submit" value="Start upload" />
+            </form>
+        </p>
     </div>
 </div>
 <div class="pure-g-r">
     <div class="pure-u-1">
         <h1 class="data">Streams</h1>
-        <ul>
-        % for iden in data_streams:
-            <li class="data"><a href="/data/stream/{{iden}}">{{iden}}</a></li>
+    </div>
+</div>
+<div class="pure-g-r">
+    % i = 0
+    % for iden in data_streams:
+        <div class="pure-u-1-4">
+            <div class="tile">
+                <h3><a href="/data/stream/{{iden}}">{{iden}}</a></h3>
+                <form action="data/stream/{{iden}}/delete" method="post">
+                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                </form>
+            </div>
+        </div>
+        % i += 1
+        % if i > 3:
+        % i = 0
+</div>
+<div class="pure-g-r">
         % end
-        </ul>
-        <form action="/data/stream/new" method="post" enctype="multipart/form-data">
-            URI: <input type="text" name="uri">
-            Queue: <input type="text" name="queue">
-            <input type="submit" value="New" />
-        </form>
+    % end
+</div>
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <p>
+            <form action="/data/stream/new" method="post" enctype="multipart/form-data">
+                URI: <input type="text" name="uri">
+                Queue: <input type="text" name="queue">
+                <input type="submit" value="New" />
+            </form>
+        </p>
     </div>
 </div>
 <div class="pure-g-r">

@@ -51,18 +51,6 @@ body {
 #content {
     margin: 2.4em;
 }
-#content ul {
-    list-style: none;
-}
-#content ul>li>a {
-    color: #444;
-}
-#content ul>li {
-    background: #eee;
-    box-shadow: 1px 1px 3px #ccc;
-    padding: 0.3em;
-    margin: 0 0 7px -40px;
-}
 input {
     margin: 0.3em 0 0.3em 0;
     border: 1px solid #ccc;
@@ -92,23 +80,14 @@ code {
     white-space: pre-wrap;
 }
 /* colors */
-.analytics {
+.home {
     color: #ffb400;
 }
 .data {
-    color: #60c52d;
-}
-.home {
     color: #00bfff;
 }
-.bggreen {
-    background: #60c52d;
-}
-.bgblue {
-    background: #00bfff;
-}
-.bgyellow {
-    background: #ffb400;
+.analytics {
+    color: #60c52d;
 }
 /* fonts */
 h1, h2, h3 {

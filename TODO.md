@@ -45,7 +45,7 @@
 ## web ui
 - [x] responsive layout (See: http://purecss.io/layouts/side-menu/)
 - [x] D3 / Vega integration (via vincent, bokeh)
-- [ ] Consistency on where to place download, delete action buttons
+- [x] Consistency on where to place download, delete action buttons
 - [x] tiles for projects & notebooks & data srcs & create operation (have tags in it etc.)
-- [x] output code dics & newlines should be fixed (in output and error)
+- [x] output code divs & newlines should be fixed (in output and error)
 - [x] messages div have wrong padding box.

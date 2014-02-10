@@ -1,29 +1,40 @@
 <div class="pure-g-r">
     <div class="pure-u-1">
-        <h1 class="data">Stream: {{iden}}</h1>
+        <h1 class="data">
+            <a href="/data">Stream</a> / {{iden}}
+        </h1>
     </div>
 </div>
 <div class="pure-g-r">
     <div class="pure-u-1">
-        <form action="/data/stream/{{iden}}/delete" method="post">
-            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-        </form>
         <p>
-            <strong>Connected:</strong> {{uri}}
-            <br />
-            <strong>Queue:</strong> {{queue}}
-            <br />
-            Number of messages received in the last minute: {{val}}
+            <table class="pure-table">
+                <thead>
+                    <tr><th>Property</th><th>Value</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>URI</td><td>{{uri}}</tr>
+                    <tr><td>Queue</td><td>{{queue}}</tr>
+                    <tr><td># msgs in last min</td><td>{{val}}</tr>
+                </tbody>
+            </table>
         </p>
-        % for item in msgs:
+    </div>
+</div>
+% if len(msgs) > 0:
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h2>Last Messages</h2>
         <div class="outputs">
+        % for item in msgs:
             <div class="code">
                 <code>{{item}}</code>
             </div>
-        </div>
         % end
+        </div>
     </div>
 </div>
+% end
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p><small>Welcome user: {{uid}}</small></p>

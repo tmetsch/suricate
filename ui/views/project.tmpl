@@ -8,7 +8,7 @@
 <div class="pure-g-r">
     % i = 0
     % for iden in notebooks:
-        <div class="pure-u-1-6">
+        <div class="pure-u-1-4">
             <div class="tile">
                 <h3><a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a></h3>
                 <form action="/analytics/{{proj_name}}/{{iden}}/delete" method="post">
@@ -20,7 +20,8 @@
             </div>
         </div>
         % i += 1
-        % if i > 5:
+        % if i > 3:
+        % i = 0
 </div>
 <div class="pure-g-r">
         % end

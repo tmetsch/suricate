@@ -1,12 +1,12 @@
 <div class="pure-g-r">
     <div class="pure-u-1">
-        <h1 class="analytics">Projects</h1>
+        <h1 class="analytics">Analytics</h1>
     </div>
 </div>
 <div class="pure-g-r">
     % i = 0
     % for iden in projects:
-        <div class="pure-u-1-6">
+        <div class="pure-u-1-4">
             <div class="tile">
                 <h3><a href="/analytics/{{iden}}">{{iden}}</a></h3>
                 <form action="/analytics/{{iden}}/delete" method="post">
@@ -15,7 +15,8 @@
             </div>
         </div>
         % i += 1
-        % if i > 5:
+        % if i > 3:
+        % i = 0
 </div>
 <div class="pure-g-r">
         % end

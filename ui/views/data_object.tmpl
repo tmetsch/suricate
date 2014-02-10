@@ -1,16 +1,12 @@
 <div class="pure-g-r">
     <div class="pure-u-1">
-        <h1 class="data">Object: {{iden}}</h1>
+        <h1 class="data">
+            <a href="/data">Objects</a> / {{iden}}
+        </h1>
     </div>
 </div>
 <div class="pure-g-r">
     <div class="pure-u-1">
-        <form action="/data/object/{{iden}}/delete" method="post">
-            <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-        </form>
-        <form action="/data/object/{{iden}}/download" method="get">
-            <input type="submit" value="Download"/>
-        </form>
         <div class="outputs">
             <div class="code">
                 <code>{{content}}</code>

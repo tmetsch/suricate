@@ -23,7 +23,7 @@
                 % elif item[:6] == 'embed:':
                 <div>{{!item[6:]}}</div>
                 % elif item[:1] == '#':
-                <div>{{item[2:].rstrip()}}</div>
+                <div class="foo">{{item[1:].strip()}}</div>
                 % elif item.strip() != '':
                 <div class="code">{{item.rstrip()}}</div>
                 % end
