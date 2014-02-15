@@ -1,3 +1,5 @@
+
+import time
 import unittest
 
 from analytics import exec_node, proj_ntb_store
@@ -61,6 +63,29 @@ class ExecNodeTest(unittest.TestCase):
         self.payload['call'] = 'retrieve_notebook'
         self.assertEquals(self.cut._handle(self.payload)['notebook']['src'],
                           'for i in range(0,5):\n\tprint i')
+
+        # test run an job.
+        self.payload['call'] = 'run_job'
+        self.payload['notebook_id'] = 'abc.py'
+        self.payload['src'] = 'import time\nfor i in range(0,10):' \
+                              '\n\ttime.sleep(1)'
+        self.cut._handle(self.payload)
+        # list jobs
+        self.payload['call'] = 'list_jobs'
+        time.sleep(2)
+        self.assertEquals(self.cut._handle(self.payload)['jobs'].values()[0],
+                          {'project': 'qwe', 'notebook': 'abc.py',
+                           'state': 'running'})
+        time.sleep(10)
+        self.assertEquals(self.cut._handle(self.payload)['jobs'].values()[0],
+                          {'project': 'qwe', 'notebook': 'abc.py',
+                           'state': 'done'})
+
+        # retrieve it
+        self.payload['call'] = 'retrieve_notebook'
+        self.assertEquals(self.cut._handle(self.payload)['notebook']['src'],
+                          'import time\nfor i in range(0,10):'
+                          '\n\ttime.sleep(1)')
 
         # delete it
         self.payload['call'] = 'delete_notebook'

@@ -20,7 +20,7 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
-- [ ] run notebooks as (remote) jobs to support longrunning tasks & have job lists with states,
+- [x] run notebooks as (remote) jobs to support longrunning tasks & have job lists with states,
 - [x] Interactive command should be presented in output as well - maybe as comment?
 - [ ] richer SDK (Analytics/Processing Development Kit)
 - [ ] Versioning of analytics/processing notebooks (e.g. via github to also allow for sharing)
@@ -43,6 +43,7 @@
 - [ ] unittests
 
 ## web ui
+- [x] Clear done jobs from list
 - [x] responsive layout (See: http://purecss.io/layouts/side-menu/)
 - [x] D3 / Vega integration (via vincent, bokeh)
 - [x] Consistency on where to place download, delete action buttons

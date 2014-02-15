@@ -32,6 +32,35 @@
         </p>
     </div>
 </div>
+% if len(jobs) > 0:
+<div class="pure-g-r">
+    <div class="pure-u-1">
+        <h1 class="Analytics">Jobs</h1>
+        <p>
+            <table class="pure-table">
+                <thead>
+                    <tr><th>Id</th><th>Project</th><th>Notebook</th><th>State</th></tr>
+                </thead>
+                <tbody>
+                    % for item in jobs:
+                    <tr>
+                        <td>{{item}}</td>
+                        <td><a href="/analytics/{{jobs[item]['project']}}">{{jobs[item]['project']}}</a></td>
+                        <td><a href="/analytics/{{jobs[item]['project']}}/{{jobs[item]['notebook']}}">{{jobs[item]['notebook']}}</a></td>
+                        <td>{{jobs[item]['state']}}</td>
+                    </tr>
+                    % end
+                </tbody>
+            </table>
+        </p>
+        <p>
+            <form action="/analytics/clear" method="post">
+                <input type="submit" value="Clear" />
+            </form>
+        </p>
+    </div>
+</div>
+% end
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p><small>Welcome user: {{uid}}</small></p>

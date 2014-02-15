@@ -8,7 +8,8 @@
 <div class="pure-g-r">
     <div class="pure-u-1-2">
         <form action="/analytics/{{proj_name}}/{{ntb_id}}/run" method="POST">
-            <input type="submit" value="Run">
+            <input type="submit" name="run" value="Run">
+            <input type="submit" name="run" value="Run Job">
             <textarea id="source" name="source">{{src}}</textarea>
         </form>
     </div>

@@ -282,6 +282,54 @@ class API(object):
                    'call': 'interact'}
         self._call_rpc(uid, payload)
 
+    # Jobs.
+
+    def list_jobs(self, uid, token):
+        """
+        RPC call to run a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param src: source code to run.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        payload = {'uid': uid,
+                   'token': token,
+                   'call': 'list_jobs'}
+        tmp = self._call_rpc(uid, payload)
+        return tmp['jobs']
+
+    def run_job(self, proj_name, ntb_id, src, uid, token):
+        """
+        RPC call to run a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param src: source code to run.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        payload = {'uid': uid,
+                   'token': token,
+                   'project_id': proj_name,
+                   'notebook_id': ntb_id,
+                   'src': src,
+                   'call': 'run_job'}
+        self._call_rpc(uid, payload)
+
+    def clear_job_list(self, uid, token):
+        """
+        Clear job list.
+
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        payload = {'uid': uid,
+                   'token': token,
+                   'call': 'clear_job_list'}
+        self._call_rpc(uid, payload)
+
     def _call_rpc(self, uid, payload):
         """
         Make a lovely RPC (blocking) call.

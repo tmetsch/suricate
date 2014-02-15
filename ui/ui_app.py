@@ -93,6 +93,8 @@ class AnalyticsApp(object):
         # tagging
         self.app.route('/<data_src>/<iden>/tag', ['POST'],
                        self.tag_item)
+        self.app.route('/analytics/clear', ['POST'],
+                       self.clear_job_list)
 
     def get_wsgi_app(self):
         """
@@ -238,8 +240,10 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         tmp = self.api.list_projects(uid, token)
+        jobs = self.api.list_jobs(uid, token)
         return {'uid': uid,
-                'projects': tmp}
+                'projects': tmp,
+                'jobs': jobs}
 
     def create_project(self):
         """
@@ -361,8 +365,13 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         src = bottle.request.forms.get('source')
-        self.api.run_notebook(proj_name, ntb_id, src, uid, token)
-        bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
+        run_type = bottle.request.forms.get('run')
+        if run_type == 'Run':
+            self.api.run_notebook(proj_name, ntb_id, src, uid, token)
+            bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
+        elif run_type == 'Run Job':
+            self.api.run_job(proj_name, ntb_id, src, uid, token)
+            bottle.redirect('/analytics')
 
     def interact(self, proj_name, ntb_id):
         """
@@ -375,6 +384,17 @@ class AnalyticsApp(object):
         loc = bottle.request.forms.get('interact')
         self.api.interact(proj_name, ntb_id, loc, uid, token)
         bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
+
+    def clear_job_list(self):
+        """
+        Clear job list.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
+        uid, token = _get_cred()
+        self.api.clear_job_list(uid, token)
+        bottle.redirect('/analytics')
 
 
 def _get_cred():

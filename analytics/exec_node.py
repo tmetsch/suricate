@@ -5,6 +5,8 @@ Execution node - listens to messages and executes notebooks etc.
 
 import json
 import pika
+import thread
+import uuid
 
 from analytics import proj_ntb_store
 from analytics import wrapper
@@ -16,6 +18,7 @@ class ExecNode(object):
     """
 
     wrappers = {}
+    jobs = {}
 
     def __init__(self, mongo_uri, amqp_uri, uid):
         self.uid = uid
@@ -90,6 +93,18 @@ class ExecNode(object):
                 ntb['out'].extend(out)
             ntb['err'] = err
             self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
+        # job handling
+        elif call == 'run_job':
+            ntb_id = body['notebook_id']
+            src = body['src']
+            thread.start_new_thread(self._run_job, (proj, ntb_id, src,
+                                    interpreter, uid, token))
+        elif call == 'list_jobs':
+            res['jobs'] = self.jobs
+        elif call == 'clear_job_list':
+            for item in self.jobs.keys():
+                if self.jobs[item]['state'] == 'done':
+                    self.jobs.pop(item)
         # project - from here on interactions with the store not interpreter.
         elif call == 'list_projects':
             res['projects'] = self.stor.list_projects(uid, token)
@@ -122,3 +137,15 @@ class ExecNode(object):
             self.wrappers[project_id] = wrapper.PythonWrapper(uid, token,
                                                               self.uri)
         return self.wrappers[project_id]
+
+    def _run_job(self, proj, ntb_id, src, interpreter, uid, token):
+        iden = str(uuid.uuid4())
+        self.jobs[iden] = {'state': 'running', 'project': proj,
+                           'notebook': ntb_id}
+        ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
+        out, err = interpreter.run(src)
+        ntb['src'] = src
+        ntb['out'] = out
+        ntb['err'] = err
+        self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
+        self.jobs[iden]['state'] = 'done'
