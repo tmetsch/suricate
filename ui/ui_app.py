@@ -91,7 +91,7 @@ class AnalyticsApp(object):
         self.app.route('/analytics/<proj_name>/<ntb_id>/interact', ['POST'],
                        self.interact)
         # tagging
-        self.app.route('/data_src/<iden>/tag', ['POST'],
+        self.app.route('/<data_src>/<iden>/tag', ['POST'],
                        self.tag_item)
 
     def get_wsgi_app(self):
