@@ -12,7 +12,7 @@ class ExecNodeTest(unittest.TestCase):
     amqp_uri = 'amqp://guest:guest@localhost:5672/%2f'
 
     def setUp(self):
-        self.store = proj_ntb_store.NotebookStore(self.mongo_uri)
+        self.store = proj_ntb_store.NotebookStore(self.mongo_uri, 'foo')
         self.cut = ClassUnderTestWrapper(self.mongo_uri, self.amqp_uri,
                                          'foo', 'bar')
         self.store.update_notebook('qwe', 'abc.py', {'src': 'print "hello"'},
@@ -28,7 +28,8 @@ class ExecNodeTest(unittest.TestCase):
 
         # retrieve project
         self.payload['call'] = 'retrieve_project'
-        self.assertEquals(self.cut._handle(self.payload)['project'], ['abc.py'])
+        self.assertEquals(self.cut._handle(self.payload)['project'],
+                          ['abc.py'])
 
         # test retrieving
         self.payload['call'] = 'retrieve_notebook'
@@ -39,7 +40,11 @@ class ExecNodeTest(unittest.TestCase):
         # test running code
         self.payload['call'] = 'run_notebook'
         self.payload['notebook_id'] = 'abc.py'
+        self.payload['src'] = 'print("hello")'
         self.assertEqual(self.cut._handle(self.payload), {})
+        self.payload['call'] = 'retrieve_notebook'
+        self.assertEquals(self.cut._handle(self.payload)['notebook']['out'],
+                          ['hello'])
 
         # test interacting
         self.payload['call'] = 'interact'
@@ -51,13 +56,12 @@ class ExecNodeTest(unittest.TestCase):
         self.payload['notebook_id'] = 'abc.py'
         self.payload['notebook'] = {'src': 'for i in range(0,5):\n\tprint i'}
         self.cut._handle(self.payload)
-        # run it
-        self.payload['call'] = 'run_notebook'
-        self.assertEqual(self.cut._handle(self.payload), {})
+
         # retrieve it
         self.payload['call'] = 'retrieve_notebook'
-        self.assertEquals(self.cut._handle(self.payload)['notebook']['out'],
-                          ['0', '1', '2', '3', '4'])
+        print self.cut._handle(self.payload)
+        self.assertEquals(self.cut._handle(self.payload)['notebook']['src'],
+                          'for i in range(0,5):\n\tprint i')
 
         # delete it
         self.payload['call'] = 'delete_notebook'
@@ -75,4 +79,4 @@ class ClassUnderTestWrapper(exec_node.ExecNode):
         self.token = token
         self.uri = mongo_uri
         # store
-        self.stor = proj_ntb_store.NotebookStore(mongo_uri)
+        self.stor = proj_ntb_store.NotebookStore(mongo_uri, 'foo')

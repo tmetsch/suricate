@@ -1,7 +1,13 @@
+
+"""
+Execution node - listens to messages and executes notebooks etc.
+"""
+
 import json
 import pika
 
-from analytics import wrapper, proj_ntb_store
+from analytics import proj_ntb_store
+from analytics import wrapper
 
 
 class ExecNode(object):
@@ -97,6 +103,7 @@ class ExecNode(object):
             res['notebook'] = self.stor.retrieve_notebook(proj, ntb_id, uid,
                                                           token)
         elif call == 'update_notebook':
+            # TODO: check necessity...
             ntb_id = body['notebook_id']
             ntb = body['notebook']
             self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
@@ -108,6 +115,9 @@ class ExecNode(object):
         return res
 
     def _get_interpreter(self, project_id, uid, token):
+        """
+        Return the interpreter per project, or create a new one.
+        """
         if project_id not in self.wrappers:
             # TODO: make type configurable (Python, Julia, R, ...)
             self.wrappers[project_id] = wrapper.PythonWrapper(uid, token,

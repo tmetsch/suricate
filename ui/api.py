@@ -99,6 +99,14 @@ class API(object):
     # Notebooks
 
     def retrieve_notebook(self, proj_name, ntb_id, uid, token):
+        """
+        RPC call to retrieve a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
         payload = {'uid': uid,
                    'token': token,
                    'project_id': proj_name,
@@ -108,6 +116,15 @@ class API(object):
         return tmp['notebook']
 
     def update_notebook(self, proj_name, ntb_id, ntb, uid, token):
+        """
+        RPC call to update a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param ntb: New notebook structure.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
         payload = {'uid': uid,
                    'token': token,
                    'project_id': proj_name,
@@ -117,6 +134,14 @@ class API(object):
         self._call_rpc(uid, payload)
 
     def delete_notebook(self, proj_name, ntb_id, uid, token):
+        """
+        RPC call to delete a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
         payload = {'uid': uid,
                    'token': token,
                    'project_id': proj_name,
@@ -125,6 +150,15 @@ class API(object):
         self._call_rpc(uid, payload)
 
     def run_notebook(self, proj_name, ntb_id, src, uid, token):
+        """
+        RPC call to run a notebook.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param src: source code to run.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
         payload = {'uid': uid,
                    'token': token,
                    'project_id': proj_name,
@@ -134,6 +168,15 @@ class API(object):
         self._call_rpc(uid, payload)
 
     def interact(self, proj_name, ntb_id, loc, uid, token):
+        """
+        RPC call to interact with an notebook's intepreter.
+
+        :param proj_name: Name of the project.
+        :param ntb_id: Id of the notebook.
+        :param loc: Line of code.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
         payload = {'uid': uid,
                    'token': token,
                    'project_id': proj_name,

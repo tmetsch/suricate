@@ -1,13 +1,13 @@
 """
 Adapters for different languages.
 """
+
 import ConfigParser
 
 import code
 import sys
 
 import StringIO
-import urlparse
 
 CONFIG = ConfigParser.RawConfigParser()
 CONFIG.read('app.conf')

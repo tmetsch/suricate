@@ -97,4 +97,3 @@ class NotebookStore(object):
         """
         self.database.authenticate(uid, token)
         self.database[project].remove({'_id': ntb_id})
-

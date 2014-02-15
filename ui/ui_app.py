@@ -224,12 +224,18 @@ class AnalyticsApp(object):
 
     @bottle.view('projects.tmpl')
     def projects(self):
+        """
+        List projects.
+        """
         uid, token = _get_cred()
         tmp = self.api.list_projects(uid, token)
         return {'uid': uid,
                 'projects': tmp}
 
     def create_project(self):
+        """
+        Create a project.
+        """
         uid, token = _get_cred()
         proj_name = bottle.request.forms.get('proj_name')
         self.api.create_project(proj_name, uid, token)
@@ -237,6 +243,11 @@ class AnalyticsApp(object):
 
     @bottle.view('project.tmpl')
     def retrieve_project(self, proj_name):
+        """
+        Retrieve a single project.
+
+        :param proj_name: name of the project.
+        """
         uid, token = _get_cred()
         tmp = self.api.retrieve_project(proj_name, uid, token)
         return {'uid': uid,
@@ -244,6 +255,11 @@ class AnalyticsApp(object):
                 'notebooks': tmp}
 
     def delete_project(self, proj_name):
+        """
+        Delete a single project.
+
+        :param proj_name: name of the project.
+        """
         uid, token = _get_cred()
         self.api.delete_project(proj_name, uid, token)
         bottle.redirect('/analytics')
@@ -251,6 +267,11 @@ class AnalyticsApp(object):
     # Notebook mgmt.
 
     def create_notebook(self, proj_name):
+        """
+        Create a new notebook.
+
+        :param proj_name: name of the project.
+        """
         uid, token = _get_cred()
         ntb_id = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
@@ -269,6 +290,12 @@ class AnalyticsApp(object):
 
     @bottle.view('notebook.tmpl')
     def retrieve_notebook(self, proj_name, ntb_id):
+        """
+        Retrieve a notebook.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
         uid, token = _get_cred()
         tmp = self.api.retrieve_notebook(proj_name, ntb_id, uid, token)
         if 'out' in tmp:
@@ -288,11 +315,23 @@ class AnalyticsApp(object):
                 'error': err}
 
     def delete_notebook(self, proj_name, ntb_id):
+        """
+        Delete a notebook.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
         uid, token = _get_cred()
         self.api.delete_notebook(proj_name, ntb_id, uid, token)
         bottle.redirect('/analytics/' + proj_name)
 
     def download_notebook(self, proj_name, ntb_id):
+        """
+        Download a notebook.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
         uid, token = _get_cred()
         tmp_file = StringIO()
         ntb = self.api.retrieve_notebook(proj_name, ntb_id, uid, token)
@@ -305,12 +344,24 @@ class AnalyticsApp(object):
         return tmp_file.getvalue()
 
     def run_notebook(self, proj_name, ntb_id):
+        """
+        Run a notebook.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
         uid, token = _get_cred()
         src = bottle.request.forms.get('source')
         self.api.run_notebook(proj_name, ntb_id, src, uid, token)
         bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
 
     def interact(self, proj_name, ntb_id):
+        """
+        Interact with a notebook's interpreter.
+
+        :param proj_name: name of the project.
+        :param ntb_id: Identifier for the notebook.
+        """
         uid, token = _get_cred()
         loc = bottle.request.forms.get('interact')
         self.api.interact(proj_name, ntb_id, loc, uid, token)
