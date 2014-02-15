@@ -10,6 +10,8 @@ import pymongo
 
 from bson import ObjectId
 
+# TODO: all signatures to have uid,token at end.
+
 
 def get_object_stor():
     """
@@ -27,12 +29,13 @@ class ObjectStore(object):
     Stores need to derive from this one.
     """
 
-    def list_objects(self, uid, token):
+    def list_objects(self, uid, token, query={}):
         """
         List the objects of a user.
 
         :param uid: User id.
         :param token: Access token.
+        :param query: Optional query.
         """
         raise NotImplementedError('Needs to be implemented by subclass.')
 
@@ -91,19 +94,21 @@ class MongoStore(ObjectStore):
         """
         self.client = pymongo.MongoClient(uri)
 
-    def list_objects(self, uid, token):
+    def list_objects(self, uid, token, query={}):
         """
         List the objects of a user.
 
         :param uid: User id.
         :param token: Access token.
+        :param query: Optional query.
         """
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
         res = []
-        for obj in collection.find():
-            res.append(str(obj['_id']))
+        for obj in collection.find(query):
+            tmp = {'iden': str(obj['_id']), 'meta': obj['meta']}
+            res.append(tmp)
         return res
 
     def create_object(self, uid, token, content):
@@ -117,7 +122,7 @@ class MongoStore(ObjectStore):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        tmp = {'value': content}
+        tmp = {'value': content, 'meta': {'tags': []}}
         obj_id = collection.insert(tmp)
         return obj_id
 

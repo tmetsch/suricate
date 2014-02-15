@@ -44,7 +44,7 @@ class NotebookStore(object):
         res = []
         tmp = self.database[project].find(fields={'_id': True})
         for item in tmp:
-            res.append(item.get('_id'))
+            res.append(str(item['_id']))
         return res
 
     def delete_project(self, project, uid, token):

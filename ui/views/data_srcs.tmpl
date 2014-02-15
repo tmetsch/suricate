@@ -5,14 +5,17 @@
 </div>
 <div class="pure-g-r">
     % i = 0
-    % for iden in data_objs:
+    % for item in data_objs:
         <div class="pure-u-1-4">
             <div class="tile">
-                <h3><a href="/data/object/{{iden}}">{{iden}}</a></h3>
-                <form action="data/object/{{iden}}/delete" method="post">
+                <h3><a href="/data/object/{{item['iden']}}">{{item['iden']}}</a></h3>
+                <form action="data_objects/{{item['iden']}}/tag" method="post">
+                    <input class="txtinput" type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
+                </form>
+                <form action="data/object/{{item['iden']}}/delete" method="post">
                     <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
                 </form>
-                <form action="data/object/{{iden}}/download" method="get">
+                <form action="data/object/{{item['iden']}}/download" method="get">
                     <input type="submit" value="Download"/>
                 </form>
             </div>
@@ -42,11 +45,14 @@
 </div>
 <div class="pure-g-r">
     % i = 0
-    % for iden in data_streams:
+    % for item in data_streams:
         <div class="pure-u-1-4">
             <div class="tile">
-                <h3><a href="/data/stream/{{iden}}">{{iden}}</a></h3>
-                <form action="data/stream/{{iden}}/delete" method="post">
+                <h3><a href="/data/stream/{{item['iden']}}">{{item['iden']}}</a></h3>
+                <form action="data_streams/{{item['iden']}}/tag" method="post">
+                    <input class="txtinput" type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
+                </form>
+                <form action="data/stream/{{item['iden']}}/delete" method="post">
                     <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
                 </form>
             </div>

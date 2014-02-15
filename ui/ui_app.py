@@ -17,8 +17,6 @@ import os
 
 from StringIO import StringIO
 
-from data import object_store
-from data import streaming
 from ui import api
 
 
@@ -40,12 +38,10 @@ class AnalyticsApp(object):
         self.pth = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 
-        # get obj store up!
-        # TODO: look into supporting other store ntb_types.
-        self.obj_str = object_store.MongoStore(mongo_uri)
-        self.stream = streaming.AMQPClient(mongo_uri)
+        # API
+        self.api = api.API(amqp_uri, mongo_uri)
 
-        self.api = api.API(amqp_uri)
+        # Routing
         self._setup_routing()
 
     def _setup_routing(self):
@@ -94,8 +90,9 @@ class AnalyticsApp(object):
                        self.run_notebook)
         self.app.route('/analytics/<proj_name>/<ntb_id>/interact', ['POST'],
                        self.interact)
-        # self.app.route('/analytics/<proj_name>/<ntb_id>/tag', ['POST'],
-        #                self.tag_notebook)
+        # tagging
+        self.app.route('/<type>/<iden>/tag', ['POST'],
+                       self.tag_item)
 
     def get_wsgi_app(self):
         """
@@ -128,9 +125,8 @@ class AnalyticsApp(object):
         List all data sources.
         """
         uid, token = _get_cred()
-        tmp = self.obj_str.list_objects(uid, token)
-        tmp2 = self.stream.list_streams(uid, token)
-        return {'data_objs': tmp, 'data_streams': tmp2, 'uid': uid}
+        objs, streams = self.api.list_data_sources(uid, token)
+        return {'data_objs': objs, 'data_streams': streams, 'uid': uid}
 
     def create_data_obj(self):
         """
@@ -151,7 +147,7 @@ class AnalyticsApp(object):
         else:
             return 'File extension not supported.'
 
-        self.obj_str.create_object(uid, token, tmp)
+        self.api.create_object(tmp, uid, token)
         bottle.redirect('/data')
 
     @bottle.view('data_object.tmpl')
@@ -162,8 +158,8 @@ class AnalyticsApp(object):
         :param iden: Data source identifier.
         """
         uid, token = _get_cred()
-        tmp = self.obj_str.retrieve_object(uid, token, iden)
-        return {'iden': iden, 'content': tmp, 'uid': uid}
+        content = self.api.retrieve_object(iden, uid, token)
+        return {'iden': iden, 'content': content, 'uid': uid}
 
     def delete_data_obj(self, iden):
         """
@@ -172,7 +168,7 @@ class AnalyticsApp(object):
         :param iden: Data source identifier.
         """
         uid, token = _get_cred()
-        self.obj_str.delete_object(uid, token, iden)
+        self.api.delete_object(iden, uid, token)
         bottle.redirect('/data')
 
     def download_data_obj(self, iden):
@@ -182,7 +178,7 @@ class AnalyticsApp(object):
         :param iden: Data source identifier.
         """
         uid, token = _get_cred()
-        tmp = self.obj_str.retrieve_object(uid, token, iden)
+        tmp = self.api.retrieve_object(iden, uid, token)
         bottle.response.set_header('Content-Type', 'application/json')
         bottle.response.set_header('Content-Disposition',
                                    'inline; filename=data.json')
@@ -195,7 +191,7 @@ class AnalyticsApp(object):
         uid, token = _get_cred()
         uri = bottle.request.forms.get('uri')
         queue = bottle.request.forms.get('queue')
-        self.stream.create(uid, token, uri, queue)
+        self.api.create_stream(uri, queue, uid, token)
         bottle.redirect('/data')
 
     @bottle.view('data_stream.tmpl')
@@ -206,7 +202,7 @@ class AnalyticsApp(object):
         :param iden: Identifier of the stream.
         """
         uid, token = _get_cred()
-        uri, queue, msgs = self.stream.retrieve(uid, token, iden)
+        uri, queue, msgs = self.api.retrieve_stream(iden, uid, token)
         return {'iden': iden, 'uri': uri, 'queue': queue, 'msgs': msgs,
                 'val': len(msgs), 'uid': uid}
 
@@ -217,7 +213,20 @@ class AnalyticsApp(object):
         :param iden: Identifier of the stream.
         """
         uid, token = _get_cred()
-        self.stream.delete(uid, token, iden)
+        self.api.delete_stream(iden, uid, token)
+        bottle.redirect('/data')
+
+    def tag_item(self, data_src, iden):
+        """
+        Tag an data object.
+
+        :param type: Reflects to database.
+        :param iden: Identifier of object/stream.
+        """
+        uid, token = _get_cred()
+        tags = bottle.request.forms.get('tags').split(',')
+        meta = {'tags': [item.strip() for item in tags]}
+        self.api.set_meta(data_src, iden, meta, uid, token)
         bottle.redirect('/data')
 
     # Project mgmt

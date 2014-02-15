@@ -61,13 +61,15 @@ class MongoStoreTest(unittest.TestCase):
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
         self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
-        self.mongo_coll.find().AndReturn([{'_id': 'foo', 'content': 'bar'}])
+        self.mongo_coll.find({}).AndReturn([{'_id': 'foo',
+                                           'meta': {'tags': []},
+                                           'content': 'bar'}])
 
         self.mocker.ReplayAll()
         tmp = self.cut.list_objects('123', 'abc')
         self.mocker.VerifyAll()
 
-        self.assertListEqual(tmp, ['foo'])
+        self.assertListEqual(tmp, [{'iden': 'foo', 'meta': {'tags': []}}])
 
     def test_create_object_for_sanity(self):
         """
@@ -76,7 +78,8 @@ class MongoStoreTest(unittest.TestCase):
         self.mongo_client.__getitem__('123').AndReturn(self.mongo_db)
         self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
-        self.mongo_coll.insert({'value': {'foo': 'bar'}}).AndReturn('foo123')
+        self.mongo_coll.insert({'value': {'foo': 'bar'},
+                                'meta': {'tags': []}}).AndReturn('foo123')
 
         self.mocker.ReplayAll()
         tmp = self.cut.create_object('123', 'abc', {'foo': 'bar'})

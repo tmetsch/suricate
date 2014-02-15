@@ -59,7 +59,6 @@ class ExecNodeTest(unittest.TestCase):
 
         # retrieve it
         self.payload['call'] = 'retrieve_notebook'
-        print self.cut._handle(self.payload)
         self.assertEquals(self.cut._handle(self.payload)['notebook']['src'],
                           'for i in range(0,5):\n\tprint i')
 

@@ -3,6 +3,7 @@
 """
 An API used by the UI and RESTful API.
 """
+from bson import ObjectId
 
 __author__ = 'tmetsch'
 
@@ -12,22 +13,118 @@ import pika
 import pika.exceptions as pikaex
 import uuid
 
+from data import object_store
+from data import streaming
+
 
 class API(object):
     """
     Little helper class to abstract the REST and UI from.
     """
 
-    def __init__(self, amqp_uri):
+    def __init__(self, amqp_uri, mongo_uri):
         self.clients = {}
         self.amqp_uri = amqp_uri
 
+        # get obj/streaming client up!
+        self.obj_str = object_store.MongoStore(mongo_uri)
+        self.stream = streaming.AMQPClient(mongo_uri)
+
     # Data sources...
-    # TODO: deal with the data part here too!
+
+    def list_data_sources(self, uid, token):
+        """
+        List available data sources. Return list of ids for objects & streams.
+
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        tmp = self.obj_str.list_objects(uid, token)
+        tmp2 = self.stream.list_streams(uid, token)
+        return tmp, tmp2
 
     ## Objects
 
+    def create_object(self, content, uid, token):
+        """
+        Create a data object.
+
+        :param content: Object content.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        self.obj_str.create_object(uid, token, content)
+
+    def retrieve_object(self, iden, uid, token):
+        """
+        Retrieve a data object.
+
+        :param iden: Id of the object.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        tmp = self.obj_str.retrieve_object(uid, token, iden)
+        return tmp
+
+    def delete_object(self, iden, uid, token):
+        """
+        Delete a data object.
+
+        :param iden: Id of the object.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        self.obj_str.delete_object(uid, token, iden)
+
     ## Streams
+
+    def create_stream(self, uri, queue, uid, token):
+        """
+        Create a data stream.
+
+        :param uri: RabbitMQ Broker URI.
+        :param queueu: Queue.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        self.stream.create(uid, token, uri, queue)
+
+    def retrieve_stream(self, iden, uid, token):
+        """
+        Retrieve a data stream.
+
+        :param iden: Id of the stream.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        uri, queue, msgs = self.stream.retrieve(uid, token, iden)
+        return uri, queue, msgs
+
+    def delete_stream(self, iden, uid, token):
+        """
+        Delete a data stream.
+
+        :param iden: Id of the stream.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        self.stream.delete(uid, token, iden)
+
+    def set_meta(self, data_src, iden, meta, uid, token):
+        """
+        Set meta information.
+
+        :param type: Type reflects to db name.
+        :param iden: Id of the object/stream.
+        :param meta: Metadata dict.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        database = self.obj_str.client[uid]
+        database.authenticate(uid, token)
+        collection = database[data_src]
+        collection.update({'_id': ObjectId(iden)},
+                          {"$set": {'meta': meta}})
 
     ####
     # Everything below this is RPC!
@@ -63,7 +160,7 @@ class API(object):
                    'token': token,
                    'project_id': proj_name,
                    'notebook_id': 'analytics.py',
-                   'notebook': {'meta': {}, 'src': '\n'},
+                   'notebook': {'meta': {'tags': []}, 'src': '\n'},
                    'call': 'update_notebook'}
         self._call_rpc(uid, payload)
 

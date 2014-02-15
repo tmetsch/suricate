@@ -103,7 +103,6 @@ class ExecNode(object):
             res['notebook'] = self.stor.retrieve_notebook(proj, ntb_id, uid,
                                                           token)
         elif call == 'update_notebook':
-            # TODO: check necessity...
             ntb_id = body['notebook_id']
             ntb = body['notebook']
             self.stor.update_notebook(proj, ntb_id, ntb, uid, token)

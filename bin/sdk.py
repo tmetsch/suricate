@@ -71,11 +71,18 @@ def show_d3(figure=None):
 # Everything below this line is basically an SDK...
 
 
-def list_objects():
+def list_objects(tag=''):
     """
     List available object ids.
+
+    :param tag: Optional tag to search for.
     """
-    return obj_str.list_objects(str(UID), str(TOKEN))
+    if tag is not '':
+        query = {'meta.tags':  tag}
+    else:
+        query = {}
+    ids = obj_str.list_objects(str(UID), str(TOKEN), query=query)
+    return [item['iden'] for item in ids]
 
 
 def create_object(data):
@@ -107,11 +114,18 @@ def update_object(iden, data):
     obj_str.update_object(str(UID), str(TOKEN), iden, data)
 
 
-def list_streams():
+def list_streams(tag=''):
     """
     List all available stream ids.
+
+    :param tag: Optional tag to search for.
     """
-    return stm_str.list_streams(str(UID), str(TOKEN))
+    if tag is not '':
+        query = {'meta.tags':  tag}
+    else:
+        query = {}
+    ids = stm_str.list_streams(str(UID), str(TOKEN), query=query)
+    return ids
 
 
 def retrieve_from_stream(iden, interval=60):

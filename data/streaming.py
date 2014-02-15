@@ -16,7 +16,7 @@ from bson import ObjectId
 
 class StreamClient(object):
     """
-    Simple streaming client.
+    Simple streaming client. This on is used by SDK.
     """
 
     def __init__(self, uri):
@@ -25,19 +25,20 @@ class StreamClient(object):
         """
         self.client = pymongo.MongoClient(uri)
 
-    def list_streams(self, uid, token):
+    def list_streams(self, uid, token, query={}):
         """
         Retrieve list of available streams.
 
         :param uid: User's uid.
         :param token: Token of the user.
+        :param query: Optional query.
         :return: List of identifiers.
         """
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_streams']
         res = []
-        for obj in collection.find():
+        for obj in collection.find(query):
             res.append(str(obj['_id']))
         return res
 
@@ -68,7 +69,7 @@ class StreamClient(object):
 
 class AMQPClient(object):
     """
-    Stream client for Suricate.
+    Stream client for Suricate - Used by Suricate code.
     """
 
     def __init__(self, uri):
@@ -89,6 +90,7 @@ class AMQPClient(object):
         collection = database['data_streams']
         res = []
         for obj in collection.find():
+            tmp = {'iden': str(obj['_id']), 'meta': obj['meta']}
             if str(obj['_id']) not in self.cache:
                 iden = str(obj['_id'])
                 content = collection.find_one({'_id': ObjectId(iden)})
@@ -98,7 +100,7 @@ class AMQPClient(object):
                                                   self.uri, str(uri),
                                                   str(queue))
                 self.cache[iden].start()
-            res.append(obj['_id'])
+            res.append(tmp)
         return res
 
     def create(self, uid, token, uri, queue):
@@ -114,7 +116,7 @@ class AMQPClient(object):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_streams']
-        tmp = {'uri': uri, 'queue': queue}
+        tmp = {'uri': uri, 'queue': queue, 'meta': {'tags': []}}
         obj_id = collection.insert(tmp)
         return obj_id
 

@@ -47,6 +47,10 @@ body {
     background: #eee;
     box-shadow: 1px 1px 3px #ccc;
 }
+.txtinput {
+    padding: 0.2em;
+    background: #fff;
+}
 /* content */
 #content {
     margin: 2.4em;
