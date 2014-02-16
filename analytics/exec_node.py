@@ -105,7 +105,7 @@ class ExecNode(object):
             res['jobs'] = self.jobs
         elif call == 'clear_job_list':
             for item in self.jobs.keys():
-                if self.jobs[item]['state'] == 'done':
+                if self.jobs[item]['state'].find('done') == 0:
                     self.jobs.pop(item)
         # project - from here on interactions with the store not interpreter.
         elif call == 'list_projects':
