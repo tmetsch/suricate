@@ -8,6 +8,8 @@ import pika
 import thread
 import uuid
 
+from time import time
+
 from analytics import proj_ntb_store
 from analytics import wrapper
 
@@ -143,9 +145,11 @@ class ExecNode(object):
         self.jobs[iden] = {'state': 'running', 'project': proj,
                            'notebook': ntb_id}
         ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
+        t0 = time()
         out, err = interpreter.run(src)
         ntb['src'] = src
         ntb['out'] = out
         ntb['err'] = err
+        t1 = time()
         self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
-        self.jobs[iden]['state'] = 'done'
+        self.jobs[iden]['state'] = 'done in ' + str(round(t1-t0, 2)) + 's'

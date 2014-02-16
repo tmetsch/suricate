@@ -68,6 +68,13 @@ def show_d3(figure=None):
     dat += img.replace('\n', '\r')
     print dat
 
+
+def embed(content):
+    """
+    Embed content in output.
+    """
+    print 'embed:', content
+
 # Everything below this line is basically an SDK...
 
 
