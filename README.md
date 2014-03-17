@@ -1,4 +1,4 @@
-# Open Analytics Service
+# Open Data Science Service
 
 Suricate is a very simple Python based Analytics Service originally
 designed to analyze data streams coming from [DTrace](http://www.dtrace.org)

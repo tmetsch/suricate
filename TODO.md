@@ -20,6 +20,8 @@
    - [ ] support continuously running scripts.
 
 ## Analytics/Processing:
+- [ ] Run exec_node as http://www.zerovm.org to bring data and compute closer together.
+   - [ ] for storage then use swift...
 - [x] run notebooks as (remote) jobs to support longrunning tasks & have job lists with states,
 - [x] Interactive command should be presented in output as well - maybe as comment?
 - [ ] richer SDK (Analytics/Processing Development Kit)
