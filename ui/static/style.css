@@ -56,8 +56,6 @@ body {
 }
 input {
     margin: 0.3em 0 0.3em 0;
-    border: 1px solid #ccc;
-    background: #eee;
 }
 form {
     font-size: 0.9em;
@@ -91,6 +89,12 @@ code {
 }
 .analytics {
     color: #60c52d;
+}
+.databorder {
+    border-left: 2px solid #00bfff;
+}
+.analyticsborder {
+    border-left: 2px solid #60c52d;
 }
 /* fonts */
 h1, h2, h3 {
