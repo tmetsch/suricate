@@ -52,3 +52,4 @@
 - [x] tiles for projects & notebooks & data srcs & create operation (have tags in it etc.)
 - [x] output code divs & newlines should be fixed (in output and error)
 - [x] messages div have wrong padding box.
+- [ ] Print button
