@@ -3,25 +3,22 @@
         <h1 class="analytics">Analytic Projects</h1>
     </div>
 </div>
-<div class="pure-g-r">
-    % i = 0
-    % for iden in projects:
-        <div class="pure-u-1-4">
-            <div class="tile analyticsborder">
-                <h3><a href="/analytics/{{iden}}">{{iden}}</a></h3>
-                <form action="/analytics/{{iden}}/delete" method="post">
-                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-                </form>
+<table class="pure-table">
+    <tbody>
+        % for iden in projects:
+            <tr class="analyticsborder">
+                <td>
+                    <a class="field-container" href="/analytics/{{iden}}">{{iden}}</a>
+                </td>
+                <td>
+                    <form class="field-container" action="/analytics/{{iden}}/delete" method="post">
+                        <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                    </form>
+                </td>
             </div>
-        </div>
-        % i += 1
-        % if i > 3:
-        % i = 0
-</div>
-<div class="pure-g-r">
         % end
-    % end
-</div>
+    </tbody>
+</table>
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p>

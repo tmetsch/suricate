@@ -1,33 +1,35 @@
 <div class="pure-g-r">
-    <div class="pure-u-1">
+    <div class="pure-u-1-12">
         <h1 class="data">Objects</h1>
     </div>
 </div>
-<div class="pure-g-r">
-    % i = 0
+<table class="pure-table">
+    <tbody>
     % for item in data_objs:
-        <div class="pure-u-1-4">
-            <div class="tile databorder">
-                <h3><a href="/data/object/{{item['iden']}}">{{item['iden']}}</a></h3>
-                <form action="data_objects/{{item['iden']}}/tag" method="post">
-                    <input class="txtinput" type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
-                </form>
-                <form action="data/object/{{item['iden']}}/delete" method="post">
-                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-                </form>
-                <form action="data/object/{{item['iden']}}/download" method="get">
-                    <input type="submit" value="Download"/>
-                </form>
-            </div>
-        </div>
-        % i += 1
-        % if i > 3:
-        % i = 0
-</div>
-<div class="pure-g-r">
-        % end
+    <tr class="databorder">
+        <td>
+            <a href="/data/object/{{item['iden']}}">{{item['iden']}}</a>
+        </td>
+        <td>
+            <form action="data_objects/{{item['iden']}}/tag" method="post">
+                <label for="tags">Tags:</label>
+                <input type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
+            </form>
+        </td>
+        <td>
+            <form action="data/object/{{item['iden']}}/delete" method="post">
+                <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+            </form>
+        </td>
+        <td>
+            <form action="data/object/{{item['iden']}}/download" method="get">
+                <input type="submit" value="Download"/>
+            </form>
+        </td>
+    </tr>
     % end
-</div>
+    </tbody>
+</table>
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p>
@@ -39,32 +41,32 @@
     </div>
 </div>
 <div class="pure-g-r">
-    <div class="pure-u-1">
+    <div class="pure-u-1-12">
         <h1 class="data">Streams</h1>
     </div>
 </div>
-<div class="pure-g-r">
-    % i = 0
+<table class="pure-table">
+    <tbody>
     % for item in data_streams:
-        <div class="pure-u-1-4">
-            <div class="tile databorder">
-                <h3><a href="/data/stream/{{item['iden']}}">{{item['iden']}}</a></h3>
+        <tr class="databorder">
+            <td>
+                <a href="/data/stream/{{item['iden']}}">{{item['iden']}}</a>
+            </td>
+            <td>
                 <form action="data_streams/{{item['iden']}}/tag" method="post">
+                    <label for="tags">Tags:</label>
                     <input class="txtinput" type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
                 </form>
+            </td>
+            <td>
                 <form action="data/stream/{{item['iden']}}/delete" method="post">
                     <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
                 </form>
-            </div>
-        </div>
-        % i += 1
-        % if i > 3:
-        % i = 0
-</div>
-<div class="pure-g-r">
-        % end
+            </td>
+        </tr>
     % end
-</div>
+    </tbody>
+</table>
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p>

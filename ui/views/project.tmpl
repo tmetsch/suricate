@@ -5,18 +5,32 @@
         </h1>
     </div>
 </div>
+<table class="pure-table">
+    <tbody>
+    % for iden in notebooks:
+        <tr class="analyticsborder">
+            <td>
+                <a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a>
+            </td>
+            <td>
+                <form action="/analytics/{{proj_name}}/{{iden}}/delete" method="post">
+                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
+                </form>
+            </td>
+            <td>
+                <form action="/analytics/{{proj_name}}/{{iden}}/download" method="post">
+                    <input type="submit" value="Download" />
+                </form>
+            </td>
+        </tr>
+    % end
+    </tbody>
+</table>
 <div class="pure-g-r">
     % i = 0
     % for iden in notebooks:
         <div class="pure-u-1-4">
             <div class="tile analyticsborder">
-                <h3><a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a></h3>
-                <form action="/analytics/{{proj_name}}/{{iden}}/delete" method="post">
-                    <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
-                </form>
-                <form action="/analytics/{{proj_name}}/{{iden}}/download" method="post">
-                    <input type="submit" value="Download" />
-                </form>
             </div>
         </div>
         % i += 1

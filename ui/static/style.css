@@ -40,16 +40,6 @@ body {
 #menu a:hover {
     background: #444;
 }
-/* tiles */
-.tile {
-    padding: 0.5em;
-    margin: 0.3em;
-    background: #eee;
-    box-shadow: 1px 1px 3px #ccc;
-}
-.txtinput {
-    padding: 0.2em;
-}
 /* content */
 #content {
     margin: 2.4em;

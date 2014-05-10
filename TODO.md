@@ -2,6 +2,7 @@
 - [x] Better error handling needed.
 - [x] backends for handling notebooks execution (isolate with cgroups & subprocess?)
 - [x] simple flows for data through program: frontend (UI) - backends - final execution
+- [ ] split web frontend from an engine.
 
 ## Data:
 - [ ] in memory DB support (for caching)
@@ -34,6 +35,8 @@
 - [x] management of notebooks in project which are then shareable -> exec node per project for better isolation!
     - [ ] could be git repositories with the code in it... 
     - [ ] have samples hosted on github for direct cloning and testing the service.
+    - [ ] sharing of notebooks
+- [ ] store projects/notebooks with iden of mongo not the name - put that in meta.
 
 ## Packaging
 - [ ] pypi/conda
@@ -53,3 +56,5 @@
 - [x] output code divs & newlines should be fixed (in output and error)
 - [x] messages div have wrong padding box.
 - [ ] Print button
+- [ ] Build workflows/processes - graph editor
+- [ ] dashboard support through templating
