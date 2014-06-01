@@ -120,7 +120,7 @@ def retrieve_object(iden):
     :param iden: Identifier of the object.
     """
     tmp = obj_str.retrieve_object(str(UID), str(TOKEN), iden)
-    return json.loads(tmp)
+    return json.loads(tmp['value'])
 
 
 def update_object(iden, data):
