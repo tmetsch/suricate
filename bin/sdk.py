@@ -12,8 +12,11 @@ import os
 import urllib
 
 from StringIO import StringIO
+
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot
-from mpld3 import _objects
+import mpld3
 
 from data import object_store
 from data import streaming
@@ -41,7 +44,7 @@ pyplot.clf()
 os.environ = {}
 
 # Constants
-D3_URL = 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js'
+D3_URL = 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js'
 
 
 def show():
@@ -61,9 +64,9 @@ def show_d3(figure=None):
     Show matplotlib fig using d3.js.
     """
     if figure:
-        img = _objects.D3Figure(figure).html(D3_URL)
+        img = mpld3.fig_to_html(figure, d3_url=D3_URL)
     else:
-        img = _objects.D3Figure(fig).html(D3_URL)
+        img = mpld3.fig_to_html(fig, d3_url=D3_URL)
     dat = 'embed:'
     dat += img.replace('\n', '\r')
     print dat
