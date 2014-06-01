@@ -7,10 +7,9 @@ Wraps around object storage.
 __author__ = 'tmetsch'
 
 import pymongo
+import uuid
 
 from bson import ObjectId
-
-# TODO: all signatures to have uid,token at end.
 
 
 def get_object_stor():
@@ -106,23 +105,27 @@ class MongoStore(ObjectStore):
         database.authenticate(uid, token)
         collection = database['data_objects']
         res = []
-        for obj in collection.find(query):
-            tmp = {'iden': str(obj['_id']), 'meta': obj['meta']}
-            res.append(tmp)
+        for item in collection.find(query):
+            res.append((str(item['_id']), item['meta']))
         return res
 
-    def create_object(self, uid, token, content):
+    def create_object(self, uid, token, content, meta=None):
         """
         Create an object for a user. Returns and id
 
         :param content: Some content.
         :param uid: User id.
         :param token: Access token.
+        :param meta: Some meta data.
         """
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        tmp = {'value': content, 'meta': {'tags': []}}
+        if meta is None:
+            meta = {'name': str(uuid.uuid4()),
+                    'mime-type': 'N/A',
+                    'tags': []}
+        tmp = {'value': content, 'meta': meta}
         obj_id = collection.insert(tmp)
         return obj_id
 
@@ -137,8 +140,9 @@ class MongoStore(ObjectStore):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        content = collection.find_one({'_id': ObjectId(obj_id)})
-        return content['value']
+        tmp = collection.find_one({'_id': ObjectId(obj_id)})
+        tmp.pop('_id')
+        return tmp
 
     def update_object(self, uid, token, obj_id, content):
         """

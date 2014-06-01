@@ -9,22 +9,33 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Id</th>
+            <th>Meta</th>
             <th colspan="2">Actions</th>
         </tr>
     </thead>
     <tbody>
-    % for iden in notebooks:
+    % for ntb in notebooks:
         <tr>
             <td>
-                <a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a>
+                <a href="/analytics/{{proj_name}}/{{ntb[0]}}">{{ntb[1]['name']}}</a>
             </td>
             <td>
-                <form action="/analytics/{{proj_name}}/{{iden}}/delete" method="post">
+                <a href="/analytics/{{proj_name}}/{{ntb[0]}}">{{ntb[0]}}</a>
+            </td>
+            <td>
+                <form action="/tag/{{proj_name}}/{{ntb[0]}}" method="post">
+                    <label for="tags">Tags:</label>
+                    <input type="text" name="tags" value="{{', '.join(ntb[1]['tags'])}}"/>
+                </form>
+            </td>
+            <td>
+                <form action="/analytics/{{proj_name}}/{{ntb[0]}}/delete" method="post">
                     <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
                 </form>
             </td>
             <td>
-                <form action="/analytics/{{proj_name}}/{{iden}}/download" method="post">
+                <form action="/analytics/{{proj_name}}/{{ntb[0]}}/download" method="post">
                     <input type="submit" value="Download" />
                 </form>
             </td>

@@ -89,10 +89,7 @@ class ExecNode(object):
             tmp, err = interpreter.interact(loc)
             out = ['# ' + loc]
             out.extend(tmp)
-            if 'out' not in ntb:
-                ntb['out'] = out
-            else:
-                ntb['out'].extend(out)
+            ntb['out'].extend(out)
             ntb['err'] = err
             self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
         # job handling
@@ -141,15 +138,21 @@ class ExecNode(object):
         return self.wrappers[project_id]
 
     def _run_job(self, proj, ntb_id, src, interpreter, uid, token):
+        """
+        Run a notebook as a long running job.
+        """
         iden = str(uuid.uuid4())
-        self.jobs[iden] = {'state': 'running', 'project': proj,
-                           'notebook': ntb_id}
         ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
-        t0 = time()
+        self.jobs[iden] = {'state': 'running',
+                           'project': proj,
+                           'ntb_id': ntb_id,
+                           'ntb_name': ntb['meta']['name']}
+        time_0 = time()
         out, err = interpreter.run(src)
         ntb['src'] = src
         ntb['out'] = out
         ntb['err'] = err
-        t1 = time()
+        time_1 = time()
         self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
-        self.jobs[iden]['state'] = 'done in ' + str(round(t1-t0, 2)) + 's'
+        self.jobs[iden]['state'] = 'done in ' + \
+                                   str(round(time_1 - time_0, 2)) + 's'

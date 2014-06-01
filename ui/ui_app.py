@@ -71,6 +71,8 @@ class AnalyticsApp(object):
         # project mgmt
         self.app.route('/analytics', ['GET'],
                        self.projects)
+        self.app.route('/analytics/clear', ['POST'],
+                       self.clear_job_list)
         self.app.route('/analytics/create', ['POST'],
                        self.create_project)
         self.app.route('/analytics/<proj_name>', ['GET'],
@@ -91,10 +93,8 @@ class AnalyticsApp(object):
         self.app.route('/analytics/<proj_name>/<ntb_id>/interact', ['POST'],
                        self.interact)
         # tagging
-        self.app.route('/<data_src>/<iden>/tag', ['POST'],
+        self.app.route('/tag/<data_src>/<iden>', ['POST'],
                        self.tag_item)
-        self.app.route('/analytics/clear', ['POST'],
-                       self.clear_job_list)
 
     def get_wsgi_app(self):
         """
@@ -136,6 +136,7 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         upload = bottle.request.files.get('upload')
+        fname = bottle.request.files.get('upload').filename
         _, ext = os.path.splitext(upload.filename)
 
         if ext == '.json':
@@ -149,7 +150,11 @@ class AnalyticsApp(object):
         else:
             return 'File extension not supported.'
 
-        self.api.create_object(tmp, uid, token)
+        meta = {'name': fname,
+                'mime-type': 'application/json',
+                'tags': []}
+
+        self.api.create_object(tmp, uid, token, meta_dat=meta)
         bottle.redirect('/data')
 
     @bottle.view('data_object.tmpl')
@@ -160,8 +165,10 @@ class AnalyticsApp(object):
         :param iden: Data source identifier.
         """
         uid, token = _get_cred()
-        content = self.api.retrieve_object(iden, uid, token)
-        return {'iden': iden, 'content': content, 'uid': uid}
+        obj = self.api.retrieve_object(iden, uid, token)
+        return {'obj_name': obj['meta']['name'],
+                'content': obj['value'],
+                'uid': uid}
 
     def delete_data_obj(self, iden):
         """
@@ -184,7 +191,7 @@ class AnalyticsApp(object):
         bottle.response.set_header('Content-Type', 'application/json')
         bottle.response.set_header('Content-Disposition',
                                    'inline; filename=data.json')
-        return tmp
+        return tmp['value']
 
     def create_data_stream(self):
         """
@@ -227,9 +234,9 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         tags = bottle.request.forms.get('tags').split(',')
-        meta = {'tags': [item.strip() for item in tags]}
-        self.api.set_meta(data_src, iden, meta, uid, token)
-        bottle.redirect('/data')
+        tags = [item.strip() for item in tags]
+        self.api.set_meta(data_src, iden, tags, uid, token)
+        bottle.redirect(bottle.request.headers.get('Referer'))
 
     # Project mgmt
 
@@ -251,7 +258,7 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         proj_name = bottle.request.forms.get('proj_name')
-        self.api.create_project(proj_name, uid, token)
+        self.api.create_notebook(proj_name, uid, token)
         bottle.redirect('/analytics/' + proj_name)
 
     @bottle.view('project.tmpl')
@@ -286,20 +293,20 @@ class AnalyticsApp(object):
         :param proj_name: name of the project.
         """
         uid, token = _get_cred()
-        ntb_id = bottle.request.forms.get('iden')
+        ntb_name = bottle.request.forms.get('iden')
         upload = bottle.request.files.get('upload')
-        ntb = {'meta': {}, 'src': '\n'}
+        code = '\n'
         if upload is not None:
             _, ext = os.path.splitext(upload.filename)
             if ext not in '.py':
                 return 'File extension not supported.'
 
             code = upload.file.read()
-            ntb['src'] = code
 
-        self.api.update_notebook(proj_name, ntb_id, ntb, uid, token)
+        self.api.create_notebook(proj_name, uid, token, ntb_name=ntb_name,
+                                 src=code)
 
-        bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
+        bottle.redirect('/analytics/' + proj_name)
 
     @bottle.view('notebook.tmpl')
     def retrieve_notebook(self, proj_name, ntb_id):
@@ -322,6 +329,7 @@ class AnalyticsApp(object):
             err = ''
         return {'uid': uid,
                 'proj_name': proj_name,
+                'ntb_name': tmp['meta']['name'],
                 'ntb_id': ntb_id,
                 'src': src,
                 'output': output,

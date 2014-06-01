@@ -14,9 +14,12 @@ import urllib
 from StringIO import StringIO
 
 # graphing imports
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot as plt
+except UserWarning:
+    pass
 import mpld3
 
 # internal imports
@@ -55,9 +58,9 @@ def show():
     """
     tmp = StringIO()
     plt.savefig(tmp, format='png')
-    uri = 'image:image/png;base64,' + \
+    uri = 'image/png;base64,' + \
           urllib.quote(base64.b64encode(tmp.getvalue()))
-    print uri
+    print 'image:', uri
     tmp.close()
 
 
@@ -69,9 +72,8 @@ def show_d3(figure=None):
         img = mpld3.fig_to_html(figure, d3_url=D3_URL)
     else:
         img = mpld3.fig_to_html(fig, d3_url=D3_URL)
-    dat = 'embed:'
-    dat += img.replace('\n', '\r')
-    print dat
+    dat = img.replace('\n', '\r')
+    print 'embed:', dat
 
 
 def embed(content):
@@ -83,18 +85,23 @@ def embed(content):
 # Everything below this line is basically an SDK...
 
 
-def list_objects(tag=''):
+def list_objects(tag='', with_meta=False):
     """
     List available object ids.
 
     :param tag: Optional tag to search for.
+    :param with_meta: Indicates if metadata should be returned too.
     """
     if tag is not '':
         query = {'meta.tags':  tag}
     else:
         query = {}
     ids = obj_str.list_objects(str(UID), str(TOKEN), query=query)
-    return [item['iden'] for item in ids]
+    if with_meta:
+        res = [item for item in ids]
+    else:
+        res = [item[0] for item in ids]
+    return res
 
 
 def create_object(data):

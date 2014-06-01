@@ -7,6 +7,7 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Id</th>
             <th>Meta</th>
             <th colspan="2">Actions</th>
         </tr>
@@ -15,21 +16,24 @@
     % for item in data_objs:
     <tr>
         <td>
-            <a href="/data/object/{{item['iden']}}">{{item['iden']}}</a>
+            <a href="/data/object/{{item[0]}}">{{item[1]['name']}}</a>
         </td>
         <td>
-            <form action="data_objects/{{item['iden']}}/tag" method="post">
+            <a href="/data/object/{{item[0]}}">{{item[0]}}</a>
+        </td>
+        <td>
+            <form action="/tag/data_objects/{{item[0]}}" method="post">
                 <label for="tags">Tags:</label>
-                <input type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
+                <input type="text" name="tags" value="{{', '.join(item[1]['tags'])}}"/>
             </form>
         </td>
         <td>
-            <form action="data/object/{{item['iden']}}/delete" method="post">
+            <form action="data/object/{{item[0]}}/delete" method="post">
                 <input type="submit" value="Delete" onClick="return confirm('Sure?')"/>
             </form>
         </td>
         <td>
-            <form action="data/object/{{item['iden']}}/download" method="get">
+            <form action="data/object/{{item[0]}}/download" method="get">
                 <input type="submit" value="Download"/>
             </form>
         </td>

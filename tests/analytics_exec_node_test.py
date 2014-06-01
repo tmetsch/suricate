@@ -17,8 +17,12 @@ class ExecNodeTest(unittest.TestCase):
         self.store = proj_ntb_store.NotebookStore(self.mongo_uri, 'foo')
         self.cut = ClassUnderTestWrapper(self.mongo_uri, self.amqp_uri,
                                          'foo', 'bar')
-        self.store.update_notebook('qwe', 'abc.py', {'src': 'print "hello"'},
-                                   'foo', 'bar')
+        self.ntb_id = self.store.update_notebook('qwe',
+                                                 None,
+                                                 {'src': 'print "hello"',
+                                                  'meta': {'name': 'abc.py',
+                                                           'tags': []}},
+                                                 'foo', 'bar')
 
     def tearDown(self):
         self.store.delete_project('qwe', 'foo', 'bar')
@@ -31,17 +35,17 @@ class ExecNodeTest(unittest.TestCase):
         # retrieve project
         self.payload['call'] = 'retrieve_project'
         self.assertEquals(self.cut._handle(self.payload)['project'],
-                          ['abc.py'])
+                          [(self.ntb_id, {'name': 'abc.py', 'tags': []})])
 
         # test retrieving
         self.payload['call'] = 'retrieve_notebook'
-        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook_id'] = self.ntb_id
         self.assertEqual(self.cut._handle(self.payload)['notebook']['src'],
                          'print "hello"')
 
         # test running code
         self.payload['call'] = 'run_notebook'
-        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook_id'] = self.ntb_id
         self.payload['src'] = 'print("hello")'
         self.assertEqual(self.cut._handle(self.payload), {})
         self.payload['call'] = 'retrieve_notebook'
@@ -55,7 +59,7 @@ class ExecNodeTest(unittest.TestCase):
 
         # test update
         self.payload['call'] = 'update_notebook'
-        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook_id'] = self.ntb_id
         self.payload['notebook'] = {'src': 'for i in range(0,5):\n\tprint i'}
         self.cut._handle(self.payload)
 
@@ -66,7 +70,7 @@ class ExecNodeTest(unittest.TestCase):
 
         # test run an job.
         self.payload['call'] = 'run_job'
-        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook_id'] = self.ntb_id
         self.payload['src'] = 'import time\nfor i in range(0,10):' \
                               '\n\ttime.sleep(1)'
         self.cut._handle(self.payload)
@@ -74,12 +78,14 @@ class ExecNodeTest(unittest.TestCase):
         self.payload['call'] = 'list_jobs'
         time.sleep(2)
         self.assertEquals(self.cut._handle(self.payload)['jobs'].values()[0],
-                          {'project': 'qwe', 'notebook': 'abc.py',
-                           'state': 'running'})
+                          {'project': 'qwe', 'ntb_name': 'abc.py',
+                           'state': 'running', 'ntb_id': self.ntb_id})
         time.sleep(10)
-        self.assertEquals(self.cut._handle(self.payload)['jobs'].values()[0],
-                          {'project': 'qwe', 'notebook': 'abc.py',
-                           'state': 'done'})
+        tmp = self.cut._handle(self.payload)['jobs'].values()[0]
+        self.assertEquals(tmp['project'], 'qwe')
+        self.assertEquals(tmp['ntb_name'], 'abc.py')
+        self.assertEquals(tmp['ntb_id'], self.ntb_id)
+        self.assertIsNot(tmp['state'].find('done'), -1)
 
         # retrieve it
         self.payload['call'] = 'retrieve_notebook'
@@ -89,7 +95,7 @@ class ExecNodeTest(unittest.TestCase):
 
         # delete it
         self.payload['call'] = 'delete_notebook'
-        self.payload['notebook_id'] = 'abc.py'
+        self.payload['notebook_id'] = self.ntb_id
         self.cut._handle(self.payload)
 
 

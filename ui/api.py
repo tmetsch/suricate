@@ -45,7 +45,7 @@ class API(object):
 
     ## Objects
 
-    def create_object(self, content, uid, token):
+    def create_object(self, content, uid, token, meta_dat):
         """
         Create a data object.
 
@@ -53,7 +53,7 @@ class API(object):
         :param uid: Identifier for the user.
         :param token: The token of the user.
         """
-        self.obj_str.create_object(uid, token, content)
+        self.obj_str.create_object(uid, token, content, meta=meta_dat)
 
     def retrieve_object(self, iden, uid, token):
         """
@@ -110,11 +110,11 @@ class API(object):
         """
         self.stream.delete(uid, token, iden)
 
-    def set_meta(self, data_src, iden, meta, uid, token):
+    def set_meta(self, data_src, iden, tags, uid, token):
         """
         Set meta information.
 
-        :param type: Type reflects to db name.
+        :param data_src: Reflects to db name.
         :param iden: Id of the object/stream.
         :param meta: Metadata dict.
         :param uid: Identifier for the user.
@@ -124,7 +124,7 @@ class API(object):
         database.authenticate(uid, token)
         collection = database[data_src]
         collection.update({'_id': ObjectId(iden)},
-                          {"$set": {'meta': meta}})
+                          {"$set": {'meta.tags': tags}})
 
     ####
     # Everything below this is RPC!
@@ -147,22 +147,6 @@ class API(object):
                    'call': 'list_projects'}
         tmp = self._call_rpc(uid, payload)
         return tmp['projects']
-
-    def create_project(self, proj_name, uid, token):
-        """
-        RPC call to list projects.
-
-        :param proj_name: Name of the project.
-        :param uid: Identifier for the user.
-        :param token: The token of the user.
-        """
-        payload = {'uid': uid,
-                   'token': token,
-                   'project_id': proj_name,
-                   'notebook_id': 'analytics.py',
-                   'notebook': {'meta': {'tags': []}, 'src': '\n'},
-                   'call': 'update_notebook'}
-        self._call_rpc(uid, payload)
 
     def retrieve_project(self, proj_name, uid, token):
         """
@@ -194,6 +178,29 @@ class API(object):
         self._call_rpc(uid, payload)
 
     # Notebooks
+
+    def create_notebook(self, proj_name, uid, token, ntb_name='start.py',
+                        src='\n'):
+        """
+        RPC call to create a notebook (or creating an empty project).
+
+        :param proj_name: Name of the project.
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        payload = {'uid': uid,
+                   'token': token,
+                   'project_id': proj_name,
+                   'notebook_id': None,
+                   'notebook': {'meta': {'tags': [],
+                                         'name': ntb_name,
+                                         'mime-type': 'text/x-script.phyton'},
+                                'src': src,
+                                'dashboard_template': '\n',
+                                'out': [],
+                                'err': ''},
+                   'call': 'update_notebook'}
+        self._call_rpc(uid, payload)
 
     def retrieve_notebook(self, proj_name, ntb_id, uid, token):
         """

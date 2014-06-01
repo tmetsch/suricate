@@ -116,7 +116,9 @@ class AMQPClient(object):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_streams']
-        tmp = {'uri': uri, 'queue': queue, 'meta': {'tags': []}}
+        tmp = {'uri': uri, 'queue': queue, 'meta': {'name': 'N/A',
+                                                    'mime-type': 'rabbitmq',
+                                                    'tags': []}}
         obj_id = collection.insert(tmp)
         return obj_id
 
