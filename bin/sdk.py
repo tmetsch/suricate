@@ -6,18 +6,21 @@ Serves as SDK for notebooks.
 
 __author__ = 'tmetsch'
 
+# basic imports
 import base64
 import json
 import os
 import urllib
-
 from StringIO import StringIO
 
+# graphing imports
 import matplotlib
 matplotlib.use('Agg')
-from matplotlib import pyplot
-import mpld3
+from matplotlib import pyplot as plt
+# XXX: on some installs __init__.py form mpld3 prevents module access.
+from mpld3 import _display
 
+# internal imports
 from data import object_store
 from data import streaming
 
@@ -36,9 +39,9 @@ params = {'legend.fontsize': 9.0,
           'axes.linewidth': 0.5,
           'lines.linewidth': 0.5,
           'grid.linewidth':   0.5}
-fig = pyplot.figure(1, figsize=(6, 4))
-pyplot.rcParams.update(params)
-pyplot.clf()
+fig = plt.figure(1, figsize=(6, 4))
+plt.rcParams.update(params)
+plt.clf()
 
 # To hide some stuff from the user.
 os.environ = {}
@@ -52,7 +55,7 @@ def show():
     Show a matplotlib fig and stores it to be displayed as inline image.
     """
     tmp = StringIO()
-    pyplot.savefig(tmp, format='png')
+    plt.savefig(tmp, format='png')
     uri = 'image:image/png;base64,' + \
           urllib.quote(base64.b64encode(tmp.getvalue()))
     print uri
@@ -64,9 +67,9 @@ def show_d3(figure=None):
     Show matplotlib fig using d3.js.
     """
     if figure:
-        img = mpld3.fig_to_html(figure, d3_url=D3_URL)
+        img = _display.fig_to_html(figure, d3_url=D3_URL)
     else:
-        img = mpld3.fig_to_html(fig, d3_url=D3_URL)
+        img = _display.fig_to_html(fig, d3_url=D3_URL)
     dat = 'embed:'
     dat += img.replace('\n', '\r')
     print dat
