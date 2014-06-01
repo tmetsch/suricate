@@ -31,13 +31,13 @@
 - [ ] include external compute capacities?
 - [ ] Hadoop support? - Connect to OpenStack Savanna
 - [ ] support for import/export ipython notebooks.
-- [ ] tagging of notebooks (example tags: Production, experimental, explorational, under development)
+- [x] tagging of notebooks (example tags: Production, experimental, explorational, under development)
 - [ ] Support for Julia, R, ...
 - [x] management of notebooks in project which are then shareable -> exec node per project for better isolation!
     - [ ] could be git repositories with the code in it... 
     - [ ] have samples hosted on github for direct cloning and testing the service.
     - [ ] sharing of notebooks
-- [ ] store projects/notebooks with iden of mongo not the name - put that in meta.
+- [x] store projects/notebooks with iden of mongo not the name - put that in meta.
 
 ## Packaging
 - [ ] pypi/conda
@@ -46,7 +46,7 @@
 ## Fixes
 - [x] firefox just not jump to end in input field
 - [x] move js and css loading to base
-- [ ] unittests
+- [ ] enhance unittests
 
 ## web ui
 - [x] Clear done jobs from list
@@ -60,3 +60,4 @@
 - [ ] Build workflows/processes - graph editor
 - [ ] dashboard support through templating
 - [ ] clearer color design - make better use of space!
+- [ ] support renaming of documents in mongo store
