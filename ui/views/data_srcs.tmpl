@@ -3,7 +3,14 @@
         <h1 class="data">Objects</h1>
     </div>
 </div>
-<table class="pure-table">
+<table class="mytable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Meta</th>
+            <th colspan="2">Actions</th>
+        </tr>
+    </thead>
     <tbody>
     % for item in data_objs:
     <tr class="databorder">
@@ -45,7 +52,14 @@
         <h1 class="data">Streams</h1>
     </div>
 </div>
-<table class="pure-table">
+<table class="mytable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Meta</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
     <tbody>
     % for item in data_streams:
         <tr class="databorder">

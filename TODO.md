@@ -59,3 +59,4 @@
 - [ ] Print button
 - [ ] Build workflows/processes - graph editor
 - [ ] dashboard support through templating
+- [ ] clearer color design - make better use of space!

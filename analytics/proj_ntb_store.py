@@ -11,6 +11,7 @@ class NotebookStore(object):
     Store based on the MongoDB.
     """
     # TODO: export using GIT URL?
+    # TODO: work with IDs and name in meta!
 
     def __init__(self, uri, uid):
         client = pymongo.MongoClient(uri)

@@ -3,7 +3,13 @@
         <h1 class="analytics">Analytic Projects</h1>
     </div>
 </div>
-<table class="pure-table">
+<table class="mytable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
     <tbody>
         % for iden in projects:
             <tr class="analyticsborder">
@@ -34,9 +40,14 @@
     <div class="pure-u-1">
         <h1 class="Analytics">Jobs</h1>
         <p>
-            <table class="pure-table">
+            <table class="mytable">
                 <thead>
-                    <tr><th>Id</th><th>Project</th><th>Notebook</th><th>State</th></tr>
+                    <tr>
+                        <th>Id</th>
+                        <th>Project</th>
+                        <th>Notebook</th>
+                        <th>State</th>
+                    </tr>
                 </thead>
                 <tbody>
                     % for item in jobs:
