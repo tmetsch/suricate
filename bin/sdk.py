@@ -17,8 +17,7 @@ from StringIO import StringIO
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-# XXX: on some installs __init__.py form mpld3 prevents module access.
-from mpld3 import _display
+import mpld3
 
 # internal imports
 from data import object_store
@@ -67,9 +66,9 @@ def show_d3(figure=None):
     Show matplotlib fig using d3.js.
     """
     if figure:
-        img = _display.fig_to_html(figure, d3_url=D3_URL)
+        img = mpld3.fig_to_html(figure, d3_url=D3_URL)
     else:
-        img = _display.fig_to_html(fig, d3_url=D3_URL)
+        img = mpld3.fig_to_html(fig, d3_url=D3_URL)
     dat = 'embed:'
     dat += img.replace('\n', '\r')
     print dat

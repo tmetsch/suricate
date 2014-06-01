@@ -14,7 +14,7 @@
     </thead>
     <tbody>
     % for iden in notebooks:
-        <tr class="analyticsborder">
+        <tr>
             <td>
                 <a href="/analytics/{{proj_name}}/{{iden}}">{{iden}}</a>
             </td>
@@ -32,21 +32,6 @@
     % end
     </tbody>
 </table>
-<div class="pure-g-r">
-    % i = 0
-    % for iden in notebooks:
-        <div class="pure-u-1-4">
-            <div class="tile analyticsborder">
-            </div>
-        </div>
-        % i += 1
-        % if i > 3:
-        % i = 0
-</div>
-<div class="pure-g-r">
-        % end
-    % end
-</div>
 <div class="pure-g-r">
     <div class="pure-u-1">
         <p>
