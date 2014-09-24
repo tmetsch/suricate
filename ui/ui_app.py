@@ -140,7 +140,7 @@ class AnalyticsApp(object):
         _, ext = os.path.splitext(upload.filename)
 
         if ext == '.json':
-            tmp = upload.file.getvalue()
+            tmp = json.load(upload.file)
         elif ext == '.csv':
             reader = csv.reader(upload.file, delimiter=',', quotechar='"')
             keys = next(reader)
