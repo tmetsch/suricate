@@ -150,7 +150,10 @@ To get the app do the following:
     from web import wsgi_app
     app = wsgi_app.AnalyticsApp(<Mongo URI>).get_wsgi_app()
 
-Please note that the usage of TLS is highly recommend!
+Please note that the usage of TLS is highly recommend! It is also recommend 
+to run each component as a 
+[MicroService](http://martinfowler.com/articles/microservices.html) in a 
+Container on e.g. [CoreOS](https://coreos.com/) or similar.
 
 Authentication/Authorization can be done in the WSGI Middlware.
 
@@ -179,7 +182,7 @@ The configuration file supports some simple configuration settings:
 
 ## Architecture
 
-The following ASCII Art shows the rough architecture of Suricate:
+The following ASCII art shows the rough architecture of Suricate:
 
             -----Web----                        -------------
             | -------- |                     -------------  |
