@@ -17,4 +17,4 @@ setup(name='suricate',
       url='http://www.engjoy.eu',
       packages=['suricate.ui', 'suricate.data', 'suricate.analytics'],
       # for prod also requires whatever you put in sdk.
-      requires=['bottle', 'pymongo', 'matplotlib', 'pika'])
+      requires=['bottle', 'pymongo', 'matplotlib', 'pika', 'mox'])

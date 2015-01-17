@@ -42,6 +42,7 @@
 ## Packaging
 - [ ] pypi/conda
 - [ ] package runnable in OpenShift or similar
+- [x] Dockerized MicroServices support
 
 ## Fixes
 - [x] firefox just not jump to end in input field

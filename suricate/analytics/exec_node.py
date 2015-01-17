@@ -95,7 +95,7 @@ class ExecNode(object):
             ntb_id = body['notebook_id']
             src = body['src']
             thread.start_new_thread(self._run_job, (proj, ntb_id, src,
-                                    interpreter, uid, token))
+                                                    interpreter, uid, token))
         elif call == 'list_jobs':
             res['jobs'] = self.jobs
         elif call == 'clear_job_list':

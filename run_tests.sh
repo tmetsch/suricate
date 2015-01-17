@@ -1,9 +1,9 @@
 #!/bin/sh
 
 cd tests/
-nosetests --cover-erase --with-cover --cover-package analytics,data,ui
+nosetests --cover-erase --with-cover --cover-package suricate
 cd ..
 
-pylint -r n -i y analytics data ui
+pylint -r n suricate
 
-pep8 -r analytics bin data ui
+pep8 -r suricate bin
