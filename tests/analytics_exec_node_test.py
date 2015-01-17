@@ -1,8 +1,7 @@
-
 import time
 import unittest
 
-from analytics import exec_node, proj_ntb_store
+from suricate.analytics import exec_node, proj_ntb_store
 
 
 class ExecNodeTest(unittest.TestCase):

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-'''
+"""
 Setuptools file.
-'''
+"""
 
 __author__ = 'tmetsch'
 
@@ -15,7 +15,6 @@ setup(name='suricate',
       author='Thijs Metsch',
       author_email='tmetsch@engjoy.eu',
       url='http://www.engjoy.eu',
-      packages=['analytics', 'data', 'ui'],
-      # for prod also requires whatever you put in prelaods.
-      requires=['bottle', 'pymongo', 'matplotlib', 'pika'],
-     )
+      packages=['suricate.ui', 'suricate.data', 'suricate.analytics'],
+      # for prod also requires whatever you put in sdk.
+      requires=['bottle', 'pymongo', 'matplotlib', 'pika'])

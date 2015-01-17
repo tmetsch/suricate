@@ -16,8 +16,7 @@ import json
 import os
 
 from StringIO import StringIO
-
-from ui import api
+from suricate.ui import api
 
 
 class AnalyticsApp(object):
@@ -229,7 +228,7 @@ class AnalyticsApp(object):
         """
         Tag an data object.
 
-        :param type: Reflects to database.
+        :param data_src: Reflects to database.
         :param iden: Identifier of object/stream.
         """
         uid, token = _get_cred()
@@ -396,9 +395,6 @@ class AnalyticsApp(object):
     def clear_job_list(self):
         """
         Clear job list.
-
-        :param proj_name: name of the project.
-        :param ntb_id: Identifier for the notebook.
         """
         uid, token = _get_cred()
         self.api.clear_job_list(uid, token)

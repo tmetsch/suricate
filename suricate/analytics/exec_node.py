@@ -4,14 +4,12 @@ Execution node - listens to messages and executes notebooks etc.
 """
 
 import json
-import pika
 import thread
+import pika
 import uuid
 
+from suricate.analytics import wrapper, proj_ntb_store
 from time import time
-
-from analytics import proj_ntb_store
-from analytics import wrapper
 
 
 class ExecNode(object):

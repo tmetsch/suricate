@@ -6,12 +6,11 @@ Supports Data streams through services like AMQP.
 
 __author__ = 'tmetsch'
 
+import bson
 import pika
 import pymongo
 import threading
 import time
-
-from bson import ObjectId
 
 
 class StreamClient(object):
@@ -93,7 +92,7 @@ class AMQPClient(object):
             tmp = {'iden': str(obj['_id']), 'meta': obj['meta']}
             if str(obj['_id']) not in self.cache:
                 iden = str(obj['_id'])
-                content = collection.find_one({'_id': ObjectId(iden)})
+                content = collection.find_one({'_id': bson.ObjectId(iden)})
                 uri = content['uri']
                 queue = content['queue']
                 self.cache[iden] = StreamConsumer(uid, token, iden,
@@ -135,7 +134,7 @@ class AMQPClient(object):
         database.authenticate(uid, token)
         collection = database['data_streams']
         # get URI
-        content = collection.find_one({'_id': ObjectId(iden)})
+        content = collection.find_one({'_id': bson.ObjectId(iden)})
         uri = content['uri']
         queue = content['queue']
 
@@ -163,7 +162,7 @@ class AMQPClient(object):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_streams']
-        collection.remove({'_id': ObjectId(iden)})
+        collection.remove({'_id': bson.ObjectId(iden)})
         collection = database['data_streams.' + str(iden)]
         collection.drop()
 

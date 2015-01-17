@@ -6,11 +6,11 @@
 Runs an execution node.
 """
 
-import sys
-
 import ConfigParser
 
-from analytics import exec_node
+import sys
+
+from suricate.analytics import exec_node
 
 __author__ = 'tmetsch'
 

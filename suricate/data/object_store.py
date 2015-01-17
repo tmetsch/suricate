@@ -6,10 +6,9 @@ Wraps around object storage.
 
 __author__ = 'tmetsch'
 
+import bson
 import pymongo
 import uuid
-
-from bson import ObjectId
 
 
 def get_object_stor():
@@ -140,7 +139,7 @@ class MongoStore(ObjectStore):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        tmp = collection.find_one({'_id': ObjectId(obj_id)})
+        tmp = collection.find_one({'_id': bson.ObjectId(obj_id)})
         tmp.pop('_id')
         return tmp
 
@@ -156,7 +155,7 @@ class MongoStore(ObjectStore):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        collection.update({'_id': ObjectId(obj_id)},
+        collection.update({'_id': bson.ObjectId(obj_id)},
                           {"$set": {'value': content}}, upsert=False)
 
     def delete_object(self, uid, token, obj_id):
@@ -170,7 +169,7 @@ class MongoStore(ObjectStore):
         database = self.client[uid]
         database.authenticate(uid, token)
         collection = database['data_objects']
-        collection.remove({'_id': ObjectId(obj_id)})
+        collection.remove({'_id': bson.ObjectId(obj_id)})
 
 
 class CDMIStore(ObjectStore):

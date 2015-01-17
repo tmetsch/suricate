@@ -112,7 +112,7 @@ TBD.
 Currently a [MongoDB](http://www.mongodb.org) is needed. Add a admin user:
 
     db = db.getSiblingDB('admin')
-    db.addUser( { user: "admin", pwd: "secret",  
+    db.createUser( { user: "admin", pwd: "secret",  
                   roles: [ "clusterAdmin", "userAdminAnyDatabase", 
                            "readWriteAnyDatabase", "dbAdminAnyDatabase" ] } )
 

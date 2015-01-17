@@ -8,15 +8,16 @@ Runs the analytics service in a development environment.
 
 __author__ = 'tmetsch'
 
+import ConfigParser
+
 import bottle
 import pymongo
 import subprocess
 import sys
 
-import ConfigParser
 from urlparse import urlparse
+from suricate.ui import ui_app
 
-from ui import ui_app
 
 config = ConfigParser.RawConfigParser()
 config.read('app.conf')
@@ -96,8 +97,8 @@ if __name__ == '__main__':
     app = ui_app.AnalyticsApp(mongo, broker).get_wsgi_app()
     app = SessionMiddleWare(app)
 
-    bottle.TEMPLATE_PATH.insert(0, '../ui/views')
-    bottle.run(app=app, host='localhost')
+    bottle.TEMPLATE_PATH.insert(0, '../suricate/ui/views')
+    bottle.run(app=app, host='localhost', port=9897)
 
     # let's cleanup shall we?
     for process in processes:

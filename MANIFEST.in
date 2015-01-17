@@ -1,0 +1,5 @@
+recursive-include bin *.conf *.py
+recursive-include suricate/ui/views *.tmpl
+recursive-include suricate/ui/static *.css
+include LICENSE
+include README.md

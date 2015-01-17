@@ -11,6 +11,7 @@ import base64
 import json
 import os
 import urllib
+
 from StringIO import StringIO
 
 # graphing imports
@@ -23,12 +24,10 @@ except UserWarning:
 import mpld3
 
 # internal imports
-from data import object_store
-from data import streaming
+from suricate.data import object_store
+from suricate.data import streaming
 
 # Imports for easier analytics development
-import numpy as np
-import pandas as pd
 
 # Storage access.
 obj_str = object_store.MongoStore(OBJECT_STORE_URI)

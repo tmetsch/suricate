@@ -6,14 +6,14 @@ Unit test for the object store part.
 
 __author__ = 'tmetsch'
 
-from data import object_store
-
 import mox
 import unittest
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
+
+from suricate.data import object_store
 
 
 class ObjectStoreTest(unittest.TestCase):
@@ -25,16 +25,21 @@ class ObjectStoreTest(unittest.TestCase):
         """
         Test if all throw no impl errors.
         """
-        self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .list_objects, '123', 'abc')
-        self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .create_object, '123', 'abc', 'foo')
-        self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .retrieve_object, '123', 'abc', 'abc')
-        self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .update_object, '123', 'abc', 'abc', 'bar')
-        self.assertRaises(NotImplementedError, object_store.ObjectStore()
-            .delete_object, '123', 'abc', 'abc')
+        self.assertRaises(NotImplementedError,
+                          object_store.ObjectStore().list_objects,
+                          '123', 'abc')
+        self.assertRaises(NotImplementedError,
+                          object_store.ObjectStore().create_object,
+                          '123', 'abc', 'foo')
+        self.assertRaises(NotImplementedError,
+                          object_store.ObjectStore().retrieve_object,
+                          '123', 'abc', 'abc')
+        self.assertRaises(NotImplementedError,
+                          object_store.ObjectStore().update_object,
+                          '123', 'abc', 'abc', 'bar')
+        self.assertRaises(NotImplementedError,
+                          object_store.ObjectStore().delete_object,
+                          '123', 'abc', 'abc')
 
 
 class MongoStoreTest(unittest.TestCase):
@@ -62,8 +67,8 @@ class MongoStoreTest(unittest.TestCase):
         self.mongo_db.authenticate('123', 'abc')
         self.mongo_db.__getitem__('data_objects').AndReturn(self.mongo_coll)
         self.mongo_coll.find({}).AndReturn([{'_id': 'foo',
-                                           'meta': {'tags': []},
-                                           'content': 'bar'}])
+                                             'meta': {'tags': []},
+                                             'content': 'bar'}])
 
         self.mocker.ReplayAll()
         tmp = self.cut.list_objects('123', 'abc')

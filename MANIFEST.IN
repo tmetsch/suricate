@@ -1,5 +1,0 @@
-recursive-include bin *.conf *.py
-recursive-include ui/views *.tmpl
-recursive-include ui/static *.css
-include LICENSE
-include README.md

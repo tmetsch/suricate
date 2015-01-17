@@ -13,8 +13,8 @@ import pika
 import pika.exceptions as pikaex
 import uuid
 
-from data import object_store
-from data import streaming
+from suricate.data import object_store
+from suricate.data import streaming
 
 
 class API(object):
@@ -43,7 +43,7 @@ class API(object):
         tmp2 = self.stream.list_streams(uid, token)
         return tmp, tmp2
 
-    ## Objects
+    # Objects
 
     def create_object(self, content, uid, token, meta_dat):
         """
@@ -76,14 +76,14 @@ class API(object):
         """
         self.obj_str.delete_object(uid, token, iden)
 
-    ## Streams
+    # Streams
 
     def create_stream(self, uri, queue, uid, token):
         """
         Create a data stream.
 
         :param uri: RabbitMQ Broker URI.
-        :param queueu: Queue.
+        :param queue: Queue.
         :param uid: Identifier for the user.
         :param token: The token of the user.
         """
@@ -116,7 +116,6 @@ class API(object):
 
         :param data_src: Reflects to db name.
         :param iden: Id of the object/stream.
-        :param meta: Metadata dict.
         :param uid: Identifier for the user.
         :param token: The token of the user.
         """
@@ -295,9 +294,6 @@ class API(object):
         """
         RPC call to run a notebook.
 
-        :param proj_name: Name of the project.
-        :param ntb_id: Id of the notebook.
-        :param src: source code to run.
         :param uid: Identifier for the user.
         :param token: The token of the user.
         """
