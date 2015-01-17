@@ -130,6 +130,11 @@ For local environments got to the bin directory and just run:
 
     $ ./run_me.py
 
+## Using Docker & MicroService
+
+Have a look [here](https://github.com/engjoy/suricate_docker_fig) for an 
+example PoC development deployment.
+
 ## In Production
 
 Suricate is a simple [WSGI](http://www.wsgi.org) app which can be run with
