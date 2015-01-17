@@ -98,7 +98,7 @@ if __name__ == '__main__':
     app = SessionMiddleWare(app)
 
     bottle.TEMPLATE_PATH.insert(0, '../suricate/ui/views')
-    bottle.run(app=app, host='localhost', port=9897)
+    bottle.run(app=app, host='localhost')
 
     # let's cleanup shall we?
     for process in processes:
