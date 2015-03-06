@@ -6,9 +6,9 @@
 Runs an execution node.
 """
 
-import ConfigParser
-
 import sys
+
+import ConfigParser
 
 from suricate.analytics import exec_node
 

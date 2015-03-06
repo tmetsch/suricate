@@ -28,6 +28,8 @@ from suricate.data import object_store
 from suricate.data import streaming
 
 # Imports for easier analytics development
+import numpy as np
+import pandas as pd
 
 # Storage access.
 obj_str = object_store.MongoStore(OBJECT_STORE_URI)

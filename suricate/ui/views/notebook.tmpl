@@ -1,34 +1,21 @@
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <h1 class="analytics">
-            <a href="/analytics">Analytics</a> / <a href="/analytics/{{proj_name}}">{{proj_name}}</a> / {{ntb_name}}
+            <a href="/analytics">Projects</a> / <a href="/analytics/{{proj_name}}">{{proj_name}}</a> / {{ntb_name}}
         </h1>
     </div>
 </div>
-<div class="pure-g-r">
-    <div class="pure-u-1-2">
+<div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2">
         <form action="/analytics/{{proj_name}}/{{ntb_id}}/run" method="POST">
             <input type="submit" name="run" value="Run">
             <input type="submit" name="run" value="Run Job">
             <textarea id="source" name="source">{{src}}</textarea>
         </form>
     </div>
-    <div class="pure-u-1-2">
+    <div class="pure-u-1 pure-u-md-1-2">
         <div class="outputs">
-            % if len(error.strip()) > 0:
-                <div class="error">{{!error}}</div>
-            % end
-            % for item in output:
-                % if item[:6] == 'image:':
-                <div><img src="data:{{item[6:]}}"/></div>
-                % elif item[:6] == 'embed:':
-                <div>{{!item[6:]}}</div>
-                % elif item[:1] == '#':
-                <div class="foo">{{item[1:].strip()}}</div>
-                % elif item.strip() != '':
-                <div class="code">{{item.rstrip()}}</div>
-                % end
-            % end
+            {{!rendered_dashboard}}
             <div class="analyticsborder">
                 <form action="/analytics/{{proj_name}}/{{ntb_id}}/interact" method="post">
                     <input id="interact" name="interact" style="width: 85%"/>

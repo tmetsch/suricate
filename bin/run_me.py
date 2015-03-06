@@ -8,16 +8,16 @@ Runs the analytics service in a development environment.
 
 __author__ = 'tmetsch'
 
-import ConfigParser
-
 import bottle
 import pymongo
 import subprocess
 import sys
 
-from urlparse import urlparse
-from suricate.ui import ui_app
+import ConfigParser
 
+from urlparse import urlparse
+
+from suricate.ui import ui_app
 
 config = ConfigParser.RawConfigParser()
 config.read('app.conf')

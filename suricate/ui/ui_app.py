@@ -16,6 +16,8 @@ import json
 import os
 
 from StringIO import StringIO
+from bottle import template
+
 from suricate.ui import api
 
 
@@ -69,7 +71,7 @@ class AnalyticsApp(object):
                        self.delete_data_stream)
         # project mgmt
         self.app.route('/analytics', ['GET'],
-                       self.projects)
+                       self.list_projects)
         self.app.route('/analytics/clear', ['POST'],
                        self.clear_job_list)
         self.app.route('/analytics/create', ['POST'],
@@ -108,8 +110,10 @@ class AnalyticsApp(object):
         """
         Initial view.
         """
-        uid, _ = _get_cred()
-        return {'uid': uid}
+        uid, token = _get_cred()
+        jobs = self.api.list_jobs(uid, token)
+        return {'uid': uid,
+                'jobs': jobs}
 
     def static(self, filepath):
         """
@@ -139,7 +143,8 @@ class AnalyticsApp(object):
         _, ext = os.path.splitext(upload.filename)
 
         if ext == '.json':
-            tmp = json.load(upload.file)
+            ctnt = upload.file.read().decode("utf-8-sig").encode("utf-8")
+            tmp = ctnt
         elif ext == '.csv':
             reader = csv.reader(upload.file, delimiter=',', quotechar='"')
             keys = next(reader)
@@ -240,16 +245,14 @@ class AnalyticsApp(object):
     # Project mgmt
 
     @bottle.view('projects.tmpl')
-    def projects(self):
+    def list_projects(self):
         """
         List projects.
         """
         uid, token = _get_cred()
         tmp = self.api.list_projects(uid, token)
-        jobs = self.api.list_jobs(uid, token)
         return {'uid': uid,
-                'projects': tmp,
-                'jobs': jobs}
+                'projects': tmp}
 
     def create_project(self):
         """
@@ -326,13 +329,15 @@ class AnalyticsApp(object):
             err = tmp['err']
         else:
             err = ''
+
+        rend = template(tmp['dashboard_template'], error=err, output=output)
+
         return {'uid': uid,
                 'proj_name': proj_name,
                 'ntb_name': tmp['meta']['name'],
                 'ntb_id': ntb_id,
                 'src': src,
-                'output': output,
-                'error': err}
+                'rendered_dashboard': rend}
 
     def delete_notebook(self, proj_name, ntb_id):
         """
@@ -378,7 +383,7 @@ class AnalyticsApp(object):
             bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
         elif run_type == 'Run Job':
             self.api.run_job(proj_name, ntb_id, src, uid, token)
-            bottle.redirect('/analytics')
+            bottle.redirect('/')
 
     def interact(self, proj_name, ntb_id):
         """
@@ -398,7 +403,7 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         self.api.clear_job_list(uid, token)
-        bottle.redirect('/analytics')
+        bottle.redirect('/')
 
 
 def _get_cred():

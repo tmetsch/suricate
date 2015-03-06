@@ -1,6 +1,6 @@
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
-        <h1 class="analytics">Analytics</h1>
+        <h1 class="analytics">Projects</h1>
     </div>
 </div>
 <table class="mytable">
@@ -25,7 +25,7 @@
         % end
     </tbody>
 </table>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p>
             <form action="/analytics/create" method="post" enctype="multipart/form-data">
@@ -35,41 +35,7 @@
         </p>
     </div>
 </div>
-% if len(jobs) > 0:
-<div class="pure-g-r">
-    <div class="pure-u-1">
-        <h1 class="Analytics">Jobs</h1>
-        <p>
-            <table class="mytable">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Project</th>
-                        <th>Notebook</th>
-                        <th>State</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    % for item in jobs:
-                    <tr>
-                        <td>{{item}}</td>
-                        <td><a href="/analytics/{{jobs[item]['project']}}">{{jobs[item]['project']}}</a></td>
-                        <td><a href="/analytics/{{jobs[item]['project']}}/{{jobs[item]['ntb_id']}}">{{jobs[item]['ntb_name']}}</a></td>
-                        <td>{{jobs[item]['state']}}</td>
-                    </tr>
-                    % end
-                </tbody>
-            </table>
-        </p>
-        <p>
-            <form action="/analytics/clear" method="post">
-                <input type="submit" value="Clear" />
-            </form>
-        </p>
-    </div>
-</div>
-% end
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p><small>Welcome user: {{uid}}</small></p>
     </div>

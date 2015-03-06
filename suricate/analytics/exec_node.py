@@ -8,7 +8,8 @@ import thread
 import pika
 import uuid
 
-from suricate.analytics import wrapper, proj_ntb_store
+from suricate.analytics import wrapper
+from suricate.analytics import proj_ntb_store
 from time import time
 
 
