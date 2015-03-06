@@ -143,8 +143,7 @@ class AnalyticsApp(object):
         _, ext = os.path.splitext(upload.filename)
 
         if ext == '.json':
-            ctnt = upload.file.read().decode("utf-8-sig").encode("utf-8")
-            tmp = ctnt
+            tmp = json.loads(upload.file.read().decode('utf-8-sig'))
         elif ext == '.csv':
             reader = csv.reader(upload.file, delimiter=',', quotechar='"')
             keys = next(reader)

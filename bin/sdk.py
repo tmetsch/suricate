@@ -17,7 +17,7 @@ from StringIO import StringIO
 # graphing imports
 try:
     import matplotlib
-    matplotlib.use('Agg')
+    matplotlib.use('cairo')
     from matplotlib import pyplot as plt
 except UserWarning:
     pass
@@ -121,7 +121,9 @@ def retrieve_object(iden):
     :param iden: Identifier of the object.
     """
     tmp = obj_str.retrieve_object(str(UID), str(TOKEN), iden)
-    return json.loads(tmp['value'])
+    if isinstance(tmp['value'], unicode):
+        return json.loads(tmp['value'])
+    return tmp['value']
 
 
 def update_object(iden, data):
