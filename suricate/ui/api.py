@@ -50,6 +50,17 @@ class API(object):
 
     # Data sources...
 
+    def info_data(self, uid, token):
+        """
+        Return dictionary with key/values about data objects and streams.
+
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        data_info = self.obj_str.info(uid, token)
+        data_info.update(self.stream.info(uid, token))
+        return data_info
+
     def list_data_sources(self, uid, token):
         """
         List available data sources. Return list of ids for objects & streams.

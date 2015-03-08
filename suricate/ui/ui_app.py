@@ -112,8 +112,10 @@ class AnalyticsApp(object):
         """
         uid, token = _get_cred()
         jobs = self.api.list_jobs(uid, token)
+        data_info = self.api.info_data(uid, token)
         return {'uid': uid,
-                'jobs': jobs}
+                'jobs': jobs,
+                'data_info': data_info}
 
     def static(self, filepath):
         """

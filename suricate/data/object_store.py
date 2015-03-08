@@ -92,6 +92,21 @@ class MongoStore(ObjectStore):
         """
         self.client = pymongo.MongoClient(uri)
 
+    def info(self, uid, token):
+        """
+        Return basic infos about the objects.
+
+        :param uid: User's uid.
+        :param token: Token of the user.
+        :return: Dict with key/values.
+        """
+        res = {}
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_objects']
+        res['number_of_objects'] = collection.count()
+        return res
+
     def list_objects(self, uid, token, query={}):
         """
         List the objects of a user.
