@@ -132,7 +132,7 @@ For local environments got to the bin directory and just run:
 
 ## Using Docker & MicroService
 
-Have a look [here](https://github.com/engjoy/suricate_docker_fig) for an 
+Have a look [here](https://github.com/engjoy/suricate_docker_compose) for an 
 example PoC development deployment.
 
 ## In Production
