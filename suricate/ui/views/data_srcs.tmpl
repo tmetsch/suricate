@@ -1,5 +1,5 @@
-<div class="pure-g-r">
-    <div class="pure-u-1-12">
+<div class="pure-g">
+    <div class="pure-u-1">
         <h1 class="data">Objects</h1>
     </div>
 </div>
@@ -41,7 +41,7 @@
     % end
     </tbody>
 </table>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p>
             <form action="/data/object/new" method="post" enctype="multipart/form-data">
@@ -51,8 +51,8 @@
         </p>
     </div>
 </div>
-<div class="pure-g-r">
-    <div class="pure-u-1-12">
+<div class="pure-g">
+    <div class="pure-u-1">
         <h1 class="data">Streams</h1>
     </div>
 </div>
@@ -71,7 +71,7 @@
                 <a href="/data/stream/{{item['iden']}}">{{item['iden']}}</a>
             </td>
             <td>
-                <form action="data_streams/{{item['iden']}}/tag" method="post">
+                <form action="/tag/data_streams/{{item['iden']}}" method="post">
                     <label for="tags">Tags:</label>
                     <input class="txtinput" type="text" name="tags" value="{{', '.join(item['meta']['tags'])}}"/>
                 </form>
@@ -85,7 +85,7 @@
     % end
     </tbody>
 </table>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p>
             <form action="/data/stream/new" method="post" enctype="multipart/form-data">
@@ -96,7 +96,7 @@
         </p>
     </div>
 </div>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p><small>Welcome user: {{uid}}</small></p>
     </div>

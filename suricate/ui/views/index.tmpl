@@ -1,10 +1,9 @@
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
-        <h1 class="data">Welcome to Suricate</h1>
-        <h2 class="analytics">Open Analytics Service & Data Science Platform</h2>
+        <h1 class="home">Suricate: Open Analytics Service & Data Science Platform</h2>
     </div>
 </div>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p>
             <strong>Suricate</strong> is an analytics service which helps you - a
@@ -16,24 +15,72 @@
         </p>
     </div>
 </div>
-<div class="pure-g-r">
-    <div class="pure-u-1">
-        <h3>Getting Started</h3>
-        <ol>
-            <li>Upload or stream in some <a href="/data">data</a>.</li>
-            <li>Create a new <a href="/analytics">project</a>.</li>
-            <li>Edit the <em>analytics.py</em> notebook in your project and gain
-            insight from the previously uploaded or streamed in data. Finally store
-            the insights in the object store.</li>
-            <li>Create a <em>processing.py</em> notebook and load your model from the
-            last step through the object store. Compare new data (incoming through a
-            stream maybe) with the stored model. Trigger actions to external systems
-            where necessary.
-            <li>Be happy</li>
-        </ol>
+<div class="pure-g">
+    <div class="pure-u-1 pure-u-md-1-2">
+        <h1 class="Data">Data</h1>
+        <p>
+            The following table shows some basic information about the data
+            sources (Objects and Streams).
+        </p>
+        <p>
+            <table class="mytable">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    % for item in data_info:
+                    <tr>
+                        <td>{{item}}</td>
+                        <td>{{data_info[item]}}</td>
+                    </tr>
+                    % end
+                </tbody>
+            </table>
+        </p>
+    </div>
+    <div class="pure-u-1 pure-u-md-1-2">
+        <h1 class="Analytics">Jobs</h1>
+        % if len(jobs) > 0:
+        <p>
+            The following table the currently running and recently finished
+            jobs.
+        </p>
+        <p>
+            <table class="mytable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Project</th>
+                        <th>Notebook</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    % for item in jobs:
+                    <tr>
+                        <td>{{item}}</td>
+                        <td><a href="/analytics/{{jobs[item]['project']}}">{{jobs[item]['project']}}</a></td>
+                        <td><a href="/analytics/{{jobs[item]['project']}}/{{jobs[item]['ntb_id']}}">{{jobs[item]['ntb_name']}}</a></td>
+                        <td>{{jobs[item]['state']}}</td>
+                    </tr>
+                    % end
+                </tbody>
+            </table>
+        </p>
+        <p>
+            <form action="/analytics/clear" method="post">
+                <input type="submit" value="Clear" />
+            </form>
+        </p>
+        % else:
+        <p>No Jobs found</p>
+        % end
     </div>
 </div>
-<div class="pure-g-r">
+<div class="pure-g">
     <div class="pure-u-1">
         <p><small>Welcome user: {{uid}}</small></p>
     </div>

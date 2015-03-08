@@ -3,7 +3,7 @@
 - [x] Better error handling needed.
 - [x] backends for handling notebooks execution (isolate with cgroups & subprocess?)
 - [x] simple flows for data through program: frontend (UI) - backends - final execution
-- [ ] split web frontend from an engine.
+- [ ] split web frontend from the engine.
 
 ## Data:
 - [ ] in memory DB support (for caching)

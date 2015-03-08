@@ -13,4 +13,3 @@ class AnalyticsAppTest(unittest.TestCase):
 
     def test_something_for_success(self):
         pass
-

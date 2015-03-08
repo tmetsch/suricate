@@ -15,7 +15,7 @@ import time
 
 class StreamClient(object):
     """
-    Simple streaming client. This on is used by SDK.
+    Simple streaming client. This one is used by SDK.
     """
 
     def __init__(self, uri):
@@ -75,6 +75,21 @@ class AMQPClient(object):
         self.client = pymongo.MongoClient(uri)
         self.cache = {}
         self.uri = uri
+
+    def info(self, uid, token):
+        """
+        Return basic infos about the streams.
+
+        :param uid: User's uid.
+        :param token: Token of the user.
+        :return: Dict with key/values.
+        """
+        res = {}
+        database = self.client[uid]
+        database.authenticate(uid, token)
+        collection = database['data_streams']
+        res['number_of_streams'] = collection.count()
+        return res
 
     def list_streams(self, uid, token):
         """

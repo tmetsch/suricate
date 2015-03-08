@@ -8,47 +8,22 @@ body {
     background: #fefefe;
     color: #444;
 }
-#layout {
-    padding-left: 150px;
-}
 /* menu */
-#menu {
-    margin-left: -150px; /* this should be "#menu" width */
-    width: 150px;
-    position: fixed;
-    top: 0;
-    left: 150px; /* this should be "#menu" width */
-    bottom: 0;
-    overflow-y: auto;
-    background: #222;
-    box-shadow: 1px 1px 20px -2px #ccc;
-}
-.menu-link {
-    display: none;
-    top: 0;
-    left: 150px;
-    background: #222;
-    font-size: 1.1em;
-    color: #fff;
-    padding: 0.3em;
-    z-index: 1;
-}
-#menu .pure-menu, #menu .pure-menu ul {
-    border: none;
-    background: transparent;
-}
-#menu a:hover {
+.pure-menu {
+    border-bottom: 1px solid #ddd;
+    height: 2.4em;
     background: #444;
 }
 /* content */
 #content {
-    margin: 2.4em;
+    margin: 2em;
 }
 input {
-    margin: 0.3em 0 0.3em 0;
+    margin: 0.1em 0 0.1em 0;
 }
 form {
     font-size: 0.9em;
+    margin: 0;
 }
 /* tables */
 .mytable {
@@ -117,33 +92,4 @@ h2>a:hover {
 }
 a {
     text-decoration: none;
-}
-/* for small screens */
-@media (max-width: 767px) {
-    .header {
-        text-align: left;
-    }
-    #layout {
-        position: relative;
-        padding-left: 0;
-    }
-    #layout.active {
-        position: relative;
-        left: 150px;
-    }
-    #layout.active #menu {
-        left: 150px;
-        width: 150px;
-    }
-    #menu {
-        left: 0;
-    }
-    .menu-link {
-        position: fixed;
-        left: 0;
-        display: block;
-    }
-    #layout.active .menu-link {
-        left: 150px;
-    }
 }

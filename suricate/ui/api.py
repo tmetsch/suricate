@@ -17,6 +17,24 @@ from suricate.data import object_store
 from suricate.data import streaming
 
 
+template = '''
+% if len(error.strip()) > 0:
+    <div class="error">{{!error}}</div>
+% end
+% for item in output:
+    % if item[:6] == 'image:':
+    <div><img src="data:{{item[6:]}}"/></div>
+    % elif item[:6] == 'embed:':
+    <div>{{!item[6:]}}</div>
+    % elif item[:1] == '#':
+    <div>{{item.rstrip()}}</div>
+    % elif item.strip() != '':
+    <div class="code">{{item.rstrip()}}</div>
+    % end
+% end
+'''
+
+
 class API(object):
     """
     Little helper class to abstract the REST and UI from.
@@ -31,6 +49,17 @@ class API(object):
         self.stream = streaming.AMQPClient(mongo_uri)
 
     # Data sources...
+
+    def info_data(self, uid, token):
+        """
+        Return dictionary with key/values about data objects and streams.
+
+        :param uid: Identifier for the user.
+        :param token: The token of the user.
+        """
+        data_info = self.obj_str.info(uid, token)
+        data_info.update(self.stream.info(uid, token))
+        return data_info
 
     def list_data_sources(self, uid, token):
         """
@@ -116,6 +145,7 @@ class API(object):
 
         :param data_src: Reflects to db name.
         :param iden: Id of the object/stream.
+        :param tags: Metadata dict.
         :param uid: Identifier for the user.
         :param token: The token of the user.
         """
@@ -195,7 +225,7 @@ class API(object):
                                          'name': ntb_name,
                                          'mime-type': 'text/x-script.phyton'},
                                 'src': src,
-                                'dashboard_template': '\n',
+                                'dashboard_template': template,
                                 'out': [],
                                 'err': ''},
                    'call': 'update_notebook'}
@@ -232,7 +262,7 @@ class API(object):
                    'token': token,
                    'project_id': proj_name,
                    'notebook_id': ntb_id,
-                   'notebook': ntb,
+                   'src': ntb,
                    'call': 'update_notebook'}
         self._call_rpc(uid, payload)
 
