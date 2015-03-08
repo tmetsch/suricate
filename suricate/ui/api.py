@@ -251,7 +251,7 @@ class API(object):
                    'token': token,
                    'project_id': proj_name,
                    'notebook_id': ntb_id,
-                   'notebook': ntb,
+                   'src': ntb,
                    'call': 'update_notebook'}
         self._call_rpc(uid, payload)
 

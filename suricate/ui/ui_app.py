@@ -89,8 +89,8 @@ class AnalyticsApp(object):
                        self.delete_notebook)
         self.app.route('/analytics/<proj_name>/<ntb_id>/download', ['POST'],
                        self.download_notebook)
-        self.app.route('/analytics/<proj_name>/<ntb_id>/run', ['POST'],
-                       self.run_notebook)
+        self.app.route('/analytics/<proj_name>/<ntb_id>/action', ['POST'],
+                       self.action_notebook)
         self.app.route('/analytics/<proj_name>/<ntb_id>/interact', ['POST'],
                        self.interact)
         # tagging
@@ -367,20 +367,23 @@ class AnalyticsApp(object):
                                    'inline; filename=notebook.py')
         return tmp_file.getvalue()
 
-    def run_notebook(self, proj_name, ntb_id):
+    def action_notebook(self, proj_name, ntb_id):
         """
-        Run a notebook.
+        Perform action on a notebook.
 
         :param proj_name: name of the project.
         :param ntb_id: Identifier for the notebook.
         """
         uid, token = _get_cred()
         src = bottle.request.forms.get('source')
-        run_type = bottle.request.forms.get('run')
-        if run_type == 'Run':
+        action = bottle.request.forms.get('run')
+        if action == 'Save':
+            self.api.update_notebook(proj_name, ntb_id, src, uid, token)
+            bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
+        elif action == 'Run':
             self.api.run_notebook(proj_name, ntb_id, src, uid, token)
             bottle.redirect('/analytics/' + proj_name + '/' + ntb_id)
-        elif run_type == 'Run Job':
+        elif action == 'Run Job':
             self.api.run_job(proj_name, ntb_id, src, uid, token)
             bottle.redirect('/')
 

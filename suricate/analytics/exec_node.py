@@ -117,7 +117,8 @@ class ExecNode(object):
                                                           token)
         elif call == 'update_notebook':
             ntb_id = body['notebook_id']
-            ntb = body['notebook']
+            ntb = self.stor.retrieve_notebook(proj, ntb_id, uid, token)
+            ntb['src'] = body['src']
             self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
         elif call == 'delete_notebook':
             ntb_id = body['notebook_id']
