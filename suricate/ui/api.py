@@ -228,7 +228,7 @@ class API(object):
                                 'dashboard_template': template,
                                 'out': [],
                                 'err': ''},
-                   'call': 'update_notebook'}
+                   'call': 'create_notebook'}
         self._call_rpc(uid, payload)
 
     def retrieve_notebook(self, proj_name, ntb_id, uid, token):
