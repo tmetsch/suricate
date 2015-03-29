@@ -111,6 +111,10 @@ class ExecNode(object):
         elif call == 'delete_project':
             res['project'] = self.stor.delete_project(proj, uid, token)
         # notebooks
+        elif call == 'create_notebook':
+            ntb_id = body['notebook_id']
+            ntb = body['notebook']
+            self.stor.update_notebook(proj, ntb_id, ntb, uid, token)
         elif call == 'retrieve_notebook':
             ntb_id = body['notebook_id']
             res['notebook'] = self.stor.retrieve_notebook(proj, ntb_id, uid,
