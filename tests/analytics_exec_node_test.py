@@ -15,7 +15,7 @@ class ExecNodeTest(unittest.TestCase):
     def setUp(self):
         self.store = proj_ntb_store.NotebookStore(self.mongo_uri, 'foo')
         self.cut = ClassUnderTestWrapper(self.mongo_uri, self.amqp_uri,
-                                         'foo', 'bar')
+                                         'sdk.py', 'foo')
         self.ntb_id = self.store.update_notebook('qwe',
                                                  None,
                                                  {'src': 'print "hello"',
@@ -59,7 +59,7 @@ class ExecNodeTest(unittest.TestCase):
         # test update
         self.payload['call'] = 'update_notebook'
         self.payload['notebook_id'] = self.ntb_id
-        self.payload['notebook'] = {'src': 'for i in range(0,5):\n\tprint i'}
+        self.payload['src'] = 'for i in range(0,5):\n\tprint i'
         self.cut._handle(self.payload)
 
         # retrieve it
@@ -103,9 +103,9 @@ class ClassUnderTestWrapper(exec_node.ExecNode):
     Wraps around the ExecNode and disables the listening.
     """
 
-    def __init__(self, mongo_uri, amqp_uri, uid, token):
+    def __init__(self, mongo_uri, amqp_uri, sdk, uid):
         self.uid = uid
-        self.token = token
         self.uri = mongo_uri
+        self.sdk = sdk
         # store
         self.stor = proj_ntb_store.NotebookStore(mongo_uri, 'foo')

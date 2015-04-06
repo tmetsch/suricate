@@ -2,15 +2,10 @@
 Adapters for different languages.
 """
 
-import ConfigParser
-
 import code
 import sys
 
 import StringIO
-
-CONFIG = ConfigParser.RawConfigParser()
-CONFIG.read('app.conf')
 
 
 def grep_stdout(func):
@@ -45,9 +40,8 @@ class PythonWrapper(object):
     Wrapper to use Python for Analytics.
     """
 
-    def __init__(self, uid, token, mongo_uri):
+    def __init__(self, uid, token, mongo_uri, sdk):
         self.console = code.InteractiveConsole()
-        sdk = CONFIG.get('suricate', 'python_sdk')
         # set User identifier and tell where object store is.
         self.console.push('UID = \'' + str(uid) + '\'')
         self.console.push('TOKEN = \'' + str(token) + '\'')
