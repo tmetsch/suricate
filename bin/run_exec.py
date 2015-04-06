@@ -20,6 +20,8 @@ config.read('app.conf')
 mongo = config.get('mongo', 'uri')
 # Rabbit part
 broker = config.get('rabbit', 'uri')
+# SDK
+sdk = config.get('suricate', 'python_sdk')
 
 
 if __name__ == '__main__':
@@ -28,4 +30,4 @@ if __name__ == '__main__':
                              'node as first argument!')
 
     user = sys.argv[1]
-    exec_node.ExecNode(mongo, broker, user)
+    exec_node.ExecNode(mongo, broker, sdk, user)

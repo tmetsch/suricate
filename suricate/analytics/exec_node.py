@@ -7,10 +7,12 @@ import json
 import thread
 import pika
 import uuid
+import ConfigParser
+
+from time import time
 
 from suricate.analytics import wrapper
 from suricate.analytics import proj_ntb_store
-from time import time
 
 
 class ExecNode(object):
@@ -21,11 +23,14 @@ class ExecNode(object):
     wrappers = {}
     jobs = {}
 
-    def __init__(self, mongo_uri, amqp_uri, uid):
+    def __init__(self, mongo_uri, amqp_uri, sdk, uid):
         self.uid = uid
         self.uri = mongo_uri
         # store
         self.stor = proj_ntb_store.NotebookStore(self.uri, self.uid)
+
+        # sdk
+        self.sdk = sdk
 
         # connect to AMQP broker
         connection = pika.BlockingConnection(pika.URLParameters(amqp_uri))
@@ -137,8 +142,10 @@ class ExecNode(object):
         """
         if project_id not in self.wrappers:
             # TODO: make type configurable (Python, Julia, R, ...)
-            self.wrappers[project_id] = wrapper.PythonWrapper(uid, token,
-                                                              self.uri)
+            self.wrappers[project_id] = wrapper.PythonWrapper(uid,
+                                                              token,
+                                                              self.uri,
+                                                              self.sdk)
         return self.wrappers[project_id]
 
     def _run_job(self, proj, ntb_id, src, interpreter, uid, token):
