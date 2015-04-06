@@ -17,7 +17,7 @@ from suricate.data import object_store
 from suricate.data import streaming
 
 
-template = '''
+TEMPLATE = '''
 % if len(error.strip()) > 0:
     <div class="error">{{!error}}</div>
 % end
@@ -225,7 +225,7 @@ class API(object):
                                          'name': ntb_name,
                                          'mime-type': 'text/x-script.phyton'},
                                 'src': src,
-                                'dashboard_template': template,
+                                'dashboard_template': TEMPLATE,
                                 'out': [],
                                 'err': ''},
                    'call': 'create_notebook'}

@@ -7,7 +7,6 @@ import json
 import thread
 import pika
 import uuid
-import ConfigParser
 
 from time import time
 
